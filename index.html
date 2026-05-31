@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OntologyOps</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #1a1a2e;
+      color: #eaeaea;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .container { max-width: 700px; }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #00d4aa, #6c63ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.05rem;
+      color: #999;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 500px) { .cards { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #16213e;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 1.5rem 1.2rem;
+      text-decoration: none;
+      color: #eaeaea;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: #6c63ff; transform: translateY(-2px); }
+
+    .card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .card h3 { font-size: 1.05rem; margin-bottom: 0.35rem; color: #fff; }
+    .card p { font-size: 0.85rem; color: #888; line-height: 1.5; }
+
+    .card-primary {
+      border-color: #00d4aa;
+      grid-column: 1 / -1;
+    }
+
+    .links { font-size: 0.85rem; color: #666; }
+    .links a { color: #888; text-decoration: none; margin: 0 0.6rem; }
+    .links a:hover { color: #00d4aa; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>OntologyOps</h1>
+    <p class="tagline">
+      让本体像代码一样被管理<br>
+      让知识像软件一样持续交付<br>
+      让推理像编译器一样稳定运行
+    </p>
+
+    <div class="cards">
+      <a href="./book/" class="card card-primary">
+        <div class="icon">📖</div>
+        <h3>在线阅读全书</h3>
+        <p>《当LLM不够用了——本体推理的企业决策实践》完整12章</p>
+      </a>
+
+      <a href="https://github.com/georgewangchn/OntologyOps" class="card">
+        <div class="icon">💻</div>
+        <h3>GitHub 仓库</h3>
+        <p>查看源码、提交 Issue、参与贡献</p>
+      </a>
+
+      <a href="./docs/OntologyOps方案.md" class="card">
+        <div class="icon">📋</div>
+        <h3>OntologyOps 方案</h3>
+        <p>第十章完整技术方案文档</p>
+      </a>
+    </div>
+
+    <div class="links">
+      作者：森林瀑布 &nbsp;|&nbsp;
+      <a href="https://github.com/georgewangchn/OntologyOps">GitHub</a>
+    </div>
+  </div>
+</body>
+</html>

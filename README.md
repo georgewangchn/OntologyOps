@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Book](https://img.shields.io/badge/配套书籍-《当LLM不够用了》-green.svg)](./docs/OntologyOps方案.md)
 
-📖 **[在线阅读全书 →](./book/index.html)**
+📖 **[在线阅读全书 →](https://georgewangchn.github.io/OntologyOps/book/)**
 
 ---
 
