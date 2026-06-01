@@ -232,10 +232,12 @@ Ontology + Facts
                │
                ▼
 ┌─────────────────────────────────────┐
-│      ┃  Governance Center  ┃       │  知识治理
-│  Version / Audit / Approval / Rollback  │
+│      ┃  Governance Center  ┃       │  知识治理（贯穿全生命周期）
+│  Approval（事前）/ Audit（事中）/ Rollback（事后）  │
 └─────────────────────────────────────┘
 ```
+
+> **注意**：Governance Center 在图中画在最后，是简化的线性表达。它的实际作用是**横切**整个生命周期——Approval 发生在知识进入 Repo 之前（Human Approval Gate），Audit 记录每次变更，Rollback 是事后补救。把它画在最后意味着"你可以在任意节点触达 Governance"，不是"治理 = 事后审计"。
 
 **关键设计原则**：Knowledge Engineering Pipeline（左侧）和 Reasoning Pipeline（右侧）完全解耦。Agent 的边界止于 Ontology Repo，不进推理层。
 
@@ -479,6 +481,20 @@ Approved Needs  Rejected
 ### 6.4 Agent 体系（A2A 架构）
 
 采用 A2A（Agent-to-Agent）架构，而非共享 Memory。
+
+#### 为什么 A2A 而非编排流水线
+
+从 P3（LLM 不进推理链）出发，所有 Agent 都在知识工程链内，不需要运行时隔离。那么选择 A2A（Agent 自主通信）而非集中编排（Orchestrator 调度 Agent）的工程理由是什么？
+
+| 维度 | A2A（Agent 自主通信） | 编排流水线（中央调度） |
+|------|----------------------|---------------------|
+| 耦合度 | 松耦合——新增 Agent 无需改其他 Agent | 紧耦合——Orchestrator 需知道所有 Agent |
+| 容错性 | 某个 Agent 不可用时其他可继续 | Orchestrator 是单点故障 |
+| 可演进性 | 不同 Agent 可独立升级、替换 LLM backbone | 升级需改编排逻辑 |
+| 可调试性 | 较低——需额外 Trace 机制追踪消息流 | 较高——执行顺序和结果可预测 |
+| 确定性 | 较低——自主通信存在时序不确定性 | 较高——编排者决定执行顺序 |
+
+**选择 A2A 的原因**：知识工程链路最大的挑战不是执行确定性，而是**持续演化**——新知识源涌现、新 Agent 能力加入、不同领域需要不同的 Agent 组合。A2A 的松耦合特性让系统可以逐步增长，而非每次新增能力都重写编排逻辑。可调试性的降低通过 Knowledge PR 的审计链路（每一个 Patch 都有完整的 source trace）来补偿。
 
 #### 六类 Agent
 
