@@ -16,169 +16,205 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
-            background: #f5f5f5;
+            background: #fafaf8;
         }
 
-        /* 左侧边栏 */
+        /* ===== 左侧边栏 —— 精装书脊质感 ===== */
         .sidebar {
-            width: 260px;
-            min-width: 260px;
-            background: #1a1a2e;
-            color: #e0e0e0;
+            width: 270px;
+            min-width: 270px;
+            background: #1c1c1f;
+            color: #c4c0b8;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid #2a2a2e;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+            z-index: 10;
         }
 
         .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #2a2a4e;
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid #2a2a2e;
         }
 
         .sidebar-header h1 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            color: #ffffff;
-            line-height: 1.4;
-            margin-bottom: 8px;
+            color: #e8e0d0;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
         }
 
         .sidebar-header .author {
             font-size: 12px;
-            color: #8888aa;
+            color: #8a857c;
+            margin-bottom: 10px;
+            letter-spacing: 0.03em;
         }
 
         .sidebar-header .github-link {
             font-size: 11px;
-            color: #6666aa;
+            color: #6e6860;
             text-decoration: none;
             display: inline-block;
-            margin-top: 6px;
+            transition: color 0.2s;
         }
 
         .sidebar-header .github-link:hover {
-            color: #8888ff;
+            color: #c9a96e;
         }
 
         .sidebar-toc {
             flex: 1;
             overflow-y: auto;
-            padding: 10px 0;
+            padding: 12px 0;
         }
 
         .sidebar-toc ul {
             list-style: none;
         }
 
+        .sidebar-toc li {
+            position: relative;
+        }
+
         .sidebar-toc li a {
             display: block;
-            padding: 8px 20px;
-            color: #aaaacc;
+            padding: 10px 24px;
+            color: #9a958b;
             text-decoration: none;
             font-size: 13px;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
+            line-height: 1.5;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+            letter-spacing: 0.01em;
         }
 
         .sidebar-toc li a:hover {
-            background: #2a2a4e;
-            color: #ffffff;
+            background: #262629;
+            color: #d4cfc5;
+            border-left-color: #4a4a50;
         }
 
         .sidebar-toc li a.active {
-            background: #2a2a4e;
-            color: #6c63ff;
-            border-left-color: #6c63ff;
+            background: #262629;
+            color: #c9a96e;
+            border-left-color: #c9a96e;
             font-weight: 500;
         }
 
-        /* 移动端侧边栏切换按钮 */
+        /* 悬停时的微光效果 */
+        .sidebar-toc li a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201,169,110,0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-toc li a:hover::after {
+            opacity: 1;
+        }
+
+        /* ===== 移动端侧边栏切换按钮 ===== */
         .sidebar-toggle {
             display: none;
             position: fixed;
-            top: 10px;
-            left: 10px;
+            top: 16px;
+            left: 16px;
             z-index: 1000;
-            background: #1a1a2e;
-            color: #ffffff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
+            background: #1c1c1f;
+            color: #c9a96e;
+            border: 1px solid #3a3a3f;
+            padding: 8px 14px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
         }
 
-        /* 右侧内容区 */
+        /* ===== 右侧内容区 —— 书页质感 ===== */
         .content {
             flex: 1;
             overflow-y: auto;
-            background: #ffffff;
-            padding: 40px 60px;
+            background: #fcfbf8;
+            padding: 48px 64px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .content h1 {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 10px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #6c63ff;
+            color: #1c1c1f;
+            margin-bottom: 12px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e0d8c8;
+            letter-spacing: 0.02em;
         }
 
         .content h2 {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 600;
-            color: #2a2a4e;
-            margin-top: 30px;
-            margin-bottom: 15px;
+            color: #2a2824;
+            margin-top: 36px;
+            margin-bottom: 16px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e8e4da;
+            letter-spacing: 0.01em;
         }
 
         .content h3 {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
-            color: #3a3a5e;
-            margin-top: 25px;
+            color: #3d3a34;
+            margin-top: 28px;
             margin-bottom: 12px;
         }
 
         .content p {
             font-size: 15px;
-            line-height: 1.8;
-            color: #333333;
-            margin-bottom: 15px;
+            line-height: 1.85;
+            color: #3d3a34;
+            margin-bottom: 16px;
         }
 
         .content strong {
-            color: #1a1a2e;
+            color: #1c1c1f;
             font-weight: 600;
         }
 
         .content em {
-            color: #555577;
+            color: #6e6860;
             font-style: italic;
         }
 
         .content code {
-            background: #f0f0f5;
-            padding: 2px 6px;
+            background: #f0ede5;
+            padding: 2px 7px;
             border-radius: 3px;
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-family: "SFMono-Regular", "Fira Code", Consolas, "Liberation Mono", Menlo, monospace;
             font-size: 13px;
-            color: #d63384;
+            color: #b5452a;
         }
 
         .content pre {
-            background: #1a1a2e;
-            color: #e0e0e0;
-            padding: 16px;
-            border-radius: 6px;
+            background: #1c1c1f;
+            color: #d4cfc5;
+            padding: 18px 22px;
+            border-radius: 8px;
             overflow-x: auto;
-            margin: 15px 0;
+            margin: 18px 0;
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 1.7;
+            border: 1px solid #2a2a2e;
         }
 
         .content pre code {
@@ -187,87 +223,108 @@
             padding: 0;
         }
 
+        /* blockquote —— 特殊标注段落 */
         .content blockquote {
-            border-left: 4px solid #6c63ff;
-            padding: 10px 20px;
-            margin: 15px 0;
-            background: #f8f8ff;
-            color: #555577;
-            font-style: italic;
+            border-left: 3px solid #c9a96e;
+            padding: 12px 20px;
+            margin: 18px 0;
+            background: #f7f4ec;
+            color: #5a554a;
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
         }
 
         .content blockquote p {
             margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.75;
         }
 
         .content blockquote p:last-child {
             margin-bottom: 0;
         }
 
+        /* 开篇的引用块（以 > 开头）特殊处理 */
+        .content blockquote strong:first-child {
+            color: #1c1c1f;
+        }
+
         .content ul, .content ol {
-            margin: 15px 0;
-            padding-left: 30px;
+            margin: 16px 0;
+            padding-left: 28px;
         }
 
         .content li {
             font-size: 15px;
-            line-height: 1.8;
-            color: #333333;
+            line-height: 1.85;
+            color: #3d3a34;
             margin-bottom: 8px;
         }
 
+        .content li::marker {
+            color: #c9a96e;
+        }
+
+        /* ===== 表格 ===== */
         .content table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 22px 0;
             font-size: 14px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
 
         .content th {
-            background: #1a1a2e;
-            color: #ffffff;
-            padding: 10px 15px;
+            background: #2d2b26;
+            color: #e8e0d0;
+            padding: 11px 16px;
             text-align: left;
-            font-weight: 600;
-            border: 1px solid #2a2a4e;
+            font-weight: 500;
+            font-size: 13px;
+            letter-spacing: 0.02em;
         }
 
         .content td {
-            padding: 8px 15px;
-            border: 1px solid #e0e0e0;
+            padding: 9px 16px;
+            border-bottom: 1px solid #e8e4da;
+            color: #3d3a34;
         }
 
         .content tr:nth-child(even) td {
-            background: #f8f8ff;
+            background: #f8f6f0;
         }
 
         .content tr:hover td {
-            background: #f0f0ff;
+            background: #f3efe5;
         }
 
         .content hr {
             border: none;
-            border-top: 2px solid #e0e0e0;
-            margin: 30px 0;
+            border-top: 1px solid #e0d8c8;
+            margin: 32px 0;
         }
 
         .content a {
-            color: #6c63ff;
+            color: #8b6914;
             text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
         }
 
         .content a:hover {
-            text-decoration: underline;
+            border-bottom-color: #8b6914;
         }
 
         .content img {
             max-width: 100%;
             height: auto;
             border-radius: 6px;
-            margin: 15px 0;
+            margin: 18px 0;
         }
 
-        /* 响应式设计 */
+        /* ===== 响应式设计 ===== */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -291,29 +348,45 @@
             }
 
             .content {
-                padding: 60px 20px 20px;
+                padding: 56px 20px 24px;
+                max-width: 100%;
             }
+
+            .content h1 { font-size: 22px; }
+            .content h2 { font-size: 18px; }
+            .content h3 { font-size: 16px; }
         }
 
-        /* 滚动条样式 */
-        .sidebar-toc::-webkit-scrollbar,
+        /* ===== 滚动条样式 ===== */
+        .sidebar-toc::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-toc::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-toc::-webkit-scrollbar-thumb {
+            background: #3a3a3f;
+            border-radius: 2px;
+        }
+
         .content::-webkit-scrollbar {
             width: 6px;
         }
-
-        .sidebar-toc::-webkit-scrollbar-track,
         .content::-webkit-scrollbar-track {
             background: transparent;
         }
-
-        .sidebar-toc::-webkit-scrollbar-thumb,
         .content::-webkit-scrollbar-thumb {
-            background: #3a3a5e;
+            background: #d0ccc0;
             border-radius: 3px;
         }
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #b0aca0;
+        }
 
-        .content::-webkit-scrollbar-thumb {
-            background: #c0c0c0;
+        /* ===== 打印样式 ===== */
+        @media print {
+            .sidebar, .sidebar-toggle { display: none; }
+            .content { max-width: 100%; padding: 0; }
         }
     </style>
 </head>
