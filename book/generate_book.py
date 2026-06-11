@@ -346,6 +346,12 @@ def generate_html(chapters_html, toc_items):
             font-weight: 500;
         }}
 
+        .sidebar-footer {{
+            padding: 16px 24px;
+            border-top: 1px solid #2a2a2f;
+            text-align: center;
+        }}
+
         .sidebar-toggle {{
             display: none;
             position: fixed;
@@ -615,6 +621,9 @@ def generate_html(chapters_html, toc_items):
                 {toc_html}
             </ul>
         </nav>
+        <div class="sidebar-footer">
+            <a href="https://github.com/georgewangchn/OntologyOps/blob/main/LICENSE-BOOK" target="_blank" style="font-size:12px; color:#6e6860;">📜 书籍 CC BY-NC-SA 4.0 · 代码 MIT</a>
+        </div>
     </div>
 
     <div class="content" id="content">

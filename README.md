@@ -2,7 +2,8 @@
 
 > **让本体像代码一样被管理，让知识像软件一样持续交付，让推理像编译器一样稳定运行。**
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Code License](https://img.shields.io/badge/Code-MIT-blue.svg)](LICENSE)
+[![Book License](https://img.shields.io/badge/Book-CC_BY--NC--SA_4.0-orange.svg)](LICENSE-BOOK)
 [![Book](https://img.shields.io/badge/配套书籍-《当LLM不够用了》-green.svg)](./docs/OntologyOps方案.md)
 
 📖 **[在线阅读全书 →](https://georgewangchn.github.io/OntologyOps/book/)**
@@ -176,4 +177,11 @@ python examples/basic_inference.py
 
 ## License
 
-MIT
+本仓库采用**双重许可**：
+
+| 范围 | 许可协议 | 说明 |
+|------|---------|------|
+| **代码** | [MIT](LICENSE) | 所有脚本、工具、配置文件可自由使用、修改、商用 |
+| **书籍内容** | [CC BY-NC-SA 4.0](LICENSE-BOOK) | 署名 + 非商业 + 相同方式共享；禁止将书籍文本用于商业目的 |
+
+> 详见 [LICENSE-BOOK](LICENSE-BOOK) 了解书籍内容的完整许可条款。
