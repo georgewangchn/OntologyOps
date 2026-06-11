@@ -10,19 +10,21 @@ import re
 import json
 
 # 章节文件列表（按顺序）
+CHAPS_DIR = "/Users/siidt/Documents/code/1petpri-main/ontologyops/chapters"
+
 CHAPTERS = [
-    ("/Users/siidt/Documents/code/1petpri-main/序言-为什么现在是时候了.md", "序言", "序言：为什么现在是时候了"),
-    ("/Users/siidt/Documents/code/1petpri-main/第一章-本体论是什么.md", "第一章", "第一章：本体论是什么（以及它不是什么）"),
-    ("/Users/siidt/Documents/code/1petpri-main/第二章-企业为什么需要本体推理.md", "第二章", "第二章：企业为什么需要本体推理？"),
-    ("/Users/siidt/Documents/code/1petpri-main/第三章-本体落地的认知工程.md", "第三章", "第三章：本体落地——一场不亚于管理咨询的认知工程"),
-    ("/Users/siidt/Documents/code/1petpri-main/第四章-本体推理的技术基础设施.md", "第四章", "第四章：本体推理的技术基础设施"),
-    ("/Users/siidt/Documents/code/1petpri-main/第五章-企业级本体推理架构设计.md", "第五章", "第五章：企业级本体推理架构设计"),
-    ("/Users/siidt/Documents/code/1petpri-main/第六章-Palantir-Foundry深度剖析.md", "第六章", "第六章：Palantir Foundry 深度剖析"),
-    ("/Users/siidt/Documents/code/1petpri-main/第七章-优锘科技与本体神经网络.md", "第七章", "第七章：国内实践——优锘科技与本体神经网络"),
-    ("/Users/siidt/Documents/code/1petpri-main/第八章-GraphRAG与本体增强的大模型应用.md", "第八章", "第八章：GraphRAG 与本体增强的大模型应用"),
-    ("/Users/siidt/Documents/code/1petpri-main/第九章-打造你的第一条企业决策推理链.md", "第九章", "第九章：打造你的第一条企业决策推理链"),
-    ("/Users/siidt/Documents/code/1petpri-main/ontologyops/docs/OntologyOps方案.md", "第十章", "第十章：OntologyOps——让本体像代码一样被管理"),
-    ("/Users/siidt/Documents/code/1petpri-main/后记-从工具到思维.md", "后记", "后记：从工具到思维——本体论的方法论意义"),
+    (f"{CHAPS_DIR}/序言-为什么现在是时候了.md", "序言", "序言：为什么现在是时候了"),
+    (f"{CHAPS_DIR}/第一章-本体论是什么.md", "第一章", "第一章：本体论是什么（以及它不是什么）"),
+    (f"{CHAPS_DIR}/第二章-企业为什么需要本体推理.md", "第二章", "第二章：企业为什么需要本体推理？"),
+    (f"{CHAPS_DIR}/第三章-本体落地的认知工程.md", "第三章", "第三章：本体落地——一场不亚于管理咨询的认知工程"),
+    (f"{CHAPS_DIR}/第四章-本体推理的技术基础设施.md", "第四章", "第四章：本体推理的技术基础设施"),
+    (f"{CHAPS_DIR}/第五章-企业级本体推理架构设计.md", "第五章", "第五章：企业级本体推理架构设计"),
+    (f"{CHAPS_DIR}/第六章-Palantir-Foundry深度剖析.md", "第六章", "第六章：Palantir Foundry 深度剖析"),
+    (f"{CHAPS_DIR}/第七章-中数睿智-动态本体引擎.md", "第七章", "第七章：中数睿智——本体推理的中国答案"),
+    (f"{CHAPS_DIR}/第八章-GraphRAG与本体增强的大模型应用.md", "第八章", "第八章：GraphRAG 与本体增强的大模型应用"),
+    (f"{CHAPS_DIR}/第九章-打造你的第一条企业决策推理链.md", "第九章", "第九章：打造你的第一条企业决策推理链"),
+    (f"{CHAPS_DIR}/第十章-OntologyOps.md", "第十章", "第十章：OntologyOps——让本体像代码一样被管理"),
+    (f"{CHAPS_DIR}/后记-从工具到思维.md", "后记", "后记：从工具到思维——本体论的方法论意义"),
 ]
 
 def read_file(filepath):
