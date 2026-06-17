@@ -10,6 +10,16 @@
 
 ---
 
+## 🎬 GovernanceOps —— 第一个应用场景 Demo
+
+我们敏锐地发现了 OntologyOps 第一个落地场景：**企业治理运维（GovernanceOps）**。企业决策从"人人负责、无人负责"的主观人治，转向可验证、可追踪、可审计的机制治。
+
+[![点击播放 GovernanceOps Demo](examples/GovernanceOps-demo-poster.png)](examples/GovernanceOps-demo演示视频.mp4)
+
+> 👆 **点击上图即可播放**，或 [直接查看视频文件](./examples/GovernanceOps-demo演示视频.mp4)
+
+---
+
 ## 一句话定义
 
 **OntologyOps = 面向企业知识资产的持续构建、持续验证、持续推理、持续治理体系**
@@ -110,20 +120,6 @@
 Ontology Compiler ──→ Ontology Repository ──→ Ontology CI/CD ──→ Ontology Runtime
     编译知识              存储和管理知识            验证和发布知识          推理和执行知识
 ```
-
----
-
-## 🎬 应用场景演示
-
-### GovernanceOps —— 第一个应用场景 Demo
-
-我们敏锐地发现了一个被忽视但极具价值的落地场景：**企业治理运维（GovernanceOps）**。企业战略会、经营分析会、重大决策事项终究是一系列需协同、需追踪、需问责的治理流程，但现状往往是"人人负责，无人负责"。
-
-GovernanceOps 用本体推理技术，将企业决策从主观"人治"推向可验证、可追踪、可审计的机制治。
-
-<video src="examples/GovernanceOps-demo演示视频.mp4" controls width="100%" poster="examples/GovernanceOps-demo-poster.png"></video>
-
-> 🔗 视频无法播放？[点击此处直接查看](./examples/GovernanceOps-demo演示视频.mp4)
 
 ---
 
