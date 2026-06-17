@@ -16,7 +16,11 @@
 
 [![点击播放 GovernanceOps Demo](examples/GovernanceOps-demo-poster.png)](examples/GovernanceOps-demo.mp4)
 
-> 👆 **点击上图即可播放**，或 [直接查看视频文件](./examples/GovernanceOps-demo.mp4)
+
+Uploading GovernanceOps-demo演示视频.mp4…
+
+
+> 👆 **点击上图即可播放**
 
 ---
 
