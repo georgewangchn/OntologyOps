@@ -1,0 +1,15 @@
+{
+  "pet_type": "cat",
+  "breed": "英国短毛猫",
+  "age": 2,
+  "gender": "公",
+  "neutered": true,
+  "symptoms": ["发热", "呕吐", "腹泻"],
+  "symptom_details": {
+    "发热": {"degree": "高", "value": 39.5},
+    "呕吐": {"frequency": "多次", "content": "黄色液体"},
+    "腹泻": {"type": "水样", "color": "暗红"}
+  },
+  "history": [],
+  "note": "2岁英短，未免疫，急性发病"
+}

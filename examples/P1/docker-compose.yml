@@ -1,0 +1,68 @@
+version: "3.8"
+
+# 宠物疾病本体推理系统 —— 一键启动
+# 包含：Jena Fuseki（本体服务器）+ HermiT 推理机
+# 用法：docker-compose up -d
+
+services:
+  # ── Jena Fuseki 本体服务器 ──────────────────
+  fuseki:
+    image: stain/jena-fuseki:4.8.0
+    container_name: pet_fuseki
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./data:/fuseki/data
+      - ./src:/fuseki/src
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx2g
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: >
+      sh -c "
+        /jena-fuseki/fuseki-server
+        --port=3030
+        --loc=/fuseki/data
+      "
+
+  # ── HermiT 推理服务（Java JAR）──────────────────
+  hermit:
+    image: openjdk:11-jre-slim
+    container_name: pet_hermit
+    volumes:
+      - ./data:/data
+    depends_on:
+      - fuseki
+    restart: "no"
+    entrypoint: >
+      sh -c "
+        echo 'HermiT 推理机已就绪（通过 owlready2 调用）';
+        sleep infinity
+      "
+
+  # ── 推理应用（Python + owlready2）──────────────
+  reasoning-app:
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    container_name: pet_reasoning
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    depends_on:
+      fuseki:
+        condition: service_healthy
+    environment:
+      - FUSEKI_ENDPOINT=http://fuseki:3030/pet_ontology
+    restart: unless-stopped
+    command: python src/reasoner.py
+
+# ── 网络 ──────────────────────────────────────
+networks:
+  default:
+    name: pet_reasoning_net

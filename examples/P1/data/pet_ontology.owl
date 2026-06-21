@@ -1,0 +1,551 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xml:base="http://petbps.com/ontology/pet_disease"
+         xmlns="http://petbps.com/ontology/pet_disease#">
+
+<owl:Ontology rdf:about="http://petbps.com/ontology/pet_disease"/>
+
+<owl:ObjectProperty rdf:about="#has">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#症状"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#necessary">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#症状"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#nos">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#症状"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#minus">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#症状"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#needY">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#检查"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#needN">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#检查"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#history">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#病史"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#concurrent">
+  <rdfs:domain rdf:resource="#疾病"/>
+  <rdfs:range rdf:resource="#并发症"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#contain">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#suspected">
+  <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:range rdf:resource="#疾病"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#excluded">
+  <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:range rdf:resource="#疾病"/>
+</owl:ObjectProperty>
+
+<owl:Class rdf:about="#疾病">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#症状">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#物种">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#品种">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#年龄">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#性别">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#部位">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#诱因">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#病史">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#并发症">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#检查">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#指标">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#D001">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#发热"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#呕吐"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#腹泻"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#咳嗽"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#流鼻涕"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">猫瘟</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D002">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#打喷嚏"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#流鼻涕"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#发热"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#呕吐"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">猫感冒</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D003">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#腹泻"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#呕吐"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#发热"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#咳嗽"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">猫肠炎</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D004">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#呕吐"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#腹泻"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#精神萎靡"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#咳嗽"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#症状1"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">犬细小病毒</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D005">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#打喷嚏"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#流鼻涕"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#呕吐"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#腹泻"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">犬感冒</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D006">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#呕吐"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#腹泻"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#发热"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#症状2"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">犬冠状病毒</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D007">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#尿频"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#尿急"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#尿痛"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#腹泻"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#症状3"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">猫尿路感染</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D008">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#尿频"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#尿急"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#症状4"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#腹泻"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#症状5"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">犬尿路感染</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D009">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#发热"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#淋巴结肿大"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#腹泻"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#症状6"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">猫艾滋病</rdfs:label>
+</owl:Class>
+
+<owl:Class rdf:about="#D010">
+  <rdfs:subClassOf rdf:resource="#疾病"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#咳嗽"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#necessary"/>
+      <owl:hasValue rdf:resource="#打喷嚏"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#腹泻"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#nos"/>
+      <owl:onClass rdf:resource="#症状7"/>
+      <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:maxQualifiedCardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">犬副流感</rdfs:label>
+</owl:Class>
+
+<owl:NamedIndividual rdf:about="#发热">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">发热(严重度:0.8)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#呕吐">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">呕吐(严重度:0.7)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#腹泻">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">腹泻(严重度:0.7)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#打喷嚏">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">打喷嚏(严重度:0.4)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#流鼻涕">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">流鼻涕(严重度:0.4)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#咳嗽">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">咳嗽(严重度:0.5)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#精神萎靡">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">精神萎靡(严重度:0.6)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#尿频">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">尿频(严重度:0.7)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#尿急">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">尿急(严重度:0.7)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#尿痛">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">尿痛(严重度:0.8)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#血尿">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">血尿(严重度:0.9)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#淋巴结肿大">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">淋巴结肿大(严重度:0.6)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#白细胞减少">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">白细胞减少(严重度:0.9)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#脱水">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">脱水(严重度:0.8)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#白细胞异常">
+  <rdf:type rdf:resource="#症状"/>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">白细胞异常(严重度:0.8)</rdfs:label>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状1">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状2">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状3">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状4">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状5">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状6">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#症状7">
+  <rdf:type rdf:resource="#症状"/>
+</owl:NamedIndividual>
+
+
+</rdf:RDF>

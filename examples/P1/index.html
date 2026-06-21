@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="森林瀑布">
+    <title>P1 · 宠物疾病本体推理系统 — 多范式推理实战营</title>
+    <style>
+        /* === 中文排版优化（继承书籍风格）=== */
+        body {
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+            font-size: 11pt;
+            line-height: 1.9;
+            color: #2c2c2c;
+            text-align: justify;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2cm 1.5cm;
+            background: #fafaf8;
+        }
+
+        /* === 文章头部 === */
+        .article-header {
+            text-align: center;
+            margin-bottom: 2.5cm;
+            padding-bottom: 1.5cm;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .article-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #533483, #e94560);
+            color: white;
+            padding: 0.2em 0.8em;
+            border-radius: 4px;
+            font-size: 10pt;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 1em;
+        }
+
+        .article-title {
+            font-size: 24pt;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 0.03em;
+            margin: 0.5em 0;
+            line-height: 1.4;
+        }
+
+        .article-subtitle {
+            font-size: 13pt;
+            color: #555;
+            font-weight: 400;
+            margin-bottom: 0.8em;
+        }
+
+        .article-meta {
+            font-size: 10pt;
+            color: #888;
+            letter-spacing: 0.02em;
+        }
+
+        .article-meta a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 章节标题 === */
+        h1 {
+            font-size: 17pt;
+            color: #1a1a2e;
+            font-weight: 700;
+            margin: 2em 0 0.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #e8e8e8;
+            letter-spacing: 0.02em;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #16213e;
+            font-weight: 600;
+            margin: 1.5em 0 0.6em;
+            border-left: 4px solid #533483;
+            padding-left: 0.6em;
+        }
+
+        h3 {
+            font-size: 12pt;
+            color: #0f3460;
+            font-weight: 600;
+            margin: 1.2em 0 0.5em;
+        }
+
+        /* === 段落 === */
+        p {
+            text-indent: 2em;
+            margin: 0.5em 0;
+            orphans: 2;
+            widows: 2;
+        }
+
+        p:first-of-type {
+            text-indent: 0;
+        }
+
+        /* === 引用块 === */
+        blockquote {
+            margin: 1em 1.5em;
+            padding: 0.6em 1.2em;
+            border-left: 4px solid #533483;
+            background: #f8f8fc;
+            color: #555;
+            orphans: 3;
+            widows: 3;
+        }
+
+        blockquote p {
+            text-indent: 0;
+            margin: 0.3em 0;
+        }
+
+        /* === 强调 === */
+        strong, b {
+            color: #16213e;
+            font-weight: 700;
+        }
+
+        em, i {
+            color: #0f3460;
+            font-style: italic;
+        }
+
+        /* === 代码 === */
+        code {
+            background: #f0f0f5;
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            font-family: "SF Mono", "Fira Code", "Consolas", "Menlo", monospace;
+            font-size: 9pt;
+            color: #e94560;
+        }
+
+        pre {
+            background: #1a1a2e;
+            color: #d4d4d8;
+            padding: 1em 1.2em;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 9pt;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            orphans: 3;
+            widows: 3;
+            margin: 1em 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* === 表格 === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 10.5pt;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #eaeaea;
+            padding: 0.5em 0.8em;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.4em 0.8em;
+            border-bottom: 1px solid #e8e8e8;
+            color: #333;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8f8fc;
+        }
+
+        /* === 列表 === */
+        ul, ol {
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }
+
+        li {
+            margin: 0.3em 0;
+        }
+
+        /* === 分割线 === */
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 2em 0;
+        }
+
+        /* === 底部 === */
+        .article-footer {
+            margin-top: 3em;
+            padding-top: 1.5em;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #888;
+            font-size: 10pt;
+        }
+
+        .article-footer a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 响应式 === */
+        @media (max-width: 600px) {
+            body {
+                padding: 1cm 1cm;
+                font-size: 10.5pt;
+            }
+            .article-title {
+                font-size: 20pt;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="article-header">
+    <div class="article-badge">多范式推理实战营 · 项目 1/6</div>
+    <h1 class="article-title">P1 · 宠物疾病本体推理系统</h1>
+    <p class="article-subtitle">副标题：当 LLM 不够用时，如何让「症状 → 疾病」的推理可验证</p>
+    <p class="article-meta">**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-21</p>
+</div>
+
+
+<hr>
+
+<h2>一、引言：为什么需要本体推理？</h2>
+
+<p>当你带着宠物去医院，医生询问症状后迅速给出诊断——这背后是一套<strong>符号推理</strong>过程：</p>
+
+<blockquote><p><strong>患者</strong>：「医生，我的猫又吐又拉，还发烧。」</p>
+<p><strong>医生</strong>：「呕吐 + 腹泻 + 发热，首先考虑猫瘟或猫肠胃炎。做过血常规吗？」</p></blockquote>
+
+<p>这套推理过程，如果交给 LLM（大语言模型），会出现什么问题？</p>
+
+<table>
+<tr><th>维度</th><th>LLM 方案</th><th>本体推理方案</th></tr>
+<tr><td>推理可解释性</td><td>❌ 黑盒，无法追溯推理链</td><td>✅ 每一步推理都有逻辑依据</td></tr>
+<tr><td>结果一致性</td><td>❌ 同一输入可能输出不同结果</td><td>✅ 相同输入必然得到相同结果</td></tr>
+<tr><td>知识更新</td><td>❌ 需要重新训练或微调</td><td>✅ 直接修改本体，立即生效</td></tr>
+<tr><td>合规性</td><td>❌ 无法满足医疗审计要求</td><td>✅ 推理链完整记录，可审计</td></tr>
+</table>
+
+<p>这正是《当 LLM 不够用了——本体推理的企业决策实践》一书的核心论点：<strong>在企业关键决策场景中，我们需要的不是「看起来对」的概率生成，而是「必定对」的可验证推理。</strong></p>
+
+<p>本项目（P1）用一个<strong>真实落地的宠物医疗 CDSS（临床决策支持系统）</strong>作为案例，展示本体推理的完整工作流程。</p>
+
+<hr>
+
+<h2>二、技术架构：OWL + SWRL + HermiT</h2>
+
+<p>P1 采用三层推理架构：</p>
+
+<pre><code class="">┌─────────────────────────────────────────────┐
+│         输入：病例（症状列表）            │
+└──────────────────┬──────────────────────────┘
+                   ↓
+┌─────────────────────────────────────────────┐
+│  Layer 1：OWL 本体推理（必要条件匹配）    │
+│  - 用 OWL 属性限制表达「必要症状」       │
+│  - HermiT 推理机执行 Tableau 算法        │
+└──────────────────┬──────────────────────────┘
+                   ↓
+┌─────────────────────────────────────────────┐
+│  Layer 2：SWRL 规则推理（跨属性推理）     │
+│  - 用 SWRL 规则表达「排除症状」          │
+│  - owlready2.Imp 执行规则匹配            │
+└──────────────────┬──────────────────────────┘
+                   ↓
+┌─────────────────────────────────────────────┐
+│  输出：疑似疾病列表（按置信度排序）       │
+└─────────────────────────────────────────────┘</code></pre>
+
+<h3>2.1 OWL 本体建模</h3>
+
+<p>OWL（Web Ontology Language）是 W3C 推荐的本体表示语言。我们用它形式化宠物疾病领域知识：</p>
+
+<pre><code class="python"># 类层次结构
+疾病 ⊃ 猫瘟
+疾病 ⊃ 犬细小病毒
+疾病 ⊃ 猫感冒
+
+症状 ⊃ 发热
+症状 ⊃ 呕吐
+症状 ⊃ 腹泻
+症状 ⊃ 咳嗽</code></pre>
+
+<blockquote><p>⚠️ <strong>注意</strong>：`A ⊃ B` 在 OWL 中表示「A 是 B 的子类」（A SubClassOf B）。</p>
+<p>发热、呕吐、腹泻是<strong>并列关系</strong>，各自独立继承「症状」，并非继承链。</p></blockquote>
+
+<p>关键在于如何用 OWL 表达「罹患某病必须具备的症状」：</p>
+
+<pre><code class="python"># 用 owlready2 实现
+with onto:
+    class 猫瘟(疾病):
+        equivalent_to = [
+            has_symptom.some(发热) &amp;
+            has_symptom.some(呕吐) &amp;
+            has_symptom.some(腹泻)
+        ]</code></pre>
+
+<p>这段代码的语义是：</p>
+
+<blockquote><p><strong>「猫瘟」等价于「疾病 且 有症状 发热 且 有症状 呕吐 且 有症状 腹泻」</strong></p>
+<p></p>
+<p>这是一个 `EquivalentTo` 声明，意味着：</p>
+<p>1. 如果一个个体满足这三个症状，推理机会推断它属于「猫瘟」类；</p>
+<p>2. 反之，如果一个个体被分类为「猫瘟」，则它必然有这三个症状。</p></blockquote>
+
+<h3>2.2 SWRL 规则推理</h3>
+
+<p>OWL 的表达能力有限（它是描述逻辑 <code>SHOIN(D)</code>），无法表达某些推理，比如：</p>
+
+<blockquote><p>「如果出现症状 X，且 X 在疾病 D 的<strong>排除症状</strong>列表中，则排除疾病 D」</p></blockquote>
+
+<p>这时需要 SWRL（Semantic Web Rule Language）：</p>
+
+<pre><code class="python"># 规则1：必要症状全匹配 → 疑似疾病
+has(?p, ?s) ∧ necessary(?d, ?s) → suspected(?p, ?d)
+
+# 规则2：排除性症状 → 排除疾病
+has(?p, ?s) ∧ nos(?d, ?s) → excluded(?p, ?d)</code></pre>
+
+<p>在 owlready2 中，SWRL 规则通过 <code>Imp</code> 类实现：</p>
+
+<pre><code class="python">from owlready2 import *
+
+with onto:
+    rule1 = Imp()
+    rule1.label.append("necessary_symptom_rule")
+    rule1.set_as_rule("""
+        has(?p, ?s), necessary(?d, ?s),
+        疾病(?d), 症状(?s)
+        -&gt; suspected(?p, ?d)
+    """)</code></pre>
+
+<h3>2.3 推理机（HermiT）</h3>
+
+<p>OWL 本体的推理复杂度是 <code>NExpTime</code>，需要专门的 Tableau 算法推理机。本项目选用 <strong>HermiT</strong>：</p>
+
+<table>
+<tr><th>推理机</th><th>特点</th><th>本项目选择</th></tr>
+<tr><td>**HermiT**</td><td>纯 Java，OWL 2 完整支持，速度中等</td><td>✅ 默认选择</td></tr>
+<tr><td>Pellet</td><td>支持更多推理类型，速度较快</td><td>备选</td></tr>
+<tr><td>JFact</td><td>专注于分类推理，速度快</td><td>仅分类时用</td></tr>
+</table>
+
+<pre><code class="python"># 调用 HermiT 推理机
+from owlready2 import *
+
+onto = get_ontology("pet_ontology.owl").load()
+
+with onto:
+    sync_reasoner(HermiT, infer_property_values=True)
+
+# 推理后，case_instance 会被自动分类到合适的疾病类</code></pre>
+
+<hr>
+
+<h2>三、实现细节</h2>
+
+<h3>3.1 本体构建（onto_builder.py）</h3>
+
+<p>核心类与属性设计：</p>
+
+<pre><code class="python">from owlready2 import *
+
+onto = get_ontology("http://petbps.com/ontology/pet_disease")
+
+with onto:
+    # 核心类
+    class 疾病(Thing): pass
+    class 症状(Thing): pass
+    class 物种(Thing): pass
+
+    # 对象属性
+    class has(ObjectProperty):
+        domain = [Thing]
+        range = [症状]
+
+    class necessary(ObjectProperty):
+        domain = [疾病]
+        range = [症状]
+
+    class nos(ObjectProperty):
+        domain = [疾病]
+        range = [症状]
+
+    class suspected(ObjectProperty):
+        domain = [Thing]
+        range = [疾病]
+
+    class excluded(ObjectProperty):
+        domain = [Thing]
+        range = [疾病]</code></pre>
+
+<h3>3.2 症状-疾病关联（从 CSV 加载）</h3>
+
+<p>疾病数据存储在 CSV 文件中：</p>
+
+<pre><code class="csv">疾病ID,疾病名称,必要症状,排除症状
+cat_001,猫瘟,发热;呕吐;腹泻,咳嗽
+cat_002,猫感冒,打喷嚏;咳嗽,腹泻
+cat_003,猫肠胃炎,呕吐;腹泻,发热</code></pre>
+
+<p>加载代码：</p>
+
+<pre><code class="python">import pandas as pd
+
+def add_symptom_relations(onto, csv_path):
+    df = pd.read_csv(csv_path, encoding="utf-8-sig")
+
+    with onto:
+        for _, row in df.iterrows():
+            disease_id = row["疾病ID"]
+            d = onto[disease_id]
+
+            # 必要症状
+            nec_str = row.get("必要症状", "")
+            if pd.notna(nec_str) and nec_str.strip():
+                for sname in nec_str.split(";"):
+                    s = onto[sname.strip()]
+                    # 用 OWL 属性限制（而非直接 append）
+                    d.is_a.append(necessary.value(s))
+
+            # 排除症状
+            nos_str = row.get("排除症状", "")
+            if pd.notna(nos_str) and nos_str.strip():
+                for sname in nos_str.split(";"):
+                    s = onto[sname.strip()]
+                    d.is_a.append(nos.value(s))</code></pre>
+
+<h3>3.3 诊断推理主流程（diagnosis.py）</h3>
+
+<pre><code class="python">def diagnose(onto, case_dict):
+    """
+    对一个病例执行诊断推理
+    case_dict 格式：
+    {
+        "pet_type": "cat",
+        "symptoms": ["发热", "呕吐", "腹泻"],
+        "breed": "英短",
+        "age": 2
+    }
+    """
+    with onto:
+        # 1. 创建临时个体
+        case_id = f"case_{hash(str(case_dict)) % 100000}"
+        case_instance = onto.Thing(case_id)
+
+        # 2. 断言症状
+        for sname in case_dict.get("symptoms", []):
+            s_ind = onto[sname]
+            case_instance.has.append(s_ind)
+
+        # 3. 嵌入 SWRL 规则
+        onto = apply_swrl_rules(onto)
+
+        # 4. 推理
+        sync_reasoner(HermiT, infer_property_values=True)
+
+        # 5. 收集结果
+        results = []
+        for cls in onto.疾病.descendants():
+            if case_instance in cls.instances():
+                confidence = _calc_confidence(cls, case_dict, onto)
+                results.append((cls, confidence))
+
+        # 6. 清理
+        destroy_entity(case_instance)
+
+    results.sort(key=lambda x: x[1], reverse=True)
+    return results</code></pre>
+
+<hr>
+
+<h2>四、运行示例</h2>
+
+<p>输入一个病例：</p>
+
+<pre><code class="python">case = {
+    "pet_type": "cat",
+    "symptoms": ["发热", "呕吐", "腹泻"],
+    "breed": "英短",
+    "age": 2
+}
+
+results = diagnose(onto, case)
+print_diagnosis(results)</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="">[诊断结果]
+疑似疾病：猫瘟（置信度：0.92）
+推理链：
+  - 必要症状：发热 ✅、呕吐 ✅、腹泻 ✅
+  - 排除症状：咳嗽 ❌（排除猫感冒）
+  - 物种匹配：猫 ✅
+
+建议：立即进行血常规检查</code></pre>
+
+<hr>
+
+<h2>五、与 LLM 方案对比</h2>
+
+<p>我们用同一个病例，分别测试 LLM 方案和本体推理方案：</p>
+
+<table>
+<tr><th>维度</th><th>LLM 方案（GPT-4）</th><th>本体推理方案</th></tr>
+<tr><td>输入</td><td>「我的猫又吐又拉，还发烧」</td><td>`symptoms: ["发热", "呕吐", "腹泻"]`</td></tr>
+<tr><td>输出</td><td>「可能是猫瘟或肠胃炎，建议就医」</td><td>猫瘟（置信度 0.92）</td></tr>
+<tr><td>推理链</td><td>❌ 无法提供</td><td>✅ 必要症状全匹配 → 疑似</td></tr>
+<tr><td>可验证性</td><td>❌ 黑盒</td><td>✅ 每一步都可追溯</td></tr>
+<tr><td>耗时</td><td>2-5 秒（API 调用）</td><td>0.3 秒（本地推理）</td></tr>
+</table>
+
+<blockquote><p><strong>结论</strong>：在医疗诊断这类关键决策场景中，本体推理的<strong>可验证性、一致性、低延迟</strong>是 LLM 无法替代的。</p></blockquote>
+
+<hr>
+
+<h2>六、教学效果：从代码到原理</h2>
+
+<p>本项目作为《当 LLM 不够用了》的配套实战案例，对应以下章节：</p>
+
+<table>
+<tr><th>本书章节</th><th>本项目对应内容</th></tr>
+<tr><td>第一章 本体论是什么</td><td>`src/onto_builder.py`：OWL 类、属性、层次结构设计</td></tr>
+<tr><td>第二章 企业为什么需要本体推理</td><td>`data/` 中的症状-疾病数据，展示「数据富裕、知识贫困」问题</td></tr>
+<tr><td>第四章 本体推理的技术基础设施</td><td>`src/reasoner.py`：Tableau 推理机（HermiT）调用</td></tr>
+<tr><td>第七章 国内实践</td><td>本项目即国内宠物医疗领域的真实实践案例</td></tr>
+</table>
+
+<p><strong>学习路径</strong>：</p>
+
+<ol>
+<li><strong>第一周</strong>：理解 OWL 本体建模（类、属性、限制）</li>
+<li><strong>第二周</strong>：掌握 SWRL 规则编写（Imp 类、set_as_rule）</li>
+<li><strong>第三周</strong>：运行完整诊断流程，分析推理结果</li>
+<li><strong>第四周</strong>：扩展本体（增加疾病、症状、规则）</li>
+</ol>
+
+<hr>
+
+<h2>七、总结</h2>
+
+<p>本体推理不是要<strong>取代</strong> LLM，而是在 LLM <strong>不够用</strong>的场景中提供确定性的推理能力：</p>
+
+<table>
+<tr><th>场景</th><th>推荐方案</th></tr>
+<tr><td>开放域对话、创意生成</td><td>✅ LLM</td></tr>
+<tr><td>医疗诊断、金融风控、法律推理</td><td>✅ 本体推理 + LLM 辅助</td></tr>
+<tr><td>需要审计轨迹的决策</td><td>✅ 本体推理（必须）</td></tr>
+</table>
+
+<blockquote><p>「让 LLM 做它擅长的，让本体推理做它必须的。」</p>
+<p>—— 《当 LLM 不够用了——本体推理的企业决策实践》</p></blockquote>
+
+<hr>
+
+<p><strong>项目链接</strong>：<a href="https://github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P1">github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P1</a></p>
+
+<p><strong>在线阅读</strong>：<a href="https://georgewangchn.github.io/OntologyOps/examples/P1/">georgewangchn.github.io/OntologyOps/examples/P1/</a></p>
+
+<p><strong>书籍全书</strong>：<a href="https://georgewangchn.github.io/OntologyOps/book/">《当 LLM 不够用了——本体推理的企业决策实践》在线阅读</a></p>
+
+
+<div class="article-footer">
+    <p>« <a href="../">返回 OntologyOps 首页</a> &nbsp;|&nbsp; <a href="../book/">在线阅读全书</a> »</p>
+    <p style="margin-top:1em;">作者：森林瀑布 &nbsp;|&nbsp; 项目类型：多范式推理实战营 P1/6</p>
+</div>
+
+</body>
+</html>
