@@ -357,7 +357,9 @@ print_diagnosis(results)
 
 ---
 
-**项目链接**：[github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P1](https://github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P1)
+**项目链接**：[github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P1](https://github.com/georgewangchn/OntologyOps/tree/main/examples/P1)
+
+
 
 **在线阅读**：[georgewangchn.github.io/OntologyOps/examples/P1/](https://georgewangchn.github.io/OntologyOps/examples/P1/)
 
