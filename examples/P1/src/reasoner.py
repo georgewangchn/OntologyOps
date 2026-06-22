@@ -44,16 +44,33 @@ def run_reasoner(onto, reasoner="hermit"):
 
     if reasoner == "hermit":
         with onto:
-            sync_reasoner(HermiT, infer_property_values=True, debug=0)
+            sync_reasoner_hermit([onto], infer_property_values=True, debug=0)
     elif reasoner == "pellet":
         with onto:
-            sync_reasoner(Pellet, infer_property_values=True, debug=0)
+            sync_reasoner_pellet([onto], infer_property_values=True, debug=0)
     else:
         with onto:
-            sync_reasoner(infer_property_values=True, debug=0)
+            sync_reasoner([onto], infer_property_values=True, debug=0)
 
     print(f"✅ 推理完成")
     return onto
+
+
+def _get_exclusion_symptoms(disease_cls):
+    """从疾病类的 comment 注解中提取排除症状列表"""
+    for comment in getattr(disease_cls, "comment", []):
+        if isinstance(comment, str) and comment.startswith("nos:"):
+            return [s.strip() for s in comment[4:].split(";") if s.strip()]
+    return []
+
+
+def _map_kb_to_class(d_kb, onto):
+    """将疾病知识个体（如 D001_kb）映射回疾病类（D001）"""
+    name = d_kb.name
+    if not name.endswith("_kb"):
+        return None
+    cls = onto[name.replace("_kb", "")]
+    return cls
 
 
 def diagnose(onto, case_dict):
@@ -67,6 +84,11 @@ def diagnose(onto, case_dict):
           "age": 2
         }
     :return: 排序后的 (疾病, 置信度) 列表
+
+    推理流程（三层推理 + 排除）：
+      1. OWL 分类：HermiT 根据 equivalent_to 从症状反推疾病类
+      2. SWRL 规则：necessary / nos 规则推断 suspected / excluded
+      3. Python 排除：检查病例症状是否命中疾病排除症状
     """
     # 0. 嵌入 SWRL 规则（owlready2.Imp，HermiT 推理时会自动处理）
     onto = apply_swrl_rules(onto)
@@ -74,8 +96,7 @@ def diagnose(onto, case_dict):
     with onto:
         # 1. 创建临时个体（代表当前病例）
         case_id   = f"case_{hash(str(case_dict)) % 100000}"
-        # 先作为 Thing 的个体，让推理机推断它属于哪个疾病子类
-        case_instance = onto.Thing(case_id)
+        case_instance = Thing(case_id)
 
         # 2. 断言症状（用 has 属性关联到症状个体）
         for sname in case_dict.get("symptoms", []):
@@ -84,38 +105,57 @@ def diagnose(onto, case_dict):
                 s_ind = onto.症状(sname)
             case_instance.has.append(s_ind)
 
-        # 3. 物种断言（可选）
-        pet_type = case_dict.get("pet_type", "pet").lower()
-        # 如果本体中有物种个体，可以关联：
-        # if pet_type in onto and onto[pet_type]:
-        #     case_instance.be.append(onto[pet_type])
-
-    # 4. 推理（HermiT 会根据 OWL 属性限制 + SWRL 规则推断）
+    # 3. 推理（HermiT 根据 equivalent_to + SWRL 规则推断）
     run_reasoner(onto)
 
-    # 5. 收集推理结果：case_instance 被推断为哪些疾病类的实例
+    # 4. OWL 分类结果：case_instance 被推断为哪些疾病类的实例
     results = []
+    existing_classes = set()
     for cls in onto.疾病.descendants():
+        if cls is onto.疾病:
+            continue
         if case_instance in cls.instances():
             confidence = _calc_confidence(cls, case_dict, onto)
             results.append((cls, confidence))
+            existing_classes.add(cls)
 
-    # 5b. 同时收集 SWRL 规则推断的 suspected / excluded 关系
+    # 5. SWRL 规则推断的 suspected（规则1：必要症状匹配 → 疑似）
     with onto:
         if hasattr(case_instance, "suspected") and list(case_instance.suspected):
-            for d in case_instance.suspected:
-                if (d, 0.8) not in results:
-                    results.append((d, 0.8))
-        if hasattr(case_instance, "excluded") and list(case_instance.excluded):
-            # 被排除的疾病从结果中移除（或标为置信度 0）
-            results = [(cls, conf) for (cls, conf) in results
-                       if cls not in list(case_instance.excluded)]
+            for d_kb in case_instance.suspected:
+                disease_cls = _map_kb_to_class(d_kb, onto)
+                if disease_cls and disease_cls not in existing_classes:
+                    conf = _calc_confidence(disease_cls, case_dict, onto)
+                    results.append((disease_cls, conf))
+                    existing_classes.add(disease_cls)
 
-    # 6. 清理临时个体
+    # 6. 排除逻辑
+    # 6a. SWRL 规则推断的 excluded（规则2：排除症状 → 排除）
+    excluded_classes = set()
+    with onto:
+        if hasattr(case_instance, "excluded") and list(case_instance.excluded):
+            for d_kb in case_instance.excluded:
+                disease_cls = _map_kb_to_class(d_kb, onto)
+                if disease_cls:
+                    excluded_classes.add(disease_cls)
+
+    # 6b. Python 排除检查：病例症状是否命中疾病排除症状
+    case_symptom_set = set(case_dict.get("symptoms", []))
+    filtered = []
+    for cls, conf in results:
+        if cls in excluded_classes:
+            continue
+        nos_symptoms = _get_exclusion_symptoms(cls)
+        if case_symptom_set & set(nos_symptoms):
+            continue
+        filtered.append((cls, conf))
+    results = filtered
+
+    # 7. 清理临时个体
     with onto:
         destroy_entity(case_instance)
 
-    # 7. 排序
+    # 8. 排序
     results.sort(key=lambda x: x[1], reverse=True)
     return results
 

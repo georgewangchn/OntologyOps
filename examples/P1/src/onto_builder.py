@@ -160,8 +160,13 @@ def load_symptoms(onto, csv_path=None):
 
 def add_symptom_relations(onto, csv_path=None):
     """
-    根据 diseases.csv 中的「必要症状」列，为疾病类添加 OWL 属性限制
-    （让 HermiT 能真正推理：满足必要条件 → 推断属于该疾病）
+    根据 diseases.csv 中的「必要症状」列，为疾病类添加 OWL 属性限制。
+
+    关键设计（三层知识编码）：
+      1. equivalent_to（充要条件）→ HermiT 双向推理：病例有症状 → 推断属于疾病
+      2. necessary.value（SubClassOf 元数据）→ 供置信度计算解析
+      3. 疾病知识个体（D001_kb 等）→ 供 SWRL 规则实例级匹配
+
     格式：必要症状 = "发热;呕吐;腹泻"（分号分隔）
     """
     if csv_path is None:
@@ -175,30 +180,53 @@ def add_symptom_relations(onto, csv_path=None):
             if d is None:
                 continue
 
-            # 必要症状 → 用 necessary.value[症状个体] 限制
+            # ── 必要症状 ──────────────────────────────
             nec_str = row.get("必要症状", "")
+            nec_symptoms = []
             if pd.notna(nec_str) and nec_str.strip():
                 for sname in nec_str.split(";"):
                     sname = sname.strip()
-                    # 获取症状个体（已在 load_symptoms 中创建）
                     s_ind = onto[sname]
                     if s_ind is None:
-                        # 若尚未创建，先创建症状个体
                         s_ind = onto.症状(sname)
-                    # 添加属性限制：该类个体必须 necessary 关联到 s_ind
+                    nec_symptoms.append(s_ind)
+                    # 元数据层：necessary.value SubClassOf（供 _calc_confidence 解析）
                     d.is_a.append(onto.necessary.value(s_ind))
 
-            # 排除症状 → 用 nos.max(0, s_ind) 表示「不能有该症状」
+                # 推理层：equivalent_to（充要条件，双向推理）
+                # D001 ≡ 疾病 ∧ has.value(发热) ∧ has.value(呕吐) ∧ has.value(腹泻)
+                # HermiT 可从「病例 has 这些症状」反推「病例 rdf:type D001」
+                expr = onto.疾病
+                for s_ind in nec_symptoms:
+                    expr = expr & onto.has.value(s_ind)
+                d.equivalent_to.append(expr)
+
+            # ── 排除症状 ──────────────────────────────
             nos_str = row.get("排除症状", "")
+            nos_symptoms = []
             if pd.notna(nos_str) and nos_str.strip():
                 for sname in nos_str.split(";"):
                     sname = sname.strip()
                     s_ind = onto[sname]
                     if s_ind is None:
                         s_ind = onto.症状(sname)
+                    nos_symptoms.append(s_ind)
                     d.is_a.append(onto.nos.max(0, s_ind))
 
-    print("✅ 症状-疾病关系已建立")
+                # 用 comment 注解存储排除症状列表（供 Python 排除逻辑解析）
+                d.comment.append("nos:" + ";".join(s.name for s in nos_symptoms))
+
+            # ── 疾病知识个体（供 SWRL 规则实例级匹配）──────────────
+            # SWRL 规则 necessary(?d, ?s) 需要实例级断言，疾病类本身是 TBox 概念无法匹配。
+            # 创建 D001_kb 等个体，断言 necessary / nos 属性，使 SWRL 规则可触发。
+            d_kb = onto.疾病(disease_id + "_kb")
+            d_kb.label.append(row["疾病名称"])
+            for s_ind in nec_symptoms:
+                d_kb.necessary.append(s_ind)
+            for s_ind in nos_symptoms:
+                d_kb.nos.append(s_ind)
+
+    print("✅ 症状-疾病关系已建立（equivalent_to + SWRL 个体）")
     return onto
 
 
