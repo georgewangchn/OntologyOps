@@ -1,0 +1,31 @@
+version: "3.8"
+
+# P3 · 宠物疾病诊断推理系统 —— Jena Fuseki 版
+# 用法：docker-compose up -d
+# Fuseki UI: http://localhost:3030
+# SPARQL 端点: http://localhost:3030/pet/sparql
+
+services:
+  fuseki:
+    image: stain/jena-fuseki:4.8.0
+    container_name: pet_fuseki_p3
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./data/config.ttl:/fuseki/config.ttl
+      - ./data:/fuseki/data
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx2g
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3030/$/ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: >
+      sh -c "
+        /jena-fuseki/fuseki-server
+        --port=3030
+        --config=/fuseki/config.ttl
+      "

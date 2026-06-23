@@ -20,7 +20,7 @@ SWRL_RULES = [
     # ── 规则 1：必要症状全匹配 → 疑似疾病 ────────────────
     {
         "name": "necessary_symptom_rule",
-        "desc": "病例出现某病的所有必要症状时，标记为疑似该病",
+        "desc": "病例出现某病的任一必要症状时，标记为疑似该病（部分匹配，全匹配由 equivalent_to 负责）",
     },
     # ── 规则 2：排除性症状 → 排除疾病 ─────────────────────
     {
@@ -30,17 +30,27 @@ SWRL_RULES = [
 ]
 
 
+_swrl_applied = False
+
+
 def apply_swrl_rules(onto):
     """
     将 SWRL 规则以 owlready2.Imp 形式嵌入本体。
     HermiT 在执行 sync_reasoner() 时会自动处理这些规则。
     """
+    global _swrl_applied
+    if _swrl_applied:
+        return onto
+
     print("📏 正在嵌入 SWRL 规则（owlready2.Imp）...")
 
     with onto:
-        # ── 规则 1：必要症状全匹配 → 疑似疾病 ────────────────
-        # has(?p, ?s) ∧ necessary(?d, ?s) ∧ 疾病(?d) ∧ 症状(?s)
-        # → suspected(?p, ?d)
+    # ── 规则 1：必要症状任一匹配 → 疑似疾病 ────────────────
+    # 注意：SWRL 无法表达全称量化（"所有必要症状都出现"），
+    # 因此此规则在任一必要症状匹配时即触发（部分匹配）。
+    # 全匹配由 OWL equivalent_to（Layer 1）负责。
+    # has(?p, ?s) ∧ necessary(?d, ?s) ∧ 疾病(?d) ∧ 症状(?s)
+    # → suspected(?p, ?d)
         rule1 = Imp()
         rule1.label.append("necessary_symptom_rule")
         rule1.set_as_rule("""
@@ -60,6 +70,7 @@ def apply_swrl_rules(onto):
 
     print(f"✅ 已嵌入 {len(SWRL_RULES)} 条 SWRL 规则（owlready2.Imp）")
     print("   HermiT 推理时会自动处理这些规则。")
+    _swrl_applied = True
     return onto
 
 

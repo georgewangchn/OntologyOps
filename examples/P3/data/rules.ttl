@@ -1,0 +1,63 @@
+# P3 · Jena 自定义推理规则（rules.ttl）
+# 推理范式：前向链规则（Forward Chaining）
+# 对比 P2 Prolog：反向链（目标驱动，SLD 归结）
+# 对比 P1 OWL/SWRL：Tableau 算法（完备，但无法自定义规则）
+
+@prefix :    <http://petbps.com/ontology/pet_disease#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================
+# 规则 1：传递闭包（contain 传递性）
+# ============================================================
+# 如果 A contain B，B contain C → A contain C
+# Jena 的前向链自动计算传递闭包，SPARQL 查询时直接可见
+# 对比 P1：OWL TransitiveProperty（声明式，推理机自动处理）
+# 对比 P2：Prolog 递归 can_transmit/2（目标驱动，按需计算）
+
+[rule_transitive:
+    (?a :contain ?b), (?b :contain ?c)
+    -> (?a :contain ?c)
+].
+
+# ============================================================
+# 规则 2：疑似疾病推断（前向链）
+# ============================================================
+# 如果病例 has 症状 S，疾病 D necessary 症状 S
+# -> 推断 suspected(case, D)
+#
+# Jena 前向链：数据加载时预计算所有推断结果
+# 对比 P2 Prolog：查询时才计算（反向链）
+# 对比 P1 OWL：equivalent_to 双向推理（Tableau）
+
+[rule_suspected:
+    (?case :has ?symptom), (?disease :necessary ?symptom), (?disease rdf:type :疾病)
+    -> (?case :suspected ?disease)
+].
+
+# ============================================================
+# 规则 3：排除疾病推断（前向链）
+# ============================================================
+# 如果病例 has 症状 S，疾病 D nos 症状 S
+# -> 推断 excluded(case, D)
+
+[rule_excluded:
+    (?case :has ?symptom), (?disease :nos ?symptom), (?disease rdf:type :疾病)
+    -> (?case :excluded ?disease)
+].
+
+# ============================================================
+# 规则 4：确诊推断（必要症状全匹配 + 无排除）
+# ============================================================
+# 如果病例 suspected 疾病 D，且病例 NOT excluded D
+# -> 推断 diagnosed(case, D)
+#
+# 注意：suspected 仅要求任一必要症状匹配（部分匹配），
+# 确诊的"全匹配"判断在 SPARQL 查询层通过 COUNT 完成。
+# Jena 规则的否定是 negation-as-failure（近似 CWA）
+# 用 noValue 实现排除检查
+
+[rule_diagnosed:
+    (?case :suspected ?disease), noValue(?case :excluded ?disease)
+    -> (?case :diagnosed ?disease)
+].

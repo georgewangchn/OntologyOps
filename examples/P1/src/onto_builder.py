@@ -13,15 +13,16 @@ import pandas as pd
 import os
 
 # ── 路径配置 ─────────────────────────────────────────────
-DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
-OUTPUT_OWL = os.path.join(DATA_DIR, "pet_ontology.owl")
+SHARED_DATA_DIR = os.path.join(os.path.dirname(__file__), "../../shared_data")
+LOCAL_DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
+OUTPUT_OWL = os.path.join(LOCAL_DATA_DIR, "pet_ontology.owl")
 IRI_BASE = "http://petbps.com/ontology/pet_disease"
 
 # ── 核心构建函数 ──────────────────────────────────────────
 
 def create_ontology(iri=IRI_BASE):
     """创建空白本体，定义所有类、属性"""
-    onto_path.append(DATA_DIR)
+    onto_path.append(LOCAL_DATA_DIR)
     onto = get_ontology(iri)
 
     with onto:
@@ -43,6 +44,11 @@ def create_ontology(iri=IRI_BASE):
         class has(ObjectProperty):
             domain = [疾病]
             range   = [症状]
+
+        class hasSpecies(ObjectProperty):
+            """物种关联"""
+            domain = [Thing]
+            range   = [物种]
 
         class necessary(ObjectProperty):
             """必要症状：罹患某病必须具备的症状"""
@@ -103,7 +109,7 @@ def load_diseases(onto, csv_path=None):
     CSV 列：疾病ID, 疾病名称, 物种, 父类名称
     """
     if csv_path is None:
-        csv_path = os.path.join(DATA_DIR, "diseases.csv")
+        csv_path = os.path.join(SHARED_DATA_DIR, "diseases.csv")
     df = pd.read_csv(csv_path, encoding="utf-8-sig")
 
     with onto:
@@ -116,6 +122,9 @@ def load_diseases(onto, csv_path=None):
             # 创建疾病类（紧贴 Thing，后续通过 is_a 建立层次）
             D = types.new_class(disease_id, (onto.疾病,))
             D.label.append(name)
+
+            # 存储物种信息（供 Python 过滤解析）
+            D.comment.append("species:" + pet_type)
 
             # 建立父子层次
             if pd.notna(father_name) and father_name:
@@ -139,7 +148,7 @@ def load_symptoms(onto, csv_path=None):
     （简化版：实际项目中从数据库读取更完整）
     """
     if csv_path is None:
-        csv_path = os.path.join(DATA_DIR, "symptoms.csv")
+        csv_path = os.path.join(SHARED_DATA_DIR, "symptoms.csv")
     if not os.path.exists(csv_path):
         print(f"⚠️  未找到 {csv_path}，跳过症状加载")
         return onto
@@ -170,7 +179,7 @@ def add_symptom_relations(onto, csv_path=None):
     格式：必要症状 = "发热;呕吐;腹泻"（分号分隔）
     """
     if csv_path is None:
-        csv_path = os.path.join(DATA_DIR, "diseases.csv")
+        csv_path = os.path.join(SHARED_DATA_DIR, "diseases.csv")
     df = pd.read_csv(csv_path, encoding="utf-8-sig")
 
     with onto:
@@ -179,6 +188,13 @@ def add_symptom_relations(onto, csv_path=None):
             d = onto[disease_id]
             if d is None:
                 continue
+
+            pet_type = str(row.get("物种", "pet")).lower()
+
+            # 创建或获取物种个体（供 equivalent_to 引用）
+            species_ind = onto[pet_type]
+            if species_ind is None:
+                species_ind = onto.物种(pet_type)
 
             # ── 必要症状 ──────────────────────────────
             nec_str = row.get("必要症状", "")
@@ -194,11 +210,12 @@ def add_symptom_relations(onto, csv_path=None):
                     d.is_a.append(onto.necessary.value(s_ind))
 
                 # 推理层：equivalent_to（充要条件，双向推理）
-                # D001 ≡ 疾病 ∧ has.value(发热) ∧ has.value(呕吐) ∧ has.value(腹泻)
-                # HermiT 可从「病例 has 这些症状」反推「病例 rdf:type D001」
+                # D001 ≡ 疾病 ∧ has.value(发热) ∧ has.value(呕吐) ∧ has.value(腹泻) ∧ hasSpecies.value(cat)
+                # 加入物种约束，避免 D003(猫肠炎) ≡ D006(犬冠状病毒) 等价塌缩
                 expr = onto.疾病
                 for s_ind in nec_symptoms:
                     expr = expr & onto.has.value(s_ind)
+                expr = expr & onto.hasSpecies.value(species_ind)
                 d.equivalent_to.append(expr)
 
             # ── 排除症状 ──────────────────────────────
@@ -221,6 +238,7 @@ def add_symptom_relations(onto, csv_path=None):
             # 创建 D001_kb 等个体，断言 necessary / nos 属性，使 SWRL 规则可触发。
             d_kb = onto.疾病(disease_id + "_kb")
             d_kb.label.append(row["疾病名称"])
+            d_kb.hasSpecies.append(species_ind)
             for s_ind in nec_symptoms:
                 d_kb.necessary.append(s_ind)
             for s_ind in nos_symptoms:

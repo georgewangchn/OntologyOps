@@ -1,0 +1,26 @@
+version: "3.8"
+
+# P2 · 宠物疾病诊断推理系统 —— Prolog 版
+# 用法：docker-compose up -d
+# API：http://localhost:8000/diagnose (POST)
+
+services:
+  prolog-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pet_prolog_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app:/app/src
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

@@ -41,22 +41,30 @@ def format_results(results, top_n=5):
 def symptom_match_rate(disease_cls, symptoms):
     """
     计算某病的必要症状匹配率（用于置信度计算）
+    从 is_a 中的 necessary.value 限制解析
     """
-    necessary = list(disease_cls.necessary) if hasattr(disease_cls, "necessary") else []
-    if not necessary:
+    necessary_symptoms = []
+    for res in getattr(disease_cls, "is_a", []):
+        try:
+            if hasattr(res, "property") and hasattr(res, "value") and res.value is not None:
+                necessary_symptoms.append(res.value.name)
+        except Exception:
+            pass
+    if not necessary_symptoms:
         return 0.1
-    match = sum(1 for s in symptoms if s in [x.name for x in necessary])
-    return min(0.99, match / len(necessary) + 0.1)
+    match = sum(1 for s in symptoms if s in necessary_symptoms)
+    return min(0.99, match / len(necessary_symptoms) + 0.1)
 
 
 def check_species_match(disease_cls, pet_type):
     """
     检查疾病是否与宠物物种匹配
-    （简化版：通过类名关键词判断）
+    通过 comment 注解中的 species: 标记判断
     """
-    name = disease_cls.name.lower()
-    if pet_type == "cat" and "dog" in name:
-        return False
-    if pet_type == "dog" and "cat" in name:
-        return False
+    for comment in getattr(disease_cls, "comment", []):
+        if isinstance(comment, str) and comment.startswith("species:"):
+            species = comment[8:].strip()
+            if species == "pet":
+                return True
+            return species == pet_type
     return True

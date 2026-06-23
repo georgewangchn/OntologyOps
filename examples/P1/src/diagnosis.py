@@ -7,11 +7,11 @@
   3. API 调用（返回 JSON）
 """
 
-from reasoner import diagnose, load_ontology, run_reasoner, print_diagnosis
+from reasoner import diagnose, load_ontology, print_diagnosis
 import json
 import os
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
+SHARED_DATA_DIR = os.path.join(os.path.dirname(__file__), "../../shared_data")
 
 
 def diagnose_from_json(json_path):
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         json_path = sys.argv[1]
         if not os.path.exists(json_path):
             # 尝试在 data/ 目录下查找
-            json_path = os.path.join(DATA_DIR, os.path.basename(json_path))
+            json_path = os.path.join(SHARED_DATA_DIR, os.path.basename(json_path))
         diagnose_from_json(json_path)
     else:
         # 无参数时进入交互模式

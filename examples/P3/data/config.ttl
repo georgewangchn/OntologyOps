@@ -1,0 +1,48 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# P3 · Jena Fuseki 配置文件
+# 推理机：GenericRuleReasoner（前向链规则推理）
+# 对比 P1：HermiT（Tableau 算法，完备）
+# 对比 P2：SWI-Prolog（SLD 归结，反向链）
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+     :service_pet
+   ) .
+
+# ── 服务端点 ──────────────────────────────────────
+:service_pet rdf:type fuseki:Service ;
+    fuseki:name "pet" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "sparql" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "query"  ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update; fuseki:name "update" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp_r ; fuseki:name "get"    ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp_rw; fuseki:name "data"   ] ;
+    fuseki:dataset :dataset_pet ;
+    .
+
+# ── 数据集 ────────────────────────────────────────
+:dataset_pet rdf:type       ja:RDFDataset ;
+    ja:defaultGraph     :model_inf ;
+    .
+
+# ── 推理模型（核心配置）────────────────────────────
+# GenericRuleReasoner：前向链规则推理，加载 rules.ttl 自定义规则
+# 推理结果在 SPARQL 查询时自动可见（推理内置到查询管线）
+:model_inf a ja:InfModel ;
+     ja:baseModel :baseModel ;
+     ja:reasoner [
+         ja:reasonerURL <http://jena.hpl.hp.com/2003/GenericRuleReasoner> ;
+         ja:rulesFrom <file:data/rules.ttl> ;
+     ] .
+
+# ── 基础数据（内存模型）────────────────────────────
+:baseModel a ja:MemoryModel ;
+    ja:content [ja:externalContent <file:data/pet.ttl> ] ;
+    .

@@ -1,0 +1,104 @@
+@prefix :    <http://petbps.com/ontology/pet_disease#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# === 类定义 ===
+:疾病 a owl:Class .
+:症状 a owl:Class .
+:物种 a owl:Class .
+:病例 a owl:Class .
+
+# === 物种个体 ===
+:cat rdf:type :物种 ; rdfs:label "cat" .
+:dog rdf:type :物种 ; rdfs:label "dog" .
+
+# === 对象属性 ===
+:has a owl:ObjectProperty ; rdfs:domain :病例 ; rdfs:range :症状 .
+:has_species a owl:ObjectProperty ; rdfs:range :物种 .
+:necessary a owl:ObjectProperty ; rdfs:domain :疾病 ; rdfs:range :症状 .
+:nos a owl:ObjectProperty ; rdfs:domain :疾病 ; rdfs:range :症状 .
+:suspected a owl:ObjectProperty ; rdfs:range :疾病 .
+:excluded a owl:ObjectProperty ; rdfs:range :疾病 .
+:diagnosed a owl:ObjectProperty ; rdfs:range :疾病 .
+:contain a owl:ObjectProperty, owl:TransitiveProperty .
+
+# === 疾病个体 ===
+:d001 rdf:type :疾病 ; rdfs:label "猫瘟" ; :has_species :cat .
+:d001 :necessary :发热 .
+:d001 :necessary :呕吐 .
+:d001 :necessary :腹泻 .
+:d001 :nos :咳嗽 .
+:d001 :nos :流鼻涕 .
+
+:d002 rdf:type :疾病 ; rdfs:label "猫感冒" ; :has_species :cat .
+:d002 :necessary :打喷嚏 .
+:d002 :necessary :流鼻涕 .
+:d002 :nos :发热 .
+:d002 :nos :呕吐 .
+
+:d003 rdf:type :疾病 ; rdfs:label "猫肠炎" ; :has_species :cat .
+:d003 :necessary :腹泻 .
+:d003 :necessary :呕吐 .
+:d003 :nos :发热 .
+:d003 :nos :咳嗽 .
+
+:d004 rdf:type :疾病 ; rdfs:label "犬细小病毒" ; :has_species :dog .
+:d004 :necessary :呕吐 .
+:d004 :necessary :腹泻 .
+:d004 :necessary :精神萎靡 .
+:d004 :nos :咳嗽 .
+
+:d005 rdf:type :疾病 ; rdfs:label "犬感冒" ; :has_species :dog .
+:d005 :necessary :打喷嚏 .
+:d005 :necessary :流鼻涕 .
+:d005 :nos :呕吐 .
+:d005 :nos :腹泻 .
+
+:d006 rdf:type :疾病 ; rdfs:label "犬冠状病毒" ; :has_species :dog .
+:d006 :necessary :呕吐 .
+:d006 :necessary :腹泻 .
+:d006 :nos :发热 .
+
+:d007 rdf:type :疾病 ; rdfs:label "猫尿路感染" ; :has_species :cat .
+:d007 :necessary :尿频 .
+:d007 :necessary :尿急 .
+:d007 :necessary :尿痛 .
+:d007 :nos :腹泻 .
+
+:d008 rdf:type :疾病 ; rdfs:label "犬尿路感染" ; :has_species :dog .
+:d008 :necessary :尿频 .
+:d008 :necessary :尿急 .
+:d008 :nos :腹泻 .
+
+:d009 rdf:type :疾病 ; rdfs:label "猫艾滋病" ; :has_species :cat .
+:d009 :necessary :发热 .
+:d009 :necessary :淋巴结肿大 .
+:d009 :nos :腹泻 .
+
+:d010 rdf:type :疾病 ; rdfs:label "犬副流感" ; :has_species :dog .
+:d010 :necessary :咳嗽 .
+:d010 :necessary :打喷嚏 .
+:d010 :nos :腹泻 .
+
+# === 症状个体 ===
+:发热 rdf:type :症状 ; rdfs:label "发热" .
+:呕吐 rdf:type :症状 ; rdfs:label "呕吐" .
+:腹泻 rdf:type :症状 ; rdfs:label "腹泻" .
+:打喷嚏 rdf:type :症状 ; rdfs:label "打喷嚏" .
+:流鼻涕 rdf:type :症状 ; rdfs:label "流鼻涕" .
+:咳嗽 rdf:type :症状 ; rdfs:label "咳嗽" .
+:精神萎靡 rdf:type :症状 ; rdfs:label "精神萎靡" .
+:尿频 rdf:type :症状 ; rdfs:label "尿频" .
+:尿急 rdf:type :症状 ; rdfs:label "尿急" .
+:尿痛 rdf:type :症状 ; rdfs:label "尿痛" .
+:血尿 rdf:type :症状 ; rdfs:label "血尿" .
+:淋巴结肿大 rdf:type :症状 ; rdfs:label "淋巴结肿大" .
+:白细胞减少 rdf:type :症状 ; rdfs:label "白细胞减少" .
+:脱水 rdf:type :症状 ; rdfs:label "脱水" .
+:白细胞异常 rdf:type :症状 ; rdfs:label "白细胞异常" .
+
+# === 传播关系（演示 Jena 前向链传递闭包）===
+:d002 :contain :d001 .  # 猫感冒 → 猫瘟
+:d005 :contain :d004 .  # 犬感冒 → 犬细小
+:d010 :contain :d005 .  # 犬副流感 → 犬感冒（构成 d010→d005→d004 链）

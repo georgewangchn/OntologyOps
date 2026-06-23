@@ -15,8 +15,9 @@ import json
 import os
 
 # ── 路径配置 ─────────────────────────────────────
-DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
-DEFAULT_OWL = os.path.join(DATA_DIR, "pet_ontology.owl")
+SHARED_DATA_DIR = os.path.join(os.path.dirname(__file__), "../../shared_data")
+LOCAL_DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
+DEFAULT_OWL = os.path.join(LOCAL_DATA_DIR, "pet_ontology.owl")
 IRI_BASE    = "http://petbps.com/ontology/pet_disease"
 
 
@@ -29,7 +30,7 @@ def load_ontology(owl_path=None):
     if not os.path.exists(owl_path):
         raise FileNotFoundError(f"未找到本体文件：{owl_path}\n请先运行 onto_builder.py 生成本体。")
 
-    onto_path.append(DATA_DIR)
+    onto_path.append(LOCAL_DATA_DIR)
     onto = get_ontology(f"file://{os.path.abspath(owl_path)}").load()
     print(f"✅ 本体已加载：{len(list(onto.classes()))} 个类")
     return onto
@@ -64,6 +65,14 @@ def _get_exclusion_symptoms(disease_cls):
     return []
 
 
+def _get_species(disease_cls):
+    """从疾病类的 comment 注解中提取物种"""
+    for comment in getattr(disease_cls, "comment", []):
+        if isinstance(comment, str) and comment.startswith("species:"):
+            return comment[8:].strip()
+    return "pet"
+
+
 def _map_kb_to_class(d_kb, onto):
     """将疾病知识个体（如 D001_kb）映射回疾病类（D001）"""
     name = d_kb.name
@@ -93,22 +102,30 @@ def diagnose(onto, case_dict):
     # 0. 嵌入 SWRL 规则（owlready2.Imp，HermiT 推理时会自动处理）
     onto = apply_swrl_rules(onto)
 
+    case_pet_type = case_dict.get("pet_type", "pet")
+
     with onto:
         # 1. 创建临时个体（代表当前病例）
         case_id   = f"case_{hash(str(case_dict)) % 100000}"
         case_instance = Thing(case_id)
 
-        # 2. 断言症状（用 has 属性关联到症状个体）
+        # 2. 断言物种
+        species_ind = onto[case_pet_type]
+        if species_ind is None:
+            species_ind = onto.物种(case_pet_type)
+        case_instance.hasSpecies.append(species_ind)
+
+        # 3. 断言症状（用 has 属性关联到症状个体）
         for sname in case_dict.get("symptoms", []):
             s_ind = onto[sname]
             if s_ind is None:
                 s_ind = onto.症状(sname)
             case_instance.has.append(s_ind)
 
-    # 3. 推理（HermiT 根据 equivalent_to + SWRL 规则推断）
+    # 4. 推理（HermiT 根据 equivalent_to + SWRL 规则推断）
     run_reasoner(onto)
 
-    # 4. OWL 分类结果：case_instance 被推断为哪些疾病类的实例
+    # 5. OWL 分类结果：case_instance 被推断为哪些疾病类的实例
     results = []
     existing_classes = set()
     for cls in onto.疾病.descendants():
@@ -119,7 +136,7 @@ def diagnose(onto, case_dict):
             results.append((cls, confidence))
             existing_classes.add(cls)
 
-    # 5. SWRL 规则推断的 suspected（规则1：必要症状匹配 → 疑似）
+    # 6. SWRL 规则推断的 suspected（规则1：必要症状匹配 → 疑似）
     with onto:
         if hasattr(case_instance, "suspected") and list(case_instance.suspected):
             for d_kb in case_instance.suspected:
@@ -129,8 +146,8 @@ def diagnose(onto, case_dict):
                     results.append((disease_cls, conf))
                     existing_classes.add(disease_cls)
 
-    # 6. 排除逻辑
-    # 6a. SWRL 规则推断的 excluded（规则2：排除症状 → 排除）
+    # 7. 排除逻辑
+    # 7a. SWRL 规则推断的 excluded（规则2：排除症状 → 排除）
     excluded_classes = set()
     with onto:
         if hasattr(case_instance, "excluded") and list(case_instance.excluded):
@@ -139,7 +156,7 @@ def diagnose(onto, case_dict):
                 if disease_cls:
                     excluded_classes.add(disease_cls)
 
-    # 6b. Python 排除检查：病例症状是否命中疾病排除症状
+    # 7b. Python 排除检查 + 物种过滤
     case_symptom_set = set(case_dict.get("symptoms", []))
     filtered = []
     for cls, conf in results:
@@ -148,12 +165,19 @@ def diagnose(onto, case_dict):
         nos_symptoms = _get_exclusion_symptoms(cls)
         if case_symptom_set & set(nos_symptoms):
             continue
+        # 物种过滤：跳过不匹配物种的疾病
+        disease_species = _get_species(cls)
+        if disease_species != "pet" and disease_species != case_pet_type:
+            continue
         filtered.append((cls, conf))
     results = filtered
 
-    # 7. 清理临时个体
+    # 8. 清理临时个体
     with onto:
-        destroy_entity(case_instance)
+        try:
+            destroy_entity(case_instance)
+        except Exception:
+            pass
 
     # 8. 排序
     results.sort(key=lambda x: x[1], reverse=True)
@@ -208,7 +232,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="宠物疾病本体推理")
-    parser.add_argument("--input", default="../data/sample_case.json", help="病例 JSON 文件路径")
+    parser.add_argument("--input", default=os.path.join(SHARED_DATA_DIR, "sample_case.json"), help="病例 JSON 文件路径")
     parser.add_argument("--reasoner", default="hermit", choices=["hermit", "pellet"], help="推理机选择")
     args = parser.parse_args()
 
