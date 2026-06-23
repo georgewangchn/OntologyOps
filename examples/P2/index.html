@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="森林瀑布">
+    <title>P2 · 宠物疾病规则推理系统 — 多范式推理实战营</title>
+    <style>
+        /* === 中文排版优化（继承书籍风格）=== */
+        body {
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+            font-size: 11pt;
+            line-height: 1.9;
+            color: #2c2c2c;
+            text-align: justify;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2cm 1.5cm;
+            background: #fafaf8;
+        }
+
+        /* === 文章头部 === */
+        .article-header {
+            text-align: center;
+            margin-bottom: 2.5cm;
+            padding-bottom: 1.5cm;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .article-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #533483, #e94560);
+            color: white;
+            padding: 0.2em 0.8em;
+            border-radius: 4px;
+            font-size: 10pt;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 1em;
+        }
+
+        .article-title {
+            font-size: 24pt;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 0.03em;
+            margin: 0.5em 0;
+            line-height: 1.4;
+        }
+
+        .article-subtitle {
+            font-size: 13pt;
+            color: #555;
+            font-weight: 400;
+            margin-bottom: 0.8em;
+        }
+
+        .article-meta {
+            font-size: 10pt;
+            color: #888;
+            letter-spacing: 0.02em;
+        }
+
+        .article-meta a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 章节标题 === */
+        h1 {
+            font-size: 17pt;
+            color: #1a1a2e;
+            font-weight: 700;
+            margin: 2em 0 0.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #e8e8e8;
+            letter-spacing: 0.02em;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #16213e;
+            font-weight: 600;
+            margin: 1.5em 0 0.6em;
+            border-left: 4px solid #533483;
+            padding-left: 0.6em;
+        }
+
+        h3 {
+            font-size: 12pt;
+            color: #0f3460;
+            font-weight: 600;
+            margin: 1.2em 0 0.5em;
+        }
+
+        /* === 段落 === */
+        p {
+            text-indent: 2em;
+            margin: 0.5em 0;
+            orphans: 2;
+            widows: 2;
+        }
+
+        p:first-of-type {
+            text-indent: 0;
+        }
+
+        /* === 引用块 === */
+        blockquote {
+            margin: 1em 1.5em;
+            padding: 0.6em 1.2em;
+            border-left: 4px solid #533483;
+            background: #f8f8fc;
+            color: #555;
+            orphans: 3;
+            widows: 3;
+        }
+
+        blockquote p {
+            text-indent: 0;
+            margin: 0.3em 0;
+        }
+
+        /* === 强调 === */
+        strong, b {
+            color: #16213e;
+            font-weight: 700;
+        }
+
+        em, i {
+            color: #0f3460;
+            font-style: italic;
+        }
+
+        /* === 代码 === */
+        code {
+            background: #f0f0f5;
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            font-family: "SF Mono", "Fira Code", "Consolas", "Menlo", monospace;
+            font-size: 9pt;
+            color: #e94560;
+        }
+
+        pre {
+            background: #1a1a2e;
+            color: #d4d4d8;
+            padding: 1em 1.2em;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 9pt;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            orphans: 3;
+            widows: 3;
+            margin: 1em 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* === 表格 === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 10.5pt;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #eaeaea;
+            padding: 0.5em 0.8em;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.4em 0.8em;
+            border-bottom: 1px solid #e8e8e8;
+            color: #333;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8f8fc;
+        }
+
+        /* === 列表 === */
+        ul, ol {
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }
+
+        li {
+            margin: 0.3em 0;
+        }
+
+        /* === 分割线 === */
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 2em 0;
+        }
+
+        /* === 底部 === */
+        .article-footer {
+            margin-top: 3em;
+            padding-top: 1.5em;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #888;
+            font-size: 10pt;
+        }
+
+        .article-footer a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 响应式 === */
+        @media (max-width: 600px) {
+            body {
+                padding: 1cm 1cm;
+                font-size: 10.5pt;
+            }
+            .article-title {
+                font-size: 20pt;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="article-header">
+    <div class="article-badge">多范式推理实战营 · 项目 2/6</div>
+    <h1 class="article-title">P2 · 宠物疾病规则推理系统</h1>
+    <p class="article-subtitle">副标题：同一问题，换一种推理范式——Prolog 规则推理 vs OWL 本体推理</p>
+    <p class="article-meta">**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-22</p>
+</div>
+
+
+<hr>
+
+<h2>一、引言：为什么要换一种范式？</h2>
+
+<p>在 P1 中，我们用 OWL 本体 + HermiT 推理机解决了宠物疾病诊断问题。但推理世界不止一种范式——<strong>不同的逻辑体系有不同的取舍</strong>。</p>
+
+<p>P1 用的是<strong>描述逻辑</strong>（Description Logic），它的特点是：</p>
+<ul>
+<li>开放世界假设（OWA）：没记录 ≠ 没有</li>
+<li>分类推理：推理机自动发现类层次关系</li>
+<li>有可判定性保证</li>
+</ul>
+
+<p>P2 换成<strong>Horn 子句逻辑</strong>（Prolog），它的特点是：</p>
+<ul>
+<li>封闭世界假设（CWA）：没记录 = 没有</li>
+<li>目标驱动推理：从问题出发反向链</li>
+<li>可递归、可算术，但无可判定性保证</li>
+</ul>
+
+<blockquote><p><strong>同一个宠物诊断问题，两种范式会给出不同的推理过程，甚至不同的结论——这正是"多范式推理"的教学价值。</strong></p></blockquote>
+
+<hr>
+
+<h2>二、技术架构：Prolog + pyswip + FastAPI</h2>
+
+<pre><code class="">┌─────────────────────────────────────────────────┐
+│           输入：病例（症状列表）                │
+│         例：["发热", "呕吐", "腹泻"]             │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 1：断言症状（assertz has/2）              │
+│  has(case, '发热'), has(case, '呕吐'), ...      │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 2：确诊查询（diagnose/2）                 │
+│  forall(necessary) + \+ (nos ∧ has)             │
+│  CWA：\+ has(P,S) 在未断言时为 true             │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 3：疑似查询（suspect/3）                  │
+│  findall 匹配率 + \+ 排除检查                   │
+│  Prolog 独有：findall + length + 算术           │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 4：清理（retractall has/2）               │
+│  + 排序输出                                     │
+└─────────────────────────────────────────────────┘</code></pre>
+
+<h3>2.1 知识表示：事实 + 规则</h3>
+
+<p>P1 把疾病建模为 OWL 类，P2 把疾病建模为 Prolog 谓词：</p>
+
+<pre><code class="prolog">% 事实：疾病定义
+disease(d001, '猫瘟', cat).
+
+% 事实：必要症状
+necessary(d001, '发热').
+necessary(d001, '呕吐').
+necessary(d001, '腹泻').
+
+% 事实：排除症状
+nos(d001, '咳嗽').
+nos(d001, '流鼻涕').</code></pre>
+
+<p>对比 P1 的三层 OWL 编码（equivalent_to + SubClassOf + SWRL 个体），P2 只需要一层——<strong>事实就是事实，不需要为了推理引擎的匹配机制做额外编码</strong>。这是 Prolog 的简洁之处。</p>
+
+<h3>2.2 规则：Horn 子句</h3>
+
+<pre><code class="prolog">% 规则1：确诊
+diagnose(Patient, Disease) :-
+    disease(Disease, _, _),
+    forall(necessary(Disease, S), has(Patient, S)),
+    \+ (nos(Disease, S), has(Patient, S)).
+
+% 规则2：疑似（带置信度）
+suspect(Patient, Disease, Confidence) :-
+    findall(S, (necessary(Disease, S), has(Patient, S)), Matched),
+    findall(S, necessary(Disease, S), All),
+    length(Matched, M), length(All, N),
+    Confidence is M / N,
+    \+ (nos(Disease, S), has(Patient, S)).</code></pre>
+
+<p><strong>关键差异</strong>：</p>
+
+<table>
+<tr><th>P1（OWL/SWRL）</th><th>P2（Prolog）</th></tr>
+<tr><td>`equivalent_to` 充要条件，HermiT 双向推理</td><td>`:-` Horn 子句，目标驱动 SLD 归结</td></tr>
+<tr><td>`necessary.value` 限制，推理机自动匹配</td><td>`forall/2` 显式全称检查</td></tr>
+<tr><td>`nos.max(0)` 基数限制，隐式排除</td><td>`\+` negation as failure，显式排除</td></tr>
+<tr><td>置信度靠 Python `_calc_confidence` 手动计算</td><td>`findall + length + is` 原生算术计算</td></tr>
+</table>
+
+<h3>2.3 CWA：封闭世界假设</h3>
+
+<p>这是 P1 和 P2 <strong>最根本的语义差异</strong>：</p>
+
+<pre><code class="prolog">% 规则1 中的 \+ (nos(Disease, S), has(Patient, S))
+% 意思是："不存在一个排除症状 S，使得 Patient 有 S"
+%
+% 如果 Patient 没有 has(Patient, '咳嗽') 这个事实
+% Prolog 认为：\+ has(Patient, '咳嗽') 成功 → Patient 没有咳嗽</code></pre>
+
+<p>而在 P1 的 OWL 中：</p>
+<pre><code class="">病例没有断言 has(case, '咳嗽') ≠ 病例没有咳嗽
+HermiT 不会因"未断言"就推断"不存在"</code></pre>
+
+<p><strong>医疗场景的影响</strong>：</p>
+
+<table>
+<tr><th>场景</th><th>P1（OWA）</th><th>P2（CWA）</th></tr>
+<tr><td>病例未记录"咳嗽"</td><td>不能断定"没有咳嗽"</td><td>断定"没有咳嗽"</td></tr>
+<tr><td>猫感冒的排除症状含"咳嗽"</td><td>不能据此排除</td><td>可以据此排除</td></tr>
+<tr><td>安全性</td><td>更保守（不轻易排除）</td><td>更激进（未记录即排除）</td></tr>
+</table>
+
+<h3>2.4 递归推理：Prolog 独有能力</h3>
+
+<pre><code class="prolog">% 疾病传播链（递归）
+can_transmit(D1, D2) :- transmit_to(D1, D2).
+can_transmit(D1, D3) :- transmit_to(D1, D2), can_transmit(D2, D3).
+
+% 事实
+transmit_to(d002, d001).  % 猫感冒 → 猫瘟
+transmit_to(d005, d004).  % 犬感冒 → 犬细小</code></pre>
+
+<p>查询 <code>can_transmit(d002, X)</code> 会递归搜索整条传播链。OWL 的 <code>TransitiveProperty</code> 只能做无条件的传递闭包，无法表达"如果 A 传播给 B，B 传播给 C，则 A 可传播给 C"这种<strong>条件递归</strong>。</p>
+
+<hr>
+
+<h2>三、运行示例</h2>
+
+<p>输入与 P1 相同的病例：</p>
+
+<pre><code class="python">case = {
+    "pet_type": "cat",
+    "symptoms": ["发热", "呕吐", "腹泻"],
+    "breed": "英短",
+    "age": 2
+}</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="">──────────────────────────────────────────────────
+  📋 诊断结果（Prolog 规则推理 · CWA）
+──────────────────────────────────────────────────
+  1. 猫瘟               置信度：1.00  ██████████ ✅确诊
+  2. 犬细小病毒          置信度：0.67  ██████ ⚠️疑似
+──────────────────────────────────────────────────
+
+  🔗 推理链解释：
+
+  [猫瘟]
+    匹配：发热, 呕吐, 腹泻 ✅
+    缺失：（无）✅
+    排除症状：无命中 ✅
+
+  [犬细小病毒]
+    匹配：呕吐, 腹泻 ✅
+    缺失：精神萎靡 ❌
+    排除症状：无命中 ✅</code></pre>
+
+<h3>与 P1 结果对比</h3>
+
+<table>
+<tr><th>疾病</th><th>P1（OWL + HermiT）</th><th>P2（Prolog）</th></tr>
+<tr><td>猫瘟</td><td>0.99（SWRL 补充候选）</td><td>1.00 ✅确诊</td></tr>
+<tr><td>犬细小病毒</td><td>0.77（SWRL 补充候选）</td><td>0.67 ⚠️疑似</td></tr>
+</table>
+
+<p>P2 的猫瘟置信度为 1.00 且标记"确诊"，因为 Prolog 的 <code>forall</code> 确认了所有必要症状匹配。P1 的 0.99 是 Python <code>_calc_confidence</code> 的上限截断（<code>min(0.99, ...)</code>）。</p>
+
+<hr>
+
+<h2>四、与 LLM 方案对比</h2>
+
+<table>
+<tr><th>维度</th><th>LLM 方案</th><th>P2 Prolog 方案</th></tr>
+<tr><td>输入</td><td>自然语言</td><td>`symptoms: ["发热", "呕吐", "腹泻"]`</td></tr>
+<tr><td>输出</td><td>「可能是猫瘟，建议就医」</td><td>猫瘟（1.00 ✅确诊）</td></tr>
+<tr><td>推理链</td><td>❌ 黑盒</td><td>✅ SLD 归结可追溯</td></tr>
+<tr><td>一致性</td><td>❌ 同一输入可能不同输出</td><td>✅ 相同输入必定相同输出</td></tr>
+<tr><td>递归推理</td><td>❌ 不支持</td><td>✅ 原生支持</td></tr>
+<tr><td>可判定性</td><td>—</td><td>⚠️ 无保证（可能不终止）</td></tr>
+<tr><td>耗时</td><td>2-5 秒</td><td><0.1 秒</td></tr>
+</table>
+
+<hr>
+
+<h2>五、P1 vs P2：什么时候用哪个？</h2>
+
+<table>
+<tr><th>场景特征</th><th>推荐范式</th><th>原因</th></tr>
+<tr><td>需要分类推理（"X 是不是 Y 的子类"）</td><td>P1 OWL</td><td>Prolog 不做子类推理</td></tr>
+<tr><td>需要一致性检查</td><td>P1 OWL</td><td>Prolog 没有 satisfiability 检查</td></tr>
+<tr><td>开放世界更合理（医疗、法律）</td><td>P1 OWL</td><td>"没记录" ≠ "没有"</td></tr>
+<tr><td>需要递归推理</td><td>P2 Prolog</td><td>OWL/SWRL 不支持递归</td></tr>
+<tr><td>规则密集（350+ 条）</td><td>P2 Prolog</td><td>OWL 公理更适合结构化知识</td></tr>
+<tr><td>需要算术/列表操作</td><td>P2 Prolog</td><td>SWRL 表达力有限</td></tr>
+<tr><td>封闭世界更合理（库存、配置）</td><td>P2 Prolog</td><td>"没有记录" = "不存在"</td></tr>
+<tr><td>需要形式化保证</td><td>P1 OWL</td><td>Prolog 可能不终止</td></tr>
+</table>
+
+<blockquote><p><strong>实践中常组合使用</strong>：用 OWL 管理领域概念体系（稳定的知识结构），用 Prolog 执行业务规则（频繁变化的推理逻辑）。</p></blockquote>
+
+<hr>
+
+<h2>六、教学效果：从代码到原理</h2>
+
+<p>本项目作为《当 LLM 不够用了》的配套实战案例，对应以下章节：</p>
+
+<table>
+<tr><th>本书章节</th><th>本项目对应内容</th></tr>
+<tr><td>第一章 本体论是什么</td><td>Prolog 事实/规则 vs OWL 类/属性——知识表示的两种范式对比</td></tr>
+<tr><td>第四章 本体推理的技术基础设施</td><td>Prolog SLD 归结推理机制，与 Tableau 算法（P1）的并列对比</td></tr>
+<tr><td>第九章 打造你的第一条企业决策推理链</td><td>P1 vs P2 场景决策树：「什么时候用 OWL，什么时候用 Prolog」</td></tr>
+</table>
+
+<p><strong>学习路径</strong>：</p>
+
+<ol>
+<li><strong>第一周</strong>：先跑通 P1（OWL），再看 P2——对比两种知识表示</li>
+<li><strong>第二周</strong>：理解 CWA vs OWA 的语义差异——这是 P2 最有教学价值的部分</li>
+<li><strong>第三周</strong>：掌握 Prolog 递归推理——OWL 做不到的能力</li>
+<li><strong>第四周</strong>：尝试在 P1 和 P2 之间迁移数据——体会不同范式的编码成本</li>
+</ol>
+
+<hr>
+
+<h2>七、总结</h2>
+
+<p>P2 与 P1 共用同一组数据（diseases.csv、symptoms.csv、sample_case.json），但用完全不同的推理范式解决同一问题。对比两者的差异，是理解"多范式推理"的最佳路径：</p>
+
+<table>
+<tr><th></th><th>P1</th><th>P2</th></tr>
+<tr><td>逻辑</td><td>描述逻辑</td><td>Horn 子句</td></tr>
+<tr><td>假设</td><td>OWA</td><td>CWA</td></tr>
+<tr><td>推理</td><td>分类（Tableau）</td><td>目标驱动（SLD）</td></tr>
+<tr><td>递归</td><td>❌</td><td>✅</td></tr>
+<tr><td>保证</td><td>可判定</td><td>无保证</td></tr>
+<tr><td>适合</td><td>知识治理</td><td>规则引擎</td></tr>
+</table>
+
+<blockquote><p>「让 OWL 做知识治理，让 Prolog 做规则推理，让 LLM 做知识工程。」</p>
+<p>—— 《当 LLM 不够用了——本体推理的企业决策实践》</p></blockquote>
+
+<hr>
+
+<p><strong>项目链接</strong>：<a href="https://github.com/georgewangchn/OntologyOps/tree/main/examples/P2">github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P2</a></p>
+
+<p><strong>P1 对比</strong>：<a href="../P1/README-ARTICLE.md">P1 · OWL 本体推理</a></p>
+
+<p><strong>书籍全书</strong>：<a href="https://georgewangchn.github.io/OntologyOps/book/">《当 LLM 不够用了——本体推理的企业决策实践》在线阅读</a></p>
+
+
+<div class="article-footer">
+    <p>« <a href="../">返回 OntologyOps 首页</a> &nbsp;|&nbsp; <a href="../book/">在线阅读全书</a> »</p>
+    <p style="margin-top:1em;">作者：森林瀑布 &nbsp;|&nbsp; 项目类型：多范式推理实战营 P2/6</p>
+</div>
+
+</body>
+</html>

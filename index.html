@@ -72,11 +72,41 @@
       background: linear-gradient(135deg, #16213e 60%, #2a1520);
     }
 
-    .card-p1 {
-      border-color: #ffd93d;
+    .card-group {
+      border-color: #6c63ff;
       grid-column: 1 / -1;
-      background: linear-gradient(135deg, #16213e 60%, #2a2a10);
     }
+
+    .group-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ccc;
+      margin-bottom: 0.8rem;
+    }
+
+    .pills {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .pill:hover { transform: scale(1.05); }
+
+    .pill-p1 { background: rgba(255,217,61,0.2); color: #ffd93d; border: 1px solid rgba(255,217,61,0.4); }
+    .pill-p2 { background: rgba(79,195,247,0.2); color: #4fc3f7; border: 1px solid rgba(79,195,247,0.4); }
+    .pill-p3 { background: rgba(102,187,106,0.2); color: #66bb6a; border: 1px solid rgba(102,187,106,0.4); }
 
     .links { font-size: 0.85rem; color: #666; }
     .links a { color: #888; text-decoration: none; margin: 0 0.6rem; }
@@ -99,11 +129,16 @@
         <p>《当LLM不够用了——本体推理的企业决策实践》完整12章</p>
       </a>
 
-      <a href="./examples/P1/" class="card card-p1">
+      <div class="card card-group">
         <div class="icon">📝</div>
-        <h3>P1 · 宠物疾病本体推理系统</h3>
-        <p>多范式推理实战营第一个案例 —— OWL 本体 + SWRL 规则 + HermiT 推理机</p>
-      </a>
+        <h3>多范式推理实战营</h3>
+        <p style="margin-bottom:0.8rem;">同一宠物疾病问题 × 三种推理范式 —— 从 OWL 到 Prolog 到 Jena</p>
+        <div class="pills">
+          <a href="./examples/P1/" class="pill pill-p1">P1 · OWL/HermiT</a>
+          <a href="./examples/P2/" class="pill pill-p2">P2 · Prolog</a>
+          <a href="./examples/P3/" class="pill pill-p3">P3 · Jena/SPARQL</a>
+        </div>
+      </div>
 
       <a href="./demo/" class="card card-demo">
         <div class="icon">🎬</div>

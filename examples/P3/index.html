@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="森林瀑布">
+    <title>P3 · 宠物疾病三元组推理系统 — 多范式推理实战营</title>
+    <style>
+        /* === 中文排版优化（继承书籍风格）=== */
+        body {
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+            font-size: 11pt;
+            line-height: 1.9;
+            color: #2c2c2c;
+            text-align: justify;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2cm 1.5cm;
+            background: #fafaf8;
+        }
+
+        /* === 文章头部 === */
+        .article-header {
+            text-align: center;
+            margin-bottom: 2.5cm;
+            padding-bottom: 1.5cm;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .article-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #533483, #e94560);
+            color: white;
+            padding: 0.2em 0.8em;
+            border-radius: 4px;
+            font-size: 10pt;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 1em;
+        }
+
+        .article-title {
+            font-size: 24pt;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 0.03em;
+            margin: 0.5em 0;
+            line-height: 1.4;
+        }
+
+        .article-subtitle {
+            font-size: 13pt;
+            color: #555;
+            font-weight: 400;
+            margin-bottom: 0.8em;
+        }
+
+        .article-meta {
+            font-size: 10pt;
+            color: #888;
+            letter-spacing: 0.02em;
+        }
+
+        .article-meta a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 章节标题 === */
+        h1 {
+            font-size: 17pt;
+            color: #1a1a2e;
+            font-weight: 700;
+            margin: 2em 0 0.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #e8e8e8;
+            letter-spacing: 0.02em;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #16213e;
+            font-weight: 600;
+            margin: 1.5em 0 0.6em;
+            border-left: 4px solid #533483;
+            padding-left: 0.6em;
+        }
+
+        h3 {
+            font-size: 12pt;
+            color: #0f3460;
+            font-weight: 600;
+            margin: 1.2em 0 0.5em;
+        }
+
+        /* === 段落 === */
+        p {
+            text-indent: 2em;
+            margin: 0.5em 0;
+            orphans: 2;
+            widows: 2;
+        }
+
+        p:first-of-type {
+            text-indent: 0;
+        }
+
+        /* === 引用块 === */
+        blockquote {
+            margin: 1em 1.5em;
+            padding: 0.6em 1.2em;
+            border-left: 4px solid #533483;
+            background: #f8f8fc;
+            color: #555;
+            orphans: 3;
+            widows: 3;
+        }
+
+        blockquote p {
+            text-indent: 0;
+            margin: 0.3em 0;
+        }
+
+        /* === 强调 === */
+        strong, b {
+            color: #16213e;
+            font-weight: 700;
+        }
+
+        em, i {
+            color: #0f3460;
+            font-style: italic;
+        }
+
+        /* === 代码 === */
+        code {
+            background: #f0f0f5;
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            font-family: "SF Mono", "Fira Code", "Consolas", "Menlo", monospace;
+            font-size: 9pt;
+            color: #e94560;
+        }
+
+        pre {
+            background: #1a1a2e;
+            color: #d4d4d8;
+            padding: 1em 1.2em;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 9pt;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            orphans: 3;
+            widows: 3;
+            margin: 1em 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* === 表格 === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 10.5pt;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #eaeaea;
+            padding: 0.5em 0.8em;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.4em 0.8em;
+            border-bottom: 1px solid #e8e8e8;
+            color: #333;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8f8fc;
+        }
+
+        /* === 列表 === */
+        ul, ol {
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }
+
+        li {
+            margin: 0.3em 0;
+        }
+
+        /* === 分割线 === */
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 2em 0;
+        }
+
+        /* === 底部 === */
+        .article-footer {
+            margin-top: 3em;
+            padding-top: 1.5em;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #888;
+            font-size: 10pt;
+        }
+
+        .article-footer a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 响应式 === */
+        @media (max-width: 600px) {
+            body {
+                padding: 1cm 1cm;
+                font-size: 10.5pt;
+            }
+            .article-title {
+                font-size: 20pt;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="article-header">
+    <div class="article-badge">多范式推理实战营 · 项目 3/6</div>
+    <h1 class="article-title">P3 · 宠物疾病三元组推理系统</h1>
+    <p class="article-subtitle">副标题：第三种范式——前向链规则 + SPARQL 查询一体化</p>
+    <p class="article-meta">**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-22</p>
+</div>
+
+
+<hr>
+
+<h2>一、引言：为什么需要第三种范式？</h2>
+
+<p>P1 用 OWL 描述逻辑（HermiT Tableau 算法），P2 用 Horn 子句逻辑（Prolog SLD 归结）。两者都是"纯推理机"——推理和查询是分开的两步。</p>
+
+<p>但企业实践中，知识往往存储在<strong>数据库</strong>里，需要通过<strong>标准查询语言</strong>访问。P3 展示的正是这种范式：</p>
+
+<blockquote><p><strong>把推理内置到查询管线里——SPARQL 查询时自动包含推理结果。</strong></p></blockquote>
+
+<p>这是 Jena Fuseki 的核心价值：三元组数据库 + 前向链规则引擎 + SPARQL 查询一体化。</p>
+
+<hr>
+
+<h2>二、技术架构：前向链 + SPARQL 一体化</h2>
+
+<pre><code class="">┌─────────────────────────────────────────────────┐
+│         输入：病例（症状列表）                  │
+│         例：["发热", "呕吐", "腹泻"]             │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 1：SPARQL UPDATE（断言症状三元组）        │
+│  INSERT DATA { :case :has :发热, :has :呕吐 }   │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 2：Jena 前向链自动触发（数据驱动）         │
+│  规则2 → :case :suspected :d001, :d003, ...     │
+│  规则3 → :case :excluded :d002, :d003, ...      │
+│  规则4 → :case :diagnosed :d001, :d004          │
+│  （预计算所有推断结果，存入图）                  │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 3：SPARQL 查询（自动包含推理结果）         │
+│  SELECT ?d WHERE { :case :diagnosed ?d }        │
+│  → 直接返回预计算的推断结果                      │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 4：清理临时三元组（DELETE WHERE）         │
+└─────────────────────────────────────────────────┘</code></pre>
+
+<h3>2.1 前向链 vs 反向链</h3>
+
+<table>
+<tr><th></th><th>P2 Prolog（反向链）</th><th>P3 Jena（前向链）</th></tr>
+<tr><td>触发方式</td><td>用户提问触发</td><td>数据变更触发</td></tr>
+<tr><td>计算时机</td><td>查询时按需计算</td><td>数据加载时预计算</td></tr>
+<tr><td>计算范围</td><td>只算被问到的</td><td>算所有可能的</td></tr>
+<tr><td>查询速度</td><td>慢（实时计算）</td><td>快（读预计算结果）</td></tr>
+<tr><td>写入速度</td><td>快（不计算）</td><td>慢（触发规则链）</td></tr>
+<tr><td>类比</td><td>按需计算</td><td>物化视图</td></tr>
+</table>
+
+<p><strong>工程取舍</strong>：P3 适合"读多写少"的场景——知识库不常变，但查询频繁。每次写入触发前向链预计算，后续查询直接读结果。</p>
+
+<h3>2.2 SPARQL 查询推理一体化</h3>
+
+<p>P3 最独特的能力——<strong>SPARQL 查询自动包含推理结果</strong>：</p>
+
+<pre><code class="sparql">-- :diagnosed 不是手工断言的，是 Jena 规则推断的
+-- 但 SPARQL 查询时它和手工断言的三元组完全一样
+SELECT ?disease ?label WHERE {
+    :case_temp :diagnosed ?disease .
+    ?disease rdfs:label ?label .
+}</code></pre>
+
+<p>对比 P1 和 P2：</p>
+
+<table>
+<tr><th></th><th>P1（HermiT）</th><th>P2（Prolog）</th><th>P3（Jena）</th></tr>
+<tr><td>推理与查询</td><td>**分开**：先 `sync_reasoner()`，再 `cls.instances()`</td><td>**一体**：`prolog.query()` 同时推理</td><td>**一体**：SPARQL 查询自动含推理结果</td></tr>
+<tr><td>查询语言</td><td>owlready2 API</td><td>Prolog 语法</td><td>**SPARQL（W3C 标准）**</td></tr>
+</table>
+
+<p>P3 的 SPARQL 是 W3C 标准查询语言，意味着任何 SPARQL 客户端都能查询推理结果——跨语言、跨平台互操作。</p>
+
+<h3>2.3 知识表示：RDF 三元组</h3>
+
+<pre><code class="turtle"># 疾病个体（注意：P3 中疾病是个体，不是类）
+:d001 rdf:type :疾病 ;
+      rdfs:label "猫瘟" ;
+      :necessary :发热, :呕吐, :腹泻 ;
+      :nos :咳嗽, :流鼻涕 .
+
+# 症状个体
+:发热 rdf:type :症状 ;
+      rdfs:label "发热" .</code></pre>
+
+<p>对比三种知识表示：</p>
+
+<table>
+<tr><th></th><th>P1 OWL</th><th>P2 Prolog</th><th>P3 RDF</th></tr>
+<tr><td>疾病</td><td>**类**（Class D001）</td><td>**谓词** `disease(d001,...)`</td><td>**资源** `:d001 rdf:type :疾病`</td></tr>
+<tr><td>症状</td><td>**个体**（Individual）</td><td>**原子** `'发热'`</td><td>**资源** `:发热 rdf:type :症状`</td></tr>
+<tr><td>关联</td><td>`equivalent_to` 公理</td><td>`necessary/2` 事实</td><td>`:necessary` 三元组</td></tr>
+<tr><td>格式</td><td>OWL/RDF XML</td><td>.pl 文本</td><td>Turtle（.ttl）</td></tr>
+</table>
+
+<h3>2.4 Jena 自定义规则</h3>
+
+<pre><code class="prolog"># 前向链规则（数据加载时自动执行）
+[rule_suspected:
+    (?case :has ?symptom), (?disease :necessary ?symptom), (?disease rdf:type :疾病)
+    -&gt; (?case :suspected ?disease)
+]
+
+[rule_diagnosed:
+    (?case :suspected ?disease), noValue(?case :excluded ?disease)
+    -&gt; (?case :diagnosed ?disease)
+]</code></pre>
+
+<p><code>noValue</code> 是 Jena 的 CWA 否定——图中没有 <code>excluded</code> 三元组就认为不存在。对比 P1 的 OWA（未断言 ≠ 不存在）和 P2 的 <code>\+</code>（negation as failure）。</p>
+
+<hr>
+
+<h2>三、运行示例</h2>
+
+<p>输入与 P1/P2 相同的病例：</p>
+
+<pre><code class="python">case = {
+    "pet_type": "cat",
+    "symptoms": ["发热", "呕吐", "腹泻"],
+    "breed": "英短",
+    "age": 2
+}</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="">──────────────────────────────────────────────────
+  📋 诊断结果（Jena 前向链 + SPARQL）
+──────────────────────────────────────────────────
+  1. 猫瘟               置信度：1.00  ██████████ ✅确诊
+  2. 犬细小病毒          置信度：0.67  ██████ ⚠️疑似
+──────────────────────────────────────────────────
+
+  🔗 传递闭包（Jena 前向链预计算）：
+    猫感冒 → 猫瘟
+    犬感冒 → 犬细小</code></pre>
+
+<h3>三种范式结果对比</h3>
+
+<table>
+<tr><th>疾病</th><th>P1（HermiT）</th><th>P2（Prolog）</th><th>P3（Jena）</th></tr>
+<tr><td>猫瘟</td><td>0.99（SWRL 补充）</td><td>1.00 ✅确诊</td><td>1.00 ✅确诊</td></tr>
+<tr><td>犬细小</td><td>0.77（SWRL 补充）</td><td>0.67 ⚠️疑似</td><td>0.67 ⚠️疑似</td></tr>
+<tr><td>推理方式</td><td>OWL 分类 + SWRL</td><td>Prolog SLD 归结</td><td>Jena 前向链 + SPARQL</td></tr>
+<tr><td>否定语义</td><td>OWA</td><td>CWA（`\+`）</td><td>CWA（`noValue`）</td></tr>
+</table>
+
+<hr>
+
+<h2>四、与 LLM 方案对比</h2>
+
+<table>
+<tr><th>维度</th><th>LLM 方案</th><th>P3 Jena 方案</th></tr>
+<tr><td>输入</td><td>自然语言</td><td>`symptoms: ["发热", "呕吐", "腹泻"]`</td></tr>
+<tr><td>输出</td><td>「可能是猫瘟，建议就医」</td><td>猫瘟（1.00 ✅确诊）</td></tr>
+<tr><td>推理链</td><td>❌ 黑盒</td><td>✅ 前向链规则可追溯</td></tr>
+<tr><td>查询语言</td><td>自然语言</td><td>SPARQL（W3C 标准）</td></tr>
+<tr><td>数据持久化</td><td>❌</td><td>✅ 三元组数据库</td></tr>
+<tr><td>跨系统互操作</td><td>❌</td><td>✅ SPARQL 端点（HTTP API）</td></tr>
+<tr><td>耗时</td><td>2-5 秒</td><td><0.1 秒（预计算）</td></tr>
+</table>
+
+<hr>
+
+<h2>五、P1 / P2 / P3：什么时候用哪个？</h2>
+
+<table>
+<tr><th>场景特征</th><th>推荐范式</th><th>原因</th></tr>
+<tr><td>需要分类推理、一致性检查</td><td>P1 OWL</td><td>Prolog/Jena 不做 satisfiability</td></tr>
+<tr><td>开放世界更合理（医疗、法律）</td><td>P1 OWL</td><td>"没记录" ≠ "没有"</td></tr>
+<tr><td>需要递归推理</td><td>P2 Prolog</td><td>OWL/Jena 递归能力弱</td></tr>
+<tr><td>规则密集（350+ 条）</td><td>P2 Prolog</td><td>Prolog 规则表达力强</td></tr>
+<tr><td>需要标准查询语言</td><td>**P3 Jena**</td><td>SPARQL 是 W3C 标准</td></tr>
+<tr><td>需要数据持久化</td><td>**P3 Jena**</td><td>三元组数据库（TDB2）</td></tr>
+<tr><td>读多写少（知识库不常变）</td><td>**P3 Jena**</td><td>前向链预计算，查询快</td></tr>
+<tr><td>需要跨系统互操作</td><td>**P3 Jena**</td><td>HTTP + SPARQL 端点</td></tr>
+<tr><td>需要形式化保证</td><td>P1 OWL</td><td>Prolog/Jena 无完备性保证</td></tr>
+</table>
+
+<blockquote><p><strong>实践中常组合使用</strong>：用 OWL 管理领域概念体系，用 Prolog 执行复杂规则，用 Jena Fuseki 提供标准化的查询服务。</p></blockquote>
+
+<hr>
+
+<h2>教学效果：从代码到原理</h2>
+
+<p>本项目作为《当 LLM 不够用了》的配套实战案例，对应以下章节：</p>
+
+<table>
+<tr><th>本书章节</th><th>本项目对应内容</th></tr>
+<tr><td>第一章 本体论是什么</td><td>RDF 三元组 vs OWL 类层次——两种知识建模范式的底层统一</td></tr>
+<tr><td>第四章 本体推理的技术基础设施</td><td>前向链规则引擎与 SPARQL 查询一体化——推理即查询</td></tr>
+<tr><td>第五章 企业级本体推理架构设计</td><td>Jena Fuseki 三元组数据库——知识的持久化与标准化查询</td></tr>
+<tr><td>第九章 打造你的第一条企业决策推理链</td><td>P1/P2/P3 场景决策树：「什么时候用 OWL，什么时候用 Prolog，什么时候用 Jena」</td></tr>
+</table>
+
+<p><strong>学习路径</strong>：</p>
+
+<ol>
+<li><strong>第一周</strong>：先跑通 P1 和 P2，理解两种范式后再看 P3——体会「推理 + 查询一体化」的价值</li>
+<li><strong>第二周</strong>：掌握 SPARQL 查询语法——W3C 标准，跨语言跨平台</li>
+<li><strong>第三周</strong>：理解前向链预计算 vs 反向链实时计算——工程中的读/写权衡</li>
+<li><strong>第四周</strong>：尝试用 Jena Fuseki HTTP API 从外部程序查询推理结果</li>
+</ol>
+
+<hr>
+
+<h2>六、总结</h2>
+
+<p>P1/P2/P3 构成了"多范式推理实战营"的核心三部曲——<strong>同一问题，三种范式，各有取舍</strong>：</p>
+
+<table>
+<tr><th></th><th>P1</th><th>P2</th><th>P3</th></tr>
+<tr><td>逻辑</td><td>描述逻辑</td><td>Horn 子句</td><td>前向链规则</td></tr>
+<tr><td>假设</td><td>OWA</td><td>CWA</td><td>CWA</td></tr>
+<tr><td>方向</td><td>分类（Tableau）</td><td>反向链（SLD）</td><td>前向链</td></tr>
+<tr><td>时机</td><td>查询前</td><td>查询时</td><td>数据加载时</td></tr>
+<tr><td>查询</td><td>API</td><td>Prolog</td><td>SPARQL</td></tr>
+<tr><td>持久化</td><td>文件</td><td>内存</td><td>三元组数据库</td></tr>
+<tr><td>完备性</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>标准</td><td>OWL（W3C）</td><td>Prolog（ISO）</td><td>RDF/SPARQL（W3C）</td></tr>
+</table>
+
+<blockquote><p>「让 OWL 做知识治理，让 Prolog 做规则推理，让 Jena 做查询服务，让 LLM 做知识工程。」</p>
+<p>—— 《当 LLM 不够用了——本体推理的企业决策实践》</p></blockquote>
+
+<hr>
+
+<p><strong>项目链接</strong>：<a href="https://github.com/georgewangchn/OntologyOps/tree/main/examples/P3">github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P3</a></p>
+
+<p><strong>P1 对比</strong>：<a href="../P1/README-ARTICLE.md">P1 · OWL 本体推理</a></p>
+
+<p><strong>P2 对比</strong>：<a href="../P2/README-ARTICLE.md">P2 · Prolog 规则推理</a></p>
+
+<p><strong>书籍全书</strong>：<a href="https://georgewangchn.github.io/OntologyOps/book/">《当 LLM 不够用了——本体推理的企业决策实践》在线阅读</a></p>
+
+
+<div class="article-footer">
+    <p>« <a href="../">返回 OntologyOps 首页</a> &nbsp;|&nbsp; <a href="../book/">在线阅读全书</a> »</p>
+    <p style="margin-top:1em;">作者：森林瀑布 &nbsp;|&nbsp; 项目类型：多范式推理实战营 P3/6</p>
+</div>
+
+</body>
+</html>
