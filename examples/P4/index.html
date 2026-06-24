@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="森林瀑布">
+    <title>P4 · 宠物疾病模糊推理系统 — 多范式推理实战营</title>
+    <style>
+        /* === 中文排版优化（继承书籍风格）=== */
+        body {
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+            font-size: 11pt;
+            line-height: 1.9;
+            color: #2c2c2c;
+            text-align: justify;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2cm 1.5cm;
+            background: #fafaf8;
+        }
+
+        /* === 文章头部 === */
+        .article-header {
+            text-align: center;
+            margin-bottom: 2.5cm;
+            padding-bottom: 1.5cm;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .article-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #533483, #e94560);
+            color: white;
+            padding: 0.2em 0.8em;
+            border-radius: 4px;
+            font-size: 10pt;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 1em;
+        }
+
+        .article-title {
+            font-size: 24pt;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 0.03em;
+            margin: 0.5em 0;
+            line-height: 1.4;
+        }
+
+        .article-subtitle {
+            font-size: 13pt;
+            color: #555;
+            font-weight: 400;
+            margin-bottom: 0.8em;
+        }
+
+        .article-meta {
+            font-size: 10pt;
+            color: #888;
+            letter-spacing: 0.02em;
+        }
+
+        .article-meta a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 章节标题 === */
+        h1 {
+            font-size: 17pt;
+            color: #1a1a2e;
+            font-weight: 700;
+            margin: 2em 0 0.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #e8e8e8;
+            letter-spacing: 0.02em;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #16213e;
+            font-weight: 600;
+            margin: 1.5em 0 0.6em;
+            border-left: 4px solid #533483;
+            padding-left: 0.6em;
+        }
+
+        h3 {
+            font-size: 12pt;
+            color: #0f3460;
+            font-weight: 600;
+            margin: 1.2em 0 0.5em;
+        }
+
+        /* === 段落 === */
+        p {
+            text-indent: 2em;
+            margin: 0.5em 0;
+            orphans: 2;
+            widows: 2;
+        }
+
+        p:first-of-type {
+            text-indent: 0;
+        }
+
+        /* === 引用块 === */
+        blockquote {
+            margin: 1em 1.5em;
+            padding: 0.6em 1.2em;
+            border-left: 4px solid #533483;
+            background: #f8f8fc;
+            color: #555;
+            orphans: 3;
+            widows: 3;
+        }
+
+        blockquote p {
+            text-indent: 0;
+            margin: 0.3em 0;
+        }
+
+        /* === 强调 === */
+        strong, b {
+            color: #16213e;
+            font-weight: 700;
+        }
+
+        em, i {
+            color: #0f3460;
+            font-style: italic;
+        }
+
+        /* === 代码 === */
+        code {
+            background: #f0f0f5;
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            font-family: "SF Mono", "Fira Code", "Consolas", "Menlo", monospace;
+            font-size: 9pt;
+            color: #e94560;
+        }
+
+        pre {
+            background: #1a1a2e;
+            color: #d4d4d8;
+            padding: 1em 1.2em;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 9pt;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            orphans: 3;
+            widows: 3;
+            margin: 1em 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* === 表格 === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 10.5pt;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #eaeaea;
+            padding: 0.5em 0.8em;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.4em 0.8em;
+            border-bottom: 1px solid #e8e8e8;
+            color: #333;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8f8fc;
+        }
+
+        /* === 列表 === */
+        ul, ol {
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }
+
+        li {
+            margin: 0.3em 0;
+        }
+
+        /* === 分割线 === */
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 2em 0;
+        }
+
+        /* === 底部 === */
+        .article-footer {
+            margin-top: 3em;
+            padding-top: 1.5em;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #888;
+            font-size: 10pt;
+        }
+
+        .article-footer a {
+            color: #533483;
+            text-decoration: none;
+        }
+
+        /* === 响应式 === */
+        @media (max-width: 600px) {
+            body {
+                padding: 1cm 1cm;
+                font-size: 10.5pt;
+            }
+            .article-title {
+                font-size: 20pt;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="article-header">
+    <div class="article-badge">多范式推理实战营 · 项目 4/6</div>
+    <h1 class="article-title">P4 · 宠物疾病模糊推理系统</h1>
+    <p class="article-subtitle">副标题：第四种范式——当症状不再是有/无，而是"有多严重"</p>
+    <p class="article-meta">**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-24</p>
+</div>
+
+
+<hr>
+
+<h2>一、引言：确定性推理的天花板</h2>
+
+<p>P1-P3 用三种范式解决了同一个宠物诊断问题，但它们有一个共同的假设：<strong>症状是二元的——有或没有</strong>。</p>
+
+<pre><code class="">P1（OWL）：  has(case, 发热) ✓  →  necessary(D001, 发热) ✓
+P2（Prolog）：has(case, '发热') ✓ → forall(necessary) ✓
+P3（Jena）：  :case :has :发热   →  :d001 :necessary :发热</code></pre>
+
+<p>但现实中的医疗诊断不是这样工作的。39.5°C 的高烧和 38.8°C 的低烧，在 P1-P3 中都被当作"有发热"——<strong>严重程度信息被丢弃了</strong>。</p>
+
+<blockquote><p><strong>患者</strong>：「医生，我的猫体温 39.5°C，呕吐了四五次，拉的是水样带血的便便。」</p>
+<p><strong>医生</strong>：「39.5°C 是高烧，水样带血是严重腹泻——这个组合猫瘟的可能性很大，但不能完全排除猫肠炎，因为高烧也是猫肠炎的排除指征。」</p></blockquote>
+
+<p>医生不会因为"有发热"就排除猫肠炎——她会根据发热的<strong>程度</strong>来判断。39.5°C 的高烧排除猫肠炎的力度，和 38.5°C 的低烧完全不同。</p>
+
+<p>这正是《当 LLM 不够用了》第四章 4.4 节讲的核心问题：</p>
+
+<blockquote><p>确定性推理保证结论的可解释性和一致性。不确定性推理保证覆盖现实世界的灰度地带。</p></blockquote>
+
+<p>P4 用<strong>模糊推理</strong>（Mamdani 模糊逻辑）处理这个"灰度地带"——症状不再是"有/无"，而是"严重度 0-1"的连续值；疾病不再是"确诊/排除"，而是"置信度 0-1"的连续值。</p>
+
+<hr>
+
+<h2>二、技术架构：Mamdani 模糊推理</h2>
+
+<pre><code class="">┌─────────────────────────────────────────────────┐
+│    输入：病例（症状 + 严重度详情）               │
+│    例：发热(39.5°C) 呕吐(多次) 腹泻(水样暗红)    │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 1：模糊化（Fuzzification）                │
+│  症状详情 → 连续严重度（0-1）                    │
+│  发热 39.5°C → 0.80，呕吐多次 → 0.70            │
+│  腹泻水样暗红 → 0.90                            │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 2：计算模糊输入（双输入设计）              │
+│  覆盖率 = 已出现必要症状数 / 总数                │
+│  强度 = 已出现症状的严重度均值                   │
+│  排除度 = 排除症状严重度最大值（模糊 OR）        │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 3：Mamdani 规则推理                        │
+│  12 条 IF-THEN 规则，激活强度 = min(条件隶属度)  │
+│  覆盖率=高 ∧ 强度=高 ∧ 排除度=无 → 置信度=高     │
+│  覆盖率=高 ∧ 强度=高 ∧ 排除度=有 → 置信度=中     │
+│  ...                                            │
+└──────────────────────┬──────────────────────────┘
+                       ↓
+┌─────────────────────────────────────────────────┐
+│  Step 4：去模糊化（Defuzzification）             │
+│  重心法（centroid）→ 连续置信度值（0-1）          │
+└─────────────────────────────────────────────────┘</code></pre>
+
+<h3>2.1 模糊化：从"有/无"到"有多严重"</h3>
+
+<p>P1-P3 的输入是症状列表 <code>["发热", "呕吐", "腹泻"]</code>——每个症状只有出现/不出现两种状态。P4 的输入增加了 <code>symptom_details</code>，记录每个症状的严重程度：</p>
+
+<pre><code class="json">{
+  "symptoms": ["发热", "呕吐", "腹泻"],
+  "symptom_details": {
+    "发热": {"degree": "高", "value": 39.5},
+    "呕吐": {"frequency": "多次", "content": "黄色液体"},
+    "腹泻": {"type": "水样", "color": "暗红"}
+  }
+}</code></pre>
+
+<p>模糊化函数将这些详情映射为 0-1 的连续严重度：</p>
+
+<pre><code class="python">def compute_symptom_severity(symptom_name, case, baselines):
+    # 发热：根据体温值映射
+    if symptom_name == "发热" and "value" in detail:
+        temp = float(detail["value"])
+        if temp &gt;= 40.0:   return 1.0   # 极高烧
+        elif temp &gt;= 39.5: return 0.8   # 高烧
+        elif temp &gt;= 39.0: return 0.6   # 中烧
+        else:              return 0.3   # 低烧
+
+    # 呕吐：根据频率映射
+    if "frequency" in detail:
+        if freq in ("频繁", "持续"): return 0.9
+        elif freq == "多次":         return 0.7
+        elif freq == "偶尔":         return 0.4
+
+    # 腹泻：根据类型和颜色映射
+    if "水样" in dtype:  base = 0.6
+    if "血" in color:    base = min(1.0, base + 0.3)  # 便血加重</code></pre>
+
+<p>对比 P1-P3：症状只有"有(1)/无(0)"，严重度信息完全丢失。</p>
+
+<h3>2.2 隶属度函数：模糊集合的"边缘"</h3>
+
+<p>模糊推理的核心是<strong>隶属度函数</strong>——它定义了一个值"属于"某个模糊集合的程度。</p>
+
+<p>P4 定义了四个模糊变量（三个输入 + 一个输出），每个用梯形隶属度函数（trapmf）描述：</p>
+
+<p><strong>覆盖率</strong>（必要症状的出现比例）和 <strong>强度</strong>（已出现症状的严重度均值）：</p>
+
+<pre><code class="">        低 [0, 0, 0.15, 0.35]      中 [0.25, 0.45, 0.55, 0.75]     高 [0.65, 0.85, 1.0, 1.0]
+        ───╲                             ╱─╲                              ╱───
+           ╲                           ╱   ╲                            ╱
+  0  0.15  0.35  0.45  0.55  0.65  0.85  1.0</code></pre>
+
+<blockquote><p>📝 <strong>为什么用双输入？</strong> 覆盖率回答"有几个必要症状出现"，强度回答"已出现的有多严重"。分离后可以区分"3/3 症状全在但都是低烧"（覆盖率=高, 强度=低 → 中置信度）和"1/3 症状在但极高烧"（覆盖率=低, 强度=高 → 低置信度）——医学语义完全不同。</p></blockquote>
+
+<p><strong>排除度</strong>（排除症状的出现程度）：</p>
+
+<pre><code class="">       无 [0, 0, 0.05, 0.15]              有 [0.1, 0.3, 1.0, 1.0]
+       ───╲                                 ╱───
+          ╲                               ╱
+ 0  0.05  0.15  0.3              1.0</code></pre>
+
+<p><strong>置信度</strong>（输出，去模糊化后得到连续值）：</p>
+
+<pre><code class="">       低 [0, 0, 0.15, 0.35]      中 [0.25, 0.45, 0.55, 0.75]     高 [0.65, 0.85, 1.0, 1.0]</code></pre>
+
+<blockquote><p>📝 对比 P1-P3：不需要隶属度函数，因为症状和结论都是二元的。隶属度函数是模糊推理区别于确定性推理的核心——它让推理能够处理"边缘模糊"的问题。</p></blockquote>
+
+<h3>2.3 模糊规则：Mamdani IF-THEN（三输入 12 条）</h3>
+
+<p>12 条规则覆盖覆盖率×强度×排除度的所有组合：</p>
+
+<p><strong>规则矩阵（排除度=无时）：</strong></p>
+
+<table>
+<tr><th>覆盖率\强度</th><th>低</th><th>中</th><th>高</th></tr>
+<tr><td>低</td><td>低</td><td>低</td><td>低</td></tr>
+<tr><td>中</td><td>低</td><td>中</td><td>中</td></tr>
+<tr><td>高</td><td>中</td><td>中</td><td>**高**</td></tr>
+</table>
+
+<p><strong>规则矩阵（排除度=有时）：</strong></p>
+
+<table>
+<tr><th>覆盖率\强度</th><th>低</th><th>中</th><th>高</th></tr>
+<tr><td>低</td><td>低</td><td>低</td><td>低</td></tr>
+<tr><td>中</td><td>低</td><td>低</td><td>低</td></tr>
+<tr><td>高</td><td>低</td><td>低</td><td>**中**</td></tr>
+</table>
+
+<pre><code class="python"># 核心确诊规则：全覆盖 + 高强度 + 无排除 → 高置信度
+IF 覆盖率=高 AND 强度=高 AND 排除度=无 THEN 置信度=高
+
+# 排除降级规则：全覆盖 + 高强度 + 有排除 → 中置信度（降一级，非完全排除）
+IF 覆盖率=高 AND 强度=高 AND 排除度=有 THEN 置信度=中
+
+# 缺核心症状：覆盖率低 → 低置信度（不管多严重）
+IF 覆盖率=低 THEN 置信度=低
+
+# ...共 12 条规则</code></pre>
+
+<p>对比 P1-P3 的规则：</p>
+
+<table>
+<tr><th>范式</th><th>规则形式</th><th>触发方式</th><th>输出</th></tr>
+<tr><td>P1 SWRL</td><td>`has(?p,?s) ∧ necessary(?d,?s) → suspected(?p,?d)`</td><td>二元（有/无）</td><td>疑似（是/否）</td></tr>
+<tr><td>P2 Prolog</td><td>`forall(necessary(D,S), has(P,S))`</td><td>二元（全匹配）</td><td>确诊（是/否）</td></tr>
+<tr><td>P3 Jena</td><td>`noValue(?case :excluded ?d) → diagnosed`</td><td>二元（无排除）</td><td>确诊（是/否）</td></tr>
+<tr><td>**P4 模糊**</td><td>`覆盖率=高 AND 强度=高 AND 排除度=无 → 置信度=高`</td><td>**隶属度触发**</td><td>**连续置信度**</td></tr>
+</table>
+
+<p><strong>关键区别</strong>：P1-P3 的规则是"满足条件就触发"，P4 的规则是"根据隶属度部分触发"——激活强度 = min(条件隶属度)，输出是模糊集合的合成。</p>
+
+<h3>2.4 排除语义：从"一刀切"到"连续降级"</h3>
+
+<p>这是 P4 与 P1-P3 <strong>最根本的行为差异</strong>：</p>
+
+<pre><code class="">病例：猫，发热(0.8) + 呕吐(0.7) + 腹泻(0.9)
+猫肠炎：necessary=[腹泻, 呕吐]  exclusion=[发热, 咳嗽]
+
+P1-P3（确定性推理）：
+  发热 ✓ → 命中猫肠炎排除症状 → 猫肠炎完全排除（不出现在结果中）
+
+P4（模糊推理）：
+  发热严重度=0.8 → 排除度=max(0.8, 0.0)=0.80
+  覆盖率=2/2=1.0  强度=(0.9+0.7)/2=0.80
+  规则12触发：覆盖率=高 ∧ 强度=高 ∧ 排除度=有 → 置信度=中
+  去模糊化 → 0.50
+
+  猫肠炎出现在结果中，置信度=0.50 [中]</code></pre>
+
+<p><strong>猫肠炎不被完全排除，而是置信度降为中等。</strong> 双输入设计下，猫肠炎的覆盖率=高（必要症状全在）+强度=高（严重度都高），但排除度=有（发热命中），所以降一级为"中"而非完全压低——匹配证据强时排除只降一级。</p>
+
+<hr>
+
+<h2>三、运行示例</h2>
+
+<p>输入与 P1-P3 相同的病例（但增加了严重度详情）：</p>
+
+<pre><code class="python">case = {
+    "pet_type": "cat",
+    "symptoms": ["发热", "呕吐", "腹泻"],
+    "symptom_details": {
+        "发热": {"degree": "高", "value": 39.5},
+        "呕吐": {"frequency": "多次"},
+        "腹泻": {"type": "水样", "color": "暗红"}
+    },
+    "breed": "英短",
+    "age": 2
+}</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="">  症状严重度（模糊化输入）：
+    发热: 0.80
+    呕吐: 0.70
+    腹泻: 0.90
+
+──────────────────────────────────────────────────
+  📋 诊断结果（模糊推理 · Mamdani · 连续置信度）
+──────────────────────────────────────────────────
+  1. 猫瘟               置信度：0.86  ████████ [高]
+  2. 猫肠炎              置信度：0.50  ████ [中]
+  3. 猫艾滋病             置信度：0.14  █ [低]
+──────────────────────────────────────────────────</code></pre>
+
+<h3>四种范式结果对比</h3>
+
+<table>
+<tr><th>疾病</th><th>P1（HermiT）</th><th>P2（Prolog）</th><th>P3（Jena）</th><th>P4（模糊）</th></tr>
+<tr><td>猫瘟</td><td>0.99（SWRL）</td><td>1.00 ✅确诊</td><td>1.00 ✅确诊</td><td>**0.86 [高]**</td></tr>
+<tr><td>犬细小</td><td>0.77（SWRL）</td><td>0.67 ⚠️疑似</td><td>0.67 ⚠️疑似</td><td>不出现（物种过滤）</td></tr>
+<tr><td>猫肠炎</td><td>**排除**</td><td>**排除**</td><td>**排除**</td><td>**0.50 [中]**</td></tr>
+</table>
+
+<p><strong>猫肠炎是关键区别</strong>：</p>
+
+<ul>
+<li>P1-P3：发热命中排除症状 → 完全排除（不在结果中）</li>
+<li>P4：发热严重度高 → 置信度降为中等（仍在结果中）。双输入设计下覆盖率=高+强度=高但排除度=有 → 降一级（中），而非完全压低</li>
+</ul>
+
+<h3>推理链完整追溯</h3>
+
+<pre><code class="">① 症状严重度计算（模糊化输入）
+   发热: 39.5°C → 0.80（高烧范围）
+   呕吐: 多次   → 0.70（中高频）
+   腹泻: 水样+暗红 → 0.90（严重，含血色）
+
+② 覆盖率 + 强度 + 排除度计算
+   猫瘟   necessary=[发热,呕吐,腹泻] → 覆盖率=3/3=1.0  强度=(0.8+0.7+0.9)/3=0.80
+           exclusion=[咳嗽,流鼻涕]  → 排除度=max(0,0)=0.00
+
+   猫肠炎 necessary=[腹泻,呕吐]      → 覆盖率=2/2=1.0  强度=(0.9+0.7)/2=0.80
+           exclusion=[发热,咳嗽]    → 排除度=max(0.8,0)=0.80
+
+③ Mamdani 模糊推理（规则触发）
+   猫瘟:   覆盖率=高 ∧ 强度=高 ∧ 排除度=无 → 规则11 → 置信度=高
+   猫肠炎: 覆盖率=高 ∧ 强度=高 ∧ 排除度=有 → 规则12 → 置信度=中
+
+④ 去模糊化（重心法）
+   猫瘟:   置信度=高 → 0.86
+   猫肠炎: 置信度=中 → 0.50</code></pre>
+
+<hr>
+
+<h2>四、与朴素贝叶斯对比：为什么选模糊推理？</h2>
+
+<p>朴素贝叶斯也能处理不确定性，但两者有本质区别：</p>
+
+<table>
+<tr><th>维度</th><th>模糊推理（P4）</th><th>朴素贝叶斯</th></tr>
+<tr><td>**知识来源**</td><td>领域专家定义隶属度函数</td><td>从数据统计学习概率</td></tr>
+<tr><td>**推理性质**</td><td>演绎（规则驱动）</td><td>归纳（数据驱动）</td></tr>
+<tr><td>**可解释性**</td><td>每条规则可追溯</td><td>概率黑盒</td></tr>
+<tr><td>**与本体关系**</td><td>可扩展为 Fuzzy OWL，嵌入本体</td><td>独立范式，不嵌入本体</td></tr>
+<tr><td>**数据需求**</td><td>低（不需要训练集）</td><td>高（需要大量标注病例）</td></tr>
+</table>
+
+<p>引用第四章 4.6 节：</p>
+
+<blockquote><p>模糊推理的隶属度函数需要领域专家定义，不是纯数据驱动——这恰好防止了"统计分数伪装成逻辑结论"的问题。</p></blockquote>
+
+<p>朴素贝叶斯告诉你"P(猫瘟|发热,呕吐,腹泻) = 0.85"，但它解释不了<strong>为什么</strong>是 0.85。模糊推理告诉你"覆盖率高且强度高且排除度低 → 置信度高"，每一步都有明确的规则依据。</p>
+
+<hr>
+
+<h2>五、与 LLM 方案对比</h2>
+
+<table>
+<tr><th>维度</th><th>LLM 方案</th><th>P4 模糊推理方案</th></tr>
+<tr><td>输入</td><td>「我的猫 39.5°C，吐了好几次，拉肚子带血」</td><td>`symptoms + symptom_details`</td></tr>
+<tr><td>输出</td><td>「可能是猫瘟，建议就医」</td><td>猫瘟（0.86 [高]）> 猫肠炎（0.50 [中]）</td></tr>
+<tr><td>推理链</td><td>❌ 黑盒</td><td>✅ 模糊规则可追溯</td></tr>
+<tr><td>严重度感知</td><td>⚠️ 可能忽略数值细节</td><td>✅ 体温/频率/类型映射为严重度</td></tr>
+<tr><td>排除语义</td><td>⚠️ 可能一刀切排除</td><td>✅ 根据严重度连续降级</td></tr>
+<tr><td>一致性</td><td>❌ 同一输入可能不同输出</td><td>✅ 相同输入必定相同输出</td></tr>
+<tr><td>耗时</td><td>2-5 秒</td><td><0.1 秒</td></tr>
+</table>
+
+<hr>
+
+<h2>六、P1-P4：什么时候用哪个？</h2>
+
+<table>
+<tr><th>场景特征</th><th>推荐范式</th><th>原因</th></tr>
+<tr><td>需要分类推理、一致性检查</td><td>P1 OWL</td><td>Tableau 算法完备正确</td></tr>
+<tr><td>开放世界更合理（医疗、法律）</td><td>P1 OWL</td><td>"没记录" ≠ "没有"</td></tr>
+<tr><td>需要递归推理</td><td>P2 Prolog</td><td>OWL/Jena 递归能力弱</td></tr>
+<tr><td>规则密集（350+ 条）</td><td>P2 Prolog</td><td>Prolog 规则表达力强</td></tr>
+<tr><td>需要标准查询语言</td><td>P3 Jena</td><td>SPARQL 是 W3C 标准</td></tr>
+<tr><td>需要数据持久化</td><td>P3 Jena</td><td>三元组数据库</td></tr>
+<tr><td>**症状有严重程度**</td><td>**P4 模糊**</td><td>隶属度函数处理连续值</td></tr>
+<tr><td>**排除不是一刀切**</td><td>**P4 模糊**</td><td>排除症状降低置信度而非完全排除</td></tr>
+<tr><td>**需要领域专家知识驱动**</td><td>**P4 模糊**</td><td>隶属度函数由专家定义，非数据驱动</td></tr>
+</table>
+
+<blockquote><p><strong>实践中常组合使用</strong>：用 OWL 管理领域概念体系，用 Prolog 执行复杂规则，用 Jena 提供查询服务，用模糊推理处理不确定性信号——确定性推理负责"硬规则"，不确定性推理负责"灰度地带"。</p></blockquote>
+
+<hr>
+
+<h2>七、教学效果：从代码到原理</h2>
+
+<p>本项目作为《当 LLM 不够用了》的配套实战案例，对应以下章节：</p>
+
+<table>
+<tr><th>本书章节</th><th>本项目对应内容</th></tr>
+<tr><td>第四章 4.4 确定性推理与不确定性推理的分工</td><td>P4 展示不确定性推理如何处理"边缘模糊"问题</td></tr>
+<tr><td>第四章 4.6 不确定推理嵌入方式</td><td>模糊推理的隶属度函数定义 + Mamdani 推理流程</td></tr>
+<tr><td>第八章 多范式推理</td><td>P4 作为第四种范式，与 P1-P3 确定性推理形成对比</td></tr>
+</table>
+
+<p><strong>学习路径</strong>：</p>
+
+<ol>
+<li><strong>第一周</strong>：先跑通 P1-P3，理解确定性推理后再看 P4——体会"连续值"带来的变化</li>
+<li><strong>第二周</strong>：理解隶属度函数——梯形函数的参数如何影响推理结果</li>
+<li><strong>第三周</strong>：掌握 Mamdani 推理流程——模糊化 → 规则触发 → 去模糊化</li>
+<li><strong>第四周</strong>：对比猫肠炎在 P1-P3 和 P4 中的不同处理——"完全排除" vs "连续降级"</li>
+</ol>
+
+<hr>
+
+<h2>八、总结</h2>
+
+<p>P1-P4 构成了"多范式推理实战营"的前四部曲——<strong>确定性推理（P1-P3）+ 不确定性推理（P4）</strong>：</p>
+
+<table>
+<tr><th></th><th>P1</th><th>P2</th><th>P3</th><th>P4</th></tr>
+<tr><td>逻辑</td><td>描述逻辑</td><td>Horn 子句</td><td>前向链规则</td><td>**模糊逻辑**</td></tr>
+<tr><td>假设</td><td>OWA</td><td>CWA</td><td>CWA</td><td>**模糊（0-1）**</td></tr>
+<tr><td>输入</td><td>二元（有/无）</td><td>二元（有/无）</td><td>二元（有/无）</td><td>**连续（0-1）**</td></tr>
+<tr><td>输出</td><td>二元（确诊/排除）</td><td>二元（确诊/排除）</td><td>二元（确诊/排除）</td><td>**连续（0-1）**</td></tr>
+<tr><td>排除</td><td>完全排除</td><td>完全排除</td><td>完全排除</td><td>**连续降级**</td></tr>
+<tr><td>外部依赖</td><td>JVM + 补丁</td><td>SWI-Prolog</td><td>Docker</td><td>**无（纯 Python）**</td></tr>
+</table>
+
+<blockquote><p>「确定性推理负责'法律的条文'，不确定性推理负责'法官的自由裁量'。」</p>
+<p>—— 《当 LLM 不够用了——本体推理的企业决策实践》第四章 4.4 节</p></blockquote>
+
+<hr>
+
+<p><strong>项目链接</strong>：<a href="https://github.com/georgewangchn/OntologyOps/tree/main/examples/P4">github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P4</a></p>
+
+<p><strong>P1 对比</strong>：<a href="../P1/README-ARTICLE.md">P1 · OWL 本体推理</a></p>
+
+<p><strong>P2 对比</strong>：<a href="../P2/README-ARTICLE.md">P2 · Prolog 规则推理</a></p>
+
+<p><strong>P3 对比</strong>：<a href="../P3/README-ARTICLE.md">P3 · Jena 三元组推理</a></p>
+
+<p><strong>书籍全书</strong>：<a href="https://georgewangchn.github.io/OntologyOps/book/">《当 LLM 不够用了——本体推理的企业决策实践》在线阅读</a></p>
+
+
+<div class="article-footer">
+    <p>« <a href="../">返回 OntologyOps 首页</a> &nbsp;|&nbsp; <a href="../book/">在线阅读全书</a> »</p>
+    <p style="margin-top:1em;">作者：森林瀑布 &nbsp;|&nbsp; 项目类型：多范式推理实战营 P4/6</p>
+</div>
+
+</body>
+</html>

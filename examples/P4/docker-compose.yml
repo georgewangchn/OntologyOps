@@ -1,0 +1,25 @@
+version: "3.8"
+
+# 宠物疾病模糊推理系统 —— 可选部署
+# P4 是纯 Python 项目（scikit-fuzzy），无需外部服务
+# 此文件仅用于统一 P1-P4 的部署体验，实际运行只需 Python + pip
+#
+# 对比：
+#   P1 需要 JVM（HermiT）+ owlready2 中文补丁
+#   P2 需要 SWI-Prolog 运行时
+#   P3 需要 Docker（Jena Fuseki）
+#   P4 只需 pip install（本文件可选）
+#
+# 用法（可选）：docker-compose up -d
+
+services:
+  fuzzy-reasoning:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pet_fuzzy
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    restart: "no"
+    command: python src/reasoner.py

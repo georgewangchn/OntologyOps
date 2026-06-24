@@ -90,8 +90,7 @@ P1/
 ├── notebook.ipynb         # Jupyter Notebook 完整讲解（含逐步推理演示）
 ├── setup_env.sh           # 环境初始化脚本（创建 venv + 安装补丁版 owlready2）
 ├── requirements.txt       # Python 依赖清单
-├── index.html             # 文章在线阅读页（由 md2html.py 生成）
-├── md2html.py             # README-ARTICLE.md → index.html 转换器
+├── index.html             # 文章在线阅读页（由 ../md2html.py 生成）
 ├── test_p1.py             # 测试脚本（print 断言，非 pytest）
 ├── src/
 │   ├── onto_builder.py    # 本体构建：类、属性、层次结构、三层知识编码
@@ -104,9 +103,7 @@ P1/
 │   ├── diseases.csv       # 疾病数据（10 种疾病）
 │   ├── symptoms.csv       # 症状数据（15 种症状）
 │   └── sample_case.json   # 示例病例
-├── docker-compose.yml     # 一键启动 Jena Fuseki + HermiT
-└── slides/                # 配套图文素材（小红书用）
-    └── (待补充)
+└── docker-compose.yml     # 一键启动 Jena Fuseki + HermiT
 ```
 
 ---

@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-md2html.py —— 从 README-ARTICLE.md 自动生成 index.html
+md2html.py —— 从 README-ARTICLE.md 自动生成 index.html（P1-P6 共用）
+放在 examples/ 目录下，自动扫描所有 P* 子目录。
+
 使用方法：
-    cd /path/to/P1
-    python3 md2html.py
+    cd ontologyops/examples
+    python3 md2html.py           # 生成所有 P* 的 index.html
+    python3 md2html.py P1        # 只生成 P1
+    python3 md2html.py P1 P4     # 只生成 P1 和 P4
 """
 
 import re
 import os
+import glob
+import sys
 
 # ── HTML 模板（书籍风格）────────────────────────────────────
 HTML_TEMPLATE = """<!DOCTYPE html>
@@ -454,20 +460,20 @@ def md_to_html(md_content):
 def extract_header(md_content):
     """从 Markdown 提取文章头部信息"""
     lines = md_content.split('\n')
-    
+
     # 提取标题（第一个 # 开头的行）
     title = ''
     for line in lines:
         if line.startswith('# '):
             title = line[2:].strip()
             break
-    
+
     # 提取 badge（> 开头的 blockquote）
     badge = ''
     subtitle = ''
     meta = ''
     in_meta_block = False
-    
+
     for line in lines:
         if line.startswith('> ') and badge == '':
             badge = line[2:].strip()
@@ -476,7 +482,7 @@ def extract_header(md_content):
         elif line.startswith('**') and '作者' in line:
             meta = line.strip()
             break
-    
+
     # 构造 HTML 头部
     header_html = f'''<div class="article-header">
     <div class="article-badge">{badge}</div>
@@ -484,34 +490,41 @@ def extract_header(md_content):
     <p class="article-subtitle">{subtitle}</p>
     <p class="article-meta">{meta}</p>
 </div>'''
-    
+
     return header_html, title
 
 
-def extract_footer(md_content):
-    """生成文章底部"""
-    footer_html = '''<div class="article-footer">
+def extract_footer(project_num):
+    """生成文章底部（根据项目编号自动填充 P#/6）"""
+    footer_html = f'''<div class="article-footer">
     <p>« <a href="../">返回 OntologyOps 首页</a> &nbsp;|&nbsp; <a href="../book/">在线阅读全书</a> »</p>
-    <p style="margin-top:1em;">作者：森林瀑布 &nbsp;|&nbsp; 项目类型：多范式推理实战营 P1/6</p>
+    <p style="margin-top:1em;">作者：森林瀑布 &nbsp;|&nbsp; 项目类型：多范式推理实战营 P{project_num}/6</p>
 </div>'''
     return footer_html
 
 
-def main():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    md_path = os.path.join(script_dir, 'README-ARTICLE.md')
-    html_path = os.path.join(script_dir, 'index.html')
+def generate_one(target_dir):
+    """为单个 P* 目录生成 index.html"""
+    dir_name = os.path.basename(os.path.abspath(target_dir))
+    match = re.match(r'P(\d+)', dir_name)
+    if not match:
+        print(f'⚠️  跳过 {dir_name}：不是 P* 目录')
+        return False
+    project_num = match.group(1)
+
+    md_path = os.path.join(target_dir, 'README-ARTICLE.md')
+    html_path = os.path.join(target_dir, 'index.html')
 
     if not os.path.exists(md_path):
         print(f'❌ 找不到 {md_path}')
-        return
+        return False
 
     with open(md_path, 'r', encoding='utf-8') as f:
         md_content = f.read()
 
     # 提取头部和底部
     header_html, title = extract_header(md_content)
-    footer_html = extract_footer(md_content)
+    footer_html = extract_footer(project_num)
 
     # 去掉 Markdown 中的元数据行（已经放到 header 中了）
     lines = md_content.split('\n')
@@ -520,9 +533,9 @@ def main():
         if line.startswith('**作者**'):
             content_start = i + 1
             break
-    
+
     content_md = '\n'.join(lines[content_start:]) if content_start > 0 else md_content
-    
+
     # 转换 Markdown 为 HTML
     content_html = md_to_html(content_md)
 
@@ -537,7 +550,35 @@ def main():
     with open(html_path, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    print(f'✅ 已从 {md_path} 生成 {html_path}')
+    print(f'✅ {dir_name}/index.html 已生成')
+    return True
+
+
+def main():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # 有参数 → 只处理指定的目录
+    if len(sys.argv) > 1:
+        targets = []
+        for arg in sys.argv[1:]:
+            path = os.path.join(script_dir, arg)
+            if not os.path.isdir(path):
+                path = arg  # 可能传了绝对/相对路径
+            targets.append(path)
+    else:
+        # 无参数 → 扫描所有 P* 子目录
+        targets = sorted(glob.glob(os.path.join(script_dir, 'P*')))
+
+    if not targets:
+        print('❌ 未找到任何 P* 目录')
+        return
+
+    print(f'🏗️  开始生成（{len(targets)} 个目录）...\n')
+    success = 0
+    for target in targets:
+        if generate_one(target):
+            success += 1
+    print(f'\n🎉 完成：{success}/{len(targets)} 个文件已生成')
 
 
 if __name__ == '__main__':
