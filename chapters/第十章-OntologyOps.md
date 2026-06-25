@@ -2,7 +2,7 @@
 
 > **本文是《当LLM不够用了——本体推理的企业决策实践》第十章「OntologyOps：让本体像代码一样被管理」的完整方案文档。**
 > 
-> **配套开源项目：[github.com/georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps)**
+> **配套开源项目：[OntologyOps](https://senlinpubu.top/)**
 
 > **让本体像代码一样被管理，让知识像软件一样持续交付，让推理像编译器一样稳定运行。**
 
@@ -714,5 +714,5 @@ OntologyOps 是这一论点在工程实践层面的完整回答：
 
 *作者：森林瀑布*
 *作者：森林瀑布*
-*项目地址：https://github.com/georgewangchn/OntologyOps*
+*项目地址：https://senlinpubu.top/*
 *配套书籍：《当LLM不够用了——本体推理的企业决策实践》（知乎专栏连载中）*

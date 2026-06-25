@@ -3,7 +3,8 @@
 > 多范式推理实战营 · 项目 1/6  
 > 副标题：当 LLM 不够用时，如何让「症状 → 疾病」的推理可验证
 
-**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) 
+**作者**：森林瀑布 ｜ **博客**：[senlinpubu.top](https://senlinpubu.top/)
+
 
 ---
 

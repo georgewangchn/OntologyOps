@@ -3,7 +3,7 @@
 > 多范式推理实战营 · 项目 4/6  
 > 副标题：第四种范式——当症状不再是有/无，而是"有多严重"
 
-**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-24
+**作者**：森林瀑布 ｜ **博客**：[senlinpubu.top](https://senlinpubu.top/) ｜ **最后更新**：2026-06-24
 
 ---
 

@@ -3,7 +3,7 @@
 > 多范式推理实战营 · 项目 2/6  
 > 副标题：同一问题，换一种推理范式——Prolog 规则推理 vs OWL 本体推理
 
-**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-22
+**作者**：森林瀑布 ｜ **博客**：[senlinpubu.top](https://senlinpubu.top/) ｜ **最后更新**：2026-06-22
 
 ---
 

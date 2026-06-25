@@ -3,7 +3,7 @@
 > 多范式推理实战营 · 项目 3/6  
 > 副标题：第三种范式——前向链规则 + SPARQL 查询一体化
 
-**作者**：森林瀑布 ｜ **GitHub 仓库**：[georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) ｜ **最后更新**：2026-06-22
+**作者**：森林瀑布 ｜ **博客**：[senlinpubu.top](https://senlinpubu.top/) ｜ **最后更新**：2026-06-22
 
 ---
 
