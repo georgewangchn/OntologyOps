@@ -6,17 +6,29 @@
     <meta name="author" content="森林瀑布">
     <title>P3 · 宠物疾病三元组推理系统 — 多范式推理实战营</title>
     <style>
-        /* === 中文排版优化（继承书籍风格）=== */
+        /* === 中文排版优化（林间书房色彩体系）=== */
+        :root {
+            --page:  #faf8f3;
+            --card:  #ffffff;
+            --pine:  #1a6b4f;
+            --pLight:#e8f2ed;
+            --pDark: #132e23;
+            --ink:   #2d2d38;
+            --body:  #4a4a58;
+            --muted: #787888;
+            --dim:   #a0a0b0;
+            --line:  #e0ded8;
+        }
         body {
             font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
             font-size: 11pt;
             line-height: 1.9;
-            color: #2c2c2c;
+            color: var(--body);
             text-align: justify;
             max-width: 800px;
             margin: 0 auto;
             padding: 2cm 1.5cm;
-            background: #fafaf8;
+            background: var(--page);
         }
 
         /* === 文章头部 === */
@@ -24,12 +36,12 @@
             text-align: center;
             margin-bottom: 2.5cm;
             padding-bottom: 1.5cm;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 2px solid var(--line);
         }
 
         .article-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #533483, #e94560);
+            background: linear-gradient(135deg, var(--pine), #3d886b);
             color: white;
             padding: 0.2em 0.8em;
             border-radius: 4px;
@@ -42,7 +54,7 @@
         .article-title {
             font-size: 24pt;
             font-weight: 700;
-            color: #1a1a2e;
+            color: var(--ink);
             letter-spacing: 0.03em;
             margin: 0.5em 0;
             line-height: 1.4;
@@ -50,45 +62,45 @@
 
         .article-subtitle {
             font-size: 13pt;
-            color: #555;
+            color: var(--muted);
             font-weight: 400;
             margin-bottom: 0.8em;
         }
 
         .article-meta {
             font-size: 10pt;
-            color: #888;
+            color: var(--dim);
             letter-spacing: 0.02em;
         }
 
         .article-meta a {
-            color: #533483;
+            color: var(--pine);
             text-decoration: none;
         }
 
         /* === 章节标题 === */
         h1 {
             font-size: 17pt;
-            color: #1a1a2e;
+            color: var(--ink);
             font-weight: 700;
             margin: 2em 0 0.8em;
             padding-bottom: 0.3em;
-            border-bottom: 1px solid #e8e8e8;
+            border-bottom: 1px solid var(--line);
             letter-spacing: 0.02em;
         }
 
         h2 {
             font-size: 14pt;
-            color: #16213e;
+            color: var(--ink);
             font-weight: 600;
             margin: 1.5em 0 0.6em;
-            border-left: 4px solid #533483;
+            border-left: 4px solid var(--pine);
             padding-left: 0.6em;
         }
 
         h3 {
             font-size: 12pt;
-            color: #0f3460;
+            color: var(--body);
             font-weight: 600;
             margin: 1.2em 0 0.5em;
         }
@@ -109,9 +121,9 @@
         blockquote {
             margin: 1em 1.5em;
             padding: 0.6em 1.2em;
-            border-left: 4px solid #533483;
-            background: #f8f8fc;
-            color: #555;
+            border-left: 4px solid var(--pine);
+            background: #f7f4ef;
+            color: var(--muted);
             orphans: 3;
             widows: 3;
         }
@@ -123,28 +135,28 @@
 
         /* === 强调 === */
         strong, b {
-            color: #16213e;
+            color: var(--ink);
             font-weight: 700;
         }
 
         em, i {
-            color: #0f3460;
+            color: var(--body);
             font-style: italic;
         }
 
         /* === 代码 === */
         code {
-            background: #f0f0f5;
+            background: var(--pLight);
             padding: 0.15em 0.4em;
             border-radius: 3px;
             font-family: "SF Mono", "Fira Code", "Consolas", "Menlo", monospace;
             font-size: 9pt;
-            color: #e94560;
+            color: var(--pine);
         }
 
         pre {
-            background: #1a1a2e;
-            color: #d4d4d8;
+            background: var(--pDark);
+            color: #c8d6ce;
             padding: 1em 1.2em;
             border-radius: 6px;
             overflow-x: auto;
@@ -155,6 +167,7 @@
             orphans: 3;
             widows: 3;
             margin: 1em 0;
+            border: 1px solid #1e3a2e;
         }
 
         pre code {
@@ -173,8 +186,8 @@
         }
 
         th {
-            background: #1a1a2e;
-            color: #eaeaea;
+            background: var(--pDark);
+            color: #dee8e2;
             padding: 0.5em 0.8em;
             text-align: left;
             font-weight: 600;
@@ -182,12 +195,12 @@
 
         td {
             padding: 0.4em 0.8em;
-            border-bottom: 1px solid #e8e8e8;
-            color: #333;
+            border-bottom: 1px solid var(--line);
+            color: var(--body);
         }
 
         tr:nth-child(even) td {
-            background: #f8f8fc;
+            background: #f7f4ef;
         }
 
         /* === 列表 === */
@@ -203,7 +216,7 @@
         /* === 分割线 === */
         hr {
             border: none;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid var(--line);
             margin: 2em 0;
         }
 
@@ -211,14 +224,14 @@
         .article-footer {
             margin-top: 3em;
             padding-top: 1.5em;
-            border-top: 2px solid #e0e0e0;
+            border-top: 2px solid var(--line);
             text-align: center;
-            color: #888;
+            color: var(--dim);
             font-size: 10pt;
         }
 
         .article-footer a {
-            color: #533483;
+            color: var(--pine);
             text-decoration: none;
         }
 

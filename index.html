@@ -3,166 +3,607 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OntologyOps</title>
+  <title>森林瀑布的博客</title>
   <style>
+    /* ═══════════════════════════════════════════════
+       Design System: 林间书房
+       — 松绿为骨，水蓝为脉，岩灰为基，琥珀为睛
+       ═══════════════════════════════════════════════ */
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      /* ── Surface ── */
+      --page:        #faf8f3;
+      --card:        #ffffff;
+      --card-hover:  #f6f4ef;
+      --nav-bg:      rgba(250,248,243,0.88);
+
+      /* ── Text ── */
+      --ink:         #2d2d38;
+      --body:        #4a4a58;
+      --muted:       #787888;
+      --dim:         #a0a0b0;
+
+      /* ── Brand Palette ── */
+      --pine:        #1a6b4f;   /* 松绿 — 品牌主色（森林） */
+      --pine-light:  #e8f2ed;   /* 松绿浅底 */
+      --pine-soft:   #3d886b;   /* 松绿亮变（hover/强调） */
+      --stream:      #3d8ab5;   /* 水蓝 — 品牌副色（瀑布） */
+      --stream-light:#ecf4f9;   /* 水蓝浅底 */
+      --amber:       #b8781a;   /* 琥珀 — 强调色（晨光） */
+      --amber-light: #fdf6ec;   /* 琥珀浅底 */
+      --stone:       #6b7d72;   /* 岩灰 — 中性色（大地） */
+      --stone-light: #eff2f0;   /* 岩灰浅底 */
+
+      /* ── Geometry ── */
+      --radius:     12px;
+      --radius-sm:  7px;
+
+      /* ── Border ── */
+      --hairline:   rgba(0,0,0,0.07);
+    }
+
+    /* ═══════════════════════════════════════════════
+       Base
+       ═══════════════════════════════════════════════ */
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: #1a1a2e;
-      color: #eaeaea;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "PingFang SC", "Hiragino Sans GB",
+                   "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      background: var(--page);
+      color: var(--body);
       min-height: 100vh;
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* subtle book-page texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        radial-gradient(circle, rgba(0,0,0,0.028) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       Navigation
+       ═══════════════════════════════════════════════ */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .nav-inner {
+      max-width: 1060px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
+      justify-content: space-between;
+      height: 54px;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
     }
-
-    .container { max-width: 700px; }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #00d4aa, #6c63ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .tagline {
-      font-size: 1.05rem;
-      color: #999;
-      margin-bottom: 2.5rem;
-      line-height: 1.7;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-      margin-bottom: 2.5rem;
-    }
-    @media (max-width: 500px) { .cards { grid-template-columns: 1fr; } }
-
-    .card {
-      background: #16213e;
-      border: 1px solid #2a2a4a;
-      border-radius: 12px;
-      padding: 1.5rem 1.2rem;
+    .nav-brand {
+      font-size: 0.98rem;
+      font-weight: 650;
       text-decoration: none;
-      color: #eaeaea;
-      transition: border-color 0.2s, transform 0.2s;
+      color: var(--ink);
+      letter-spacing: 0.03em;
     }
-    .card:hover { border-color: #6c63ff; transform: translateY(-2px); }
-
-    .card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .card h3 { font-size: 1.05rem; margin-bottom: 0.35rem; color: #fff; }
-    .card p { font-size: 0.85rem; color: #888; line-height: 1.5; }
-
-    .card-full {
-      grid-column: 1 / -1;
+    .nav-brand .mark {
+      color: var(--pine);
+      font-weight: 750;
     }
-
-    .card-primary {
-      border-color: #00d4aa;
-      grid-column: 1 / -1;
-    }
-
-    .card-demo {
-      border-color: #ff6b6b;
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, #16213e 60%, #2a1520);
-    }
-
-    .card-group {
-      border-color: #6c63ff;
-      grid-column: 1 / -1;
-    }
-
-    .group-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #ccc;
-      margin-bottom: 0.8rem;
-    }
-
-    .pills {
+    .nav-links {
       display: flex;
-      gap: 0.6rem;
+      gap: 1.6rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--pine); }
+
+    /* ═══════════════════════════════════════════════
+       Hero
+       ═══════════════════════════════════════════════ */
+
+    .hero {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-line {
+      width: 40px;
+      height: 3px;
+      background: var(--pine);
+      margin: 0 auto 1.6rem;
+      border-radius: 2px;
+      opacity: 0.7;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 750;
+      color: var(--ink);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+    .hero .subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+    .hero .bio {
+      font-size: 0.86rem;
+      color: var(--dim);
+      max-width: 520px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.9;
+    }
+    .hero-tags {
+      display: flex;
+      gap: 0.45rem;
       justify-content: center;
       flex-wrap: wrap;
     }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.4rem 0.8rem;
+    .hero-tag {
+      font-size: 0.73rem;
+      padding: 0.22rem 0.7rem;
       border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform 0.15s, opacity 0.15s;
+      background: var(--pine-light);
+      color: var(--pine);
+      border: 1px solid rgba(26,107,79,0.14);
+      letter-spacing: 0.02em;
+      font-weight: 500;
     }
-    .pill:hover { transform: scale(1.05); }
 
-    .pill-p1 { background: rgba(255,217,61,0.2); color: #ffd93d; border: 1px solid rgba(255,217,61,0.4); }
-    .pill-p2 { background: rgba(79,195,247,0.2); color: #4fc3f7; border: 1px solid rgba(79,195,247,0.4); }
-    .pill-p3 { background: rgba(102,187,106,0.2); color: #66bb6a; border: 1px solid rgba(102,187,106,0.4); }
-    .pill-p4 { background: rgba(233,69,96,0.2); color: #e94560; border: 1px solid rgba(233,69,96,0.4); }
+    /* ═══════════════════════════════════════════════
+       Section
+       ═══════════════════════════════════════════════ */
 
-    .links { font-size: 0.85rem; color: #666; }
-    .links a { color: #888; text-decoration: none; margin: 0 0.6rem; }
-    .links a:hover { color: #00d4aa; }
+    .section {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 2rem 3.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+    }
+    .section-header::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: var(--pine);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 680;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .section-sub {
+      font-size: 0.8rem;
+      color: var(--dim);
+      margin-left: 0.2rem;
+    }
+
+    /* ═══════════════════════════════════════════════
+       Generic Card
+       ═══════════════════════════════════════════════ */
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(296px, 1fr));
+      gap: 0.9rem;
+    }
+    .card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.35rem;
+      text-decoration: none;
+      color: var(--body);
+      transition: background 0.25s, border-color 0.25s,
+                  transform 0.2s, box-shadow 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 10px; bottom: 10px;
+      width: 3px;
+      border-radius: 0 2px 2px 0;
+      transition: width 0.25s, opacity 0.25s;
+      opacity: 0.55;
+    }
+    .card:hover::before {
+      width: 4px;
+      opacity: 1;
+    }
+    .card:hover {
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .card h3 {
+      font-size: 0.97rem;
+      color: var(--ink);
+      font-weight: 630;
+      line-height: 1.45;
+    }
+    .card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .card-tags {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      font-size: 0.68rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 9px;
+      font-weight: 550;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Accent: Pine (品牌主色) ── */
+    .accent-pine::before { background: var(--pine); }
+    .accent-pine:hover   { border-color: rgba(26,107,79,0.28); }
+    .icon-pine           { background: var(--pine-light); }
+    .tag-pine            { background: var(--pine-light); color: var(--pine); }
+
+    /* ── Accent: Stream (品牌副色) ── */
+    .accent-stream::before { background: var(--stream); }
+    .accent-stream:hover   { border-color: rgba(61,138,181,0.28); }
+    .icon-stream           { background: var(--stream-light); }
+    .tag-stream            { background: var(--stream-light); color: var(--stream); }
+
+    /* ── Accent: Amber (强调色) ── */
+    .accent-amber::before { background: var(--amber); }
+    .accent-amber:hover   { border-color: rgba(184,120,26,0.28); }
+    .icon-amber           { background: var(--amber-light); }
+    .tag-amber            { background: var(--amber-light); color: var(--amber); }
+
+    /* ── Accent: Stone (中性色) ── */
+    .accent-stone::before { background: var(--stone); }
+    .accent-stone:hover   { border-color: rgba(107,125,114,0.28); }
+    .icon-stone           { background: var(--stone-light); }
+    .tag-stone            { background: var(--stone-light); color: var(--stone); }
+
+    /* ═══════════════════════════════════════════════
+       Featured Card (Book)
+       ═══════════════════════════════════════════════ */
+
+    .featured-card {
+      position: relative;
+      background: linear-gradient(130deg, #edf7f2 0%, #faf8f3 60%);
+      border: 1px solid rgba(26,107,79,0.18);
+      border-radius: var(--radius);
+      padding: 2rem 1.8rem;
+      display: flex;
+      gap: 1.8rem;
+      align-items: center;
+      text-decoration: none;
+      color: var(--body);
+      transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+      overflow: hidden;
+    }
+    .featured-card::after {
+      content: '';
+      position: absolute;
+      top: -40%; right: -10%;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(26,107,79,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .featured-card:hover {
+      border-color: rgba(26,107,79,0.42);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(26,107,79,0.07);
+    }
+    .featured-icon {
+      font-size: 2.6rem;
+      min-width: 78px; height: 78px;
+      border-radius: 16px;
+      background: var(--pine-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .featured-info { position: relative; z-index: 1; }
+    .featured-info h2 {
+      font-size: 1.22rem;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+    .featured-info .desc {
+      font-size: 0.87rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 0.7rem;
+    }
+    .featured-info .meta {
+      font-size: 0.8rem;
+      color: var(--pine);
+      font-weight: 600;
+    }
+    .featured-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.16rem 0.6rem;
+      border-radius: 9px;
+      background: rgba(26,107,79,0.09);
+      color: var(--pine);
+      font-weight: 650;
+      margin-bottom: 0.65rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* ═══════════════════════════════════════════════
+       Footer
+       ═══════════════════════════════════════════════ */
+
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 2.2rem 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-inner { max-width: 1060px; margin: 0 auto; }
+    .footer-links {
+      display: flex;
+      gap: 1.6rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .footer-links a {
+      color: var(--dim);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--pine); }
+    .footer-copy {
+      font-size: 0.76rem;
+      color: var(--dim);
+    }
+
+    /* ═══════════════════════════════════════════════
+       Responsive
+       ═══════════════════════════════════════════════ */
+
+    @media (max-width: 768px) {
+      .hero { padding: 3.2rem 1.5rem 2.2rem; }
+      .hero h1 { font-size: 1.9rem; }
+      .section { padding: 0 1.5rem 2.5rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      nav { padding: 0; }
+      .nav-inner { padding: 0 1.2rem; }
+      .featured-card { flex-direction: column; gap: 1rem; padding: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .nav-links { gap: 0.9rem; }
+      .nav-links a { font-size: 0.78rem; }
+      .hero h1 { font-size: 1.65rem; letter-spacing: 0.05em; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>OntologyOps</h1>
-    <p class="tagline">
-      让本体像代码一样被管理<br>
-      让知识像软件一样持续交付<br>
-      让推理像编译器一样稳定运行
+
+  <!-- ═══════════ Nav ═══════════ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand"><span class="mark">森林瀑布</span> 的博客</a>
+      <ul class="nav-links">
+        <li><a href="#book">书籍</a></li>
+        <li><a href="#series">实战营</a></li>
+        <li><a href="./book/">阅读器</a></li>
+        <li><a href="https://github.com/georgewangchn/OntologyOps" target="_blank">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════ Hero ═══════════ -->
+  <header class="hero">
+    <div class="hero-line"></div>
+    <h1>森林瀑布</h1>
+    <p class="subtitle">探索本体推理、知识工程与 AI 的边界</p>
+    <p class="bio">
+      《当LLM不够用了——本体推理的企业决策实践》作者。
+      专注知识图谱、本体推理、LLM 与企业决策系统的融合落地。
     </p>
+    <div class="hero-tags">
+      <span class="hero-tag">知识图谱</span>
+      <span class="hero-tag">本体推理</span>
+      <span class="hero-tag">LLM</span>
+      <span class="hero-tag">ToB 决策</span>
+      <span class="hero-tag">OWL / SWRL</span>
+    </div>
+  </header>
 
-    <div class="cards">
-      <a href="./book/" class="card card-primary">
-        <div class="icon">📖</div>
-        <h3>在线阅读全书</h3>
-        <p>《当LLM不够用了——本体推理的企业决策实践》完整12章</p>
-      </a>
-
-      <div class="card card-group">
-        <div class="icon">📝</div>
-        <h3>多范式推理实战营</h3>
-        <p style="margin-bottom:0.8rem;">同一宠物疾病问题 × 四种推理范式 —— 从 OWL 到 Prolog 到 Jena 到模糊推理</p>
-        <div class="pills">
-          <a href="./examples/P1/" class="pill pill-p1">P1 · OWL/HermiT</a>
-          <a href="./examples/P2/" class="pill pill-p2">P2 · Prolog</a>
-          <a href="./examples/P3/" class="pill pill-p3">P3 · Jena/SPARQL</a>
-          <a href="./examples/P4/" class="pill pill-p4">P4 · 模糊推理</a>
-        </div>
-      </div>
-
-      <a href="./demo/" class="card card-demo">
-        <div class="icon">🎬</div>
-        <h3>GovernanceOps Demo · 第一个应用场景</h3>
-        <p>企业治理运维演示 —— 用本体推理替代人工流转，让决策可验证、可追踪、可审计</p>
-      </a>
-
-      <a href="https://github.com/georgewangchn/OntologyOps" class="card card-full">
-        <div class="icon">💻</div>
-        <h3>GitHub 仓库</h3>
-        <p>查看源码、提交 Issue、参与贡献</p>
-      </a>
-
+  <!-- ═══════════ Featured: Book ═══════════ -->
+  <div class="section" id="book">
+    <div class="section-header">
+      <span class="section-title">精选</span>
     </div>
 
-    <div class="links">
-      作者：森林瀑布
+    <a href="./book/" class="featured-card">
+      <div class="featured-icon">📖</div>
+      <div class="featured-info">
+        <span class="featured-badge">推荐阅读</span>
+        <h2>《当LLM不够用了——本体推理的企业决策实践》</h2>
+        <p class="desc">
+          从 OWL 公理到企业落地，从 Palantir 到中数睿智，
+          从 GraphRAG 到 OntologyOps——完整12章，
+          系统讲解本体推理如何成为企业决策的新基础设施。
+        </p>
+        <span class="meta">在线阅读 · 12章完整内容 →</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- ═══════════ Series: P1-P4 ═══════════ -->
+  <div class="section" id="series">
+    <div class="section-header">
+      <span class="section-title">多范式推理实战营</span>
+      <span class="section-sub">同一问题 · 四种范式</span>
+    </div>
+
+    <div class="card-grid">
+
+      <!-- P1 · OWL -->
+      <a href="./examples/P1/" class="card accent-pine">
+        <div class="card-icon icon-pine">🦉</div>
+        <h3>P1 · OWL / HermiT 本体推理</h3>
+        <p>基于 OWL 本体 + SWRL 规则 + HermiT 推理机，
+           用形式化逻辑诊断宠物疾病。教学演示版，含真实 SWRL 实现。</p>
+        <div class="card-tags">
+          <span class="card-tag tag-pine">OWL</span>
+          <span class="card-tag tag-pine">SWRL</span>
+          <span class="card-tag tag-pine">HermiT</span>
+        </div>
+      </a>
+
+      <!-- P2 · Prolog -->
+      <a href="./examples/P2/" class="card accent-stream">
+        <div class="card-icon icon-stream">🧠</div>
+        <h3>P2 · Prolog 逻辑推理</h3>
+        <p>用 Prolog 事实 + 规则，以逻辑编程范式处理同样的
+           宠物疾病诊断问题，对比声明式 vs 本体式推理路径。</p>
+        <div class="card-tags">
+          <span class="card-tag tag-stream">Prolog</span>
+          <span class="card-tag tag-stream">规则引擎</span>
+        </div>
+      </a>
+
+      <!-- P3 · Jena -->
+      <a href="./examples/P3/" class="card accent-pine">
+        <div class="card-icon icon-pine">🔗</div>
+        <h3>P3 · Jena / SPARQL 三元组推理</h3>
+        <p>基于 Apache Jena RDF 存储 + SPARQL 查询 + 规则引擎，
+           以三元组方式解决同一问题，展现语义网技术栈。</p>
+        <div class="card-tags">
+          <span class="card-tag tag-pine">Jena</span>
+          <span class="card-tag tag-pine">SPARQL</span>
+          <span class="card-tag tag-pine">RDF</span>
+        </div>
+      </a>
+
+      <!-- P4 · Fuzzy -->
+      <a href="./examples/P4/" class="card accent-amber">
+        <div class="card-icon icon-amber">🌫️</div>
+        <h3>P4 · 模糊推理</h3>
+        <p>引入模糊逻辑处理不确定性与灰色地带——
+           症状不再是"有/无"，而是"0.7 发烧 + 0.4 呕吐"的连续量。</p>
+        <div class="card-tags">
+          <span class="card-tag tag-amber">模糊逻辑</span>
+          <span class="card-tag tag-amber">不确定性</span>
+        </div>
+      </a>
+
     </div>
   </div>
+
+  <!-- ═══════════ Projects ═══════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">项目</span>
+    </div>
+
+    <div class="card-grid">
+
+      <a href="./demo/" class="card accent-stream">
+        <div class="card-icon icon-stream">🎬</div>
+        <h3>GovernanceOps Demo</h3>
+        <p>企业治理运维演示 —— 用本体推理替代人工流转，
+           让决策可验证、可追踪、可审计。第一个实际应用场景。</p>
+        <div class="card-tags">
+          <span class="card-tag tag-stream">Demo</span>
+          <span class="card-tag tag-stream">企业治理</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/georgewangchn/OntologyOps"
+         target="_blank" class="card accent-stone">
+        <div class="card-icon icon-stone">💻</div>
+        <h3>OntologyOps 开源项目</h3>
+        <p>让本体像代码一样被管理，让知识像软件一样持续交付。
+           包含完整代码、示例数据和部署方案。</p>
+        <div class="card-tags">
+          <span class="card-tag tag-stone">Open Source</span>
+          <span class="card-tag tag-stone">MIT</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ Footer ═══════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="./book/">在线阅读</a>
+        <a href="https://github.com/georgewangchn/OntologyOps" target="_blank">GitHub</a>
+        <a href="https://github.com/georgewangchn/OntologyOps/blob/main/LICENSE-BOOK"
+           target="_blank">CC BY-NC-SA 4.0</a>
+      </div>
+      <div class="footer-copy">&copy; 2025 森林瀑布</div>
+    </div>
+  </footer>
+
 </body>
 </html>

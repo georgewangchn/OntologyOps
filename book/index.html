@@ -16,26 +16,26 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
-            background: #fafaf8;
+            background: #faf8f3;
         }
 
         .sidebar {
             width: 270px;
             min-width: 270px;
-            background: #1c1c1f;
-            color: #c4c0b8;
+            background: #132e23;
+            color: #c8d6ce;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            border-right: 1px solid #2a2a2e;
+            border-right: 1px solid #1e3a2e;
             box-shadow: 2px 0 20px rgba(0,0,0,0.15);
             z-index: 10;
         }
 
         .sidebar-header {
             padding: 28px 24px 20px;
-            border-bottom: 1px solid #2a2a2e;
+            border-bottom: 1px solid #1e3a2e;
         }
 
         .sidebar-header h1 {
@@ -63,7 +63,7 @@
         }
 
         .sidebar-header .github-link:hover {
-            color: #c9a96e;
+            color: #1a6b4f;
         }
 
         .sidebar-toc {
@@ -93,21 +93,21 @@
         }
 
         .sidebar-toc li a:hover {
-            background: #262629;
-            color: #d4cfc5;
-            border-left-color: #4a4a50;
+            background: #1e3a2e;
+            color: #d4dcd6;
+            border-left-color: #3d5c4e;
         }
 
         .sidebar-toc li a.active {
-            background: #262629;
-            color: #c9a96e;
-            border-left-color: #c9a96e;
+            background: #1e3a2e;
+            color: #1a6b4f;
+            border-left-color: #1a6b4f;
             font-weight: 500;
         }
 
         .sidebar-footer {
             padding: 16px 24px;
-            border-top: 1px solid #2a2a2f;
+            border-top: 1px solid #1e3a2e;
             text-align: center;
         }
 
@@ -117,9 +117,9 @@
             top: 16px;
             left: 16px;
             z-index: 1000;
-            background: #1c1c1f;
-            color: #c9a96e;
-            border: 1px solid #3a3a3f;
+            background: #132e23;
+            color: #1a6b4f;
+            border: 1px solid #1e3a2e;
             padding: 8px 14px;
             border-radius: 6px;
             cursor: pointer;
@@ -130,7 +130,7 @@
         .content {
             flex: 1;
             overflow-y: auto;
-            background: #fcfbf8;
+            background: #faf8f3;
             padding: 48px 64px;
             max-width: 900px;
             margin: 0 auto;
@@ -142,7 +142,7 @@
             color: #1c1c1f;
             margin-bottom: 12px;
             padding-bottom: 16px;
-            border-bottom: 2px solid #e0d8c8;
+            border-bottom: 2px solid #e0ded8;
             letter-spacing: 0.02em;
         }
 
@@ -153,7 +153,7 @@
             margin-top: 36px;
             margin-bottom: 16px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #e8e4da;
+            border-bottom: 1px solid #e0ded8;
             letter-spacing: 0.01em;
         }
 
@@ -183,24 +183,24 @@
         }
 
         .content code {
-            background: #f0ede5;
+            background: #e8f2ed;
             padding: 2px 7px;
             border-radius: 3px;
             font-family: "SFMono-Regular", "Fira Code", Consolas, "Liberation Mono", Menlo, monospace;
             font-size: 13px;
-            color: #b5452a;
+            color: #1a6b4f;
         }
 
         .content pre {
-            background: #1c1c1f;
-            color: #d4cfc5;
+            background: #132e23;
+            color: #c8d6ce;
             padding: 18px 22px;
             border-radius: 8px;
             overflow-x: auto;
             margin: 18px 0;
             font-size: 13px;
             line-height: 1.7;
-            border: 1px solid #2a2a2e;
+            border: 1px solid #1e3a2e;
         }
 
         .content pre code {
@@ -210,7 +210,7 @@
         }
 
         .content blockquote {
-            border-left: 3px solid #c9a96e;
+            border-left: 3px solid #1a6b4f;
             padding: 12px 20px;
             margin: 18px 0;
             background: #f7f4ec;
@@ -242,7 +242,7 @@
         }
 
         .content li::marker {
-            color: #c9a96e;
+            color: #1a6b4f;
         }
 
         .content table {
@@ -256,7 +256,7 @@
         }
 
         .content th {
-            background: #2d2b26;
+            background: #132e23;
             color: #e8e0d0;
             padding: 11px 16px;
             text-align: left;
@@ -267,7 +267,7 @@
 
         .content td {
             padding: 9px 16px;
-            border-bottom: 1px solid #e8e4da;
+            border-bottom: 1px solid #e0ded8;
             color: #3d3a34;
         }
 
@@ -281,19 +281,19 @@
 
         .content hr {
             border: none;
-            border-top: 1px solid #e0d8c8;
+            border-top: 1px solid #e0ded8;
             margin: 32px 0;
         }
 
         .content a {
-            color: #8b6914;
+            color: #1a6b4f;
             text-decoration: none;
             border-bottom: 1px solid transparent;
             transition: border-color 0.2s;
         }
 
         .content a:hover {
-            border-bottom-color: #8b6914;
+            border-bottom-color: #1a6b4f;
         }
 
         .content img {
@@ -342,7 +342,7 @@
             background: transparent;
         }
         .sidebar-toc::-webkit-scrollbar-thumb {
-            background: #3a3a3f;
+            background: #1e3a2e;
             border-radius: 2px;
         }
 
@@ -353,11 +353,11 @@
             background: transparent;
         }
         .content::-webkit-scrollbar-thumb {
-            background: #d0ccc0;
+            background: #c8d6ce;
             border-radius: 3px;
         }
         .content::-webkit-scrollbar-thumb:hover {
-            background: #b0aca0;
+            background: #a0b0a8;
         }
 
         @media print {
