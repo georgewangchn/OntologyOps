@@ -415,6 +415,6 @@ print_diagnosis(results)
 
 **项目链接**：[github.com/georgewangchn/OntologyOps/tree/main/ontologyops/examples/P1](https://github.com/georgewangchn/OntologyOps/tree/main/examples/P1)
 
-**在线阅读**：[georgewangchn.github.io/OntologyOps/examples/P1/](https://georgewangchn.github.io/OntologyOps/examples/P1/)
+**在线阅读**：[senlinpubu.top/examples/P1/](https://senlinpubu.top/examples/P1/)
 
-**书籍全书**：[《当 LLM 不够用了——本体推理的企业决策实践》在线阅读](https://georgewangchn.github.io/OntologyOps/book/)
+**书籍全书**：[《当 LLM 不够用了——本体推理的企业决策实践》在线阅读](https://senlinpubu.top/book/)

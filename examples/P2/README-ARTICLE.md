@@ -264,4 +264,4 @@ P2 与 P1 共用同一组数据（diseases.csv、symptoms.csv、sample_case.json
 
 **P1 对比**：[P1 · OWL 本体推理](../P1/README-ARTICLE.md)
 
-**书籍全书**：[《当 LLM 不够用了——本体推理的企业决策实践》在线阅读](https://georgewangchn.github.io/OntologyOps/book/)
+**书籍全书**：[《当 LLM 不够用了——本体推理的企业决策实践》在线阅读](https://senlinpubu.top/book/)
