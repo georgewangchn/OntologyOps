@@ -143,3 +143,4 @@ xiaohongshu_notes/
 
 # Chapter backups
 *.md.bak
+__pycache__
