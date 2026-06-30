@@ -1,48 +1,424 @@
 ---
-title: "PL Agent 系列 — LLM + 本体推理 Agent"
-description: "将 LLM Agent 与本体推理引擎融合：用户用自然语言描述症状，Agent 自主调用工具查询本体、收集信息、触发推理，让推理能力对普通用户变得可及。"
+title: "PL1 · LLM Agent + OWL 本体推理 — 让推理引擎听得懂人话"
+description: "PL1 将 P1 的 OWL/HermiT 推理引擎用 LangGraph Agent 包装，用户用自然语言描述宠物症状，Agent 自动查本体、收集信息、触发推理、解释结果。"
 publishDate: 2025-06-20
-read: 10
-tags: ["Agent", "LLM", "LangGraph", "本体推理"]
+read: 25
+tags: ["Agent", "LLM", "LangGraph", "本体推理", "OWL"]
 category: "技术"
 ---
 
-## PL 系列概述
+> 多范式推理实战营 · 项目 5/6
+> 副标题：当推理引擎遇到 LLM —— 从「结构化输入」到「自然语言对话」
 
-在完成 P1-P4（四种纯规则推理范式）之后，我们进入 PL 系列 — **PL = P* + LLM Agent**。
+---
 
-核心思想很简单：纯规则推理引擎很强大，但需要用户理解如何结构化输入（症状列表、物种信息等）。LLM Agent 充当"翻译层"：
+## 一、引言：P1 很强，但用户不会用
 
-> 用户说 "我的猫又吐又拉还发烧" → Agent 自动查本体、收集信息、触发推理、返回诊断报告。
+在 P1 中，我们构建了一个完整的 OWL 本体推理引擎——HermiT 推理机 + SWRL 规则 + 三层排除过滤，能从症状列表精确推导疾病，置信度可追溯，推理链完整记录。
 
-每个 PL 与对应的 P 共享同一个推理引擎，只是外面包了一层 Agent。
+但有一个问题：
 
-### 架构
+```python
+# P1 的使用方式
+case = {
+    "pet_type": "cat",
+    "symptoms": ["发热", "呕吐", "腹泻"],
+}
+results = diagnose(onto, case)
+```
+
+用户得知道：
+1. 要传什么参数（`pet_type`、`symptoms`）
+2. 症状名称要和本体中的 label 精确匹配（"发烧" ≠ "发热"）
+3. 物种要用英文（`cat` 而非 `猫`）
+4. 至少需要哪些症状才能触发推理
+
+这对开发者来说不是问题，但对一个焦虑的宠物主人来说，几乎不可用。
+
+**PL1 的目标**：把 P1 的推理能力包一层 LLM Agent，让用户直接说"我的猫又吐又拉还发烧"，Agent 自动完成剩下的所有事。
 
 ```
-用户自然语言
-    ↓
-OntologyAgent (agent_core)
-    ├── System Prompt (领域角色定义)
-    ├── Tools (领域专用工具集)
-    └── Reasoning Engine (P1-P5 的推理引擎)
+用户：「我的猫又吐又拉，还发烧，精神也不好」
+    ↓  LLM Agent
+Agent 自动：
+  1. 识别物种 → 猫
+  2. 查本体 → "发烧" 应为 "发热"
+  3. 记录症状 → 发热、呕吐、腹泻、精神萎靡
+  4. 触发推理 → HermiT DL 推理
+  5. 返回诊断报告 → 猫瘟确诊 99%
 ```
 
-### Agent 工具集
+---
 
-每个 PL 提供一组 LangChain `@tool` 装饰的工具：
+## 二、架构：通用 Agent 框架 + 领域工具注入
 
-- `lookup_symptom_owl(symptom_name)` — 在本体中查找症状
-- `lookup_disease_owl(disease_name)` — 查找疾病定义
-- `add_observation(observation)` — 记录用户描述的症状
-- `set_subject_info(species, breed, ...)` — 设置领域对象信息
-- `run_reasoning()` — 触发推理引擎
-- `get_case_summary()` — 返回当前病例/案例摘要
-- `explain_reasoning(disease_name)` — 解释推理依据
+PL1 的核心设计是**关注点分离**：Agent 循环（LangGraph）与领域知识（OWL 本体）完全解耦。
 
-### PL1 已就绪
+```
+┌─────────────────────────────────────────────────────────┐
+│                    用户自然语言                          │
+│           「我的猫又吐又拉，还发烧」                      │
+└────────────────────────┬────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────────┐
+│              OntologyAgent (agent_core)                  │
+│                                                          │
+│  ┌─────────────┐  ┌──────────────┐  ┌────────────────┐ │
+│  │ System Prompt │  │  7 个 @tool   │  │  ConversationState │ │
+│  │ (角色定义)    │  │  (领域工具)    │  │  (对话状态)       │ │
+│  └─────────────┘  └──────────────┘  └────────────────┘ │
+│                                                          │
+│  LangGraph ReAct 循环：Think → Act → Observe → Repeat   │
+└────────────────────────┬────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────────┐
+│              P1 OWL 推理引擎 (共享)                      │
+│  HermiT 推理机 + SWRL 规则 + 三层排除过滤                │
+│  本体文件：pet_ontology.owl (35.7KB)                    │
+└─────────────────────────────────────────────────────────┘
+```
 
-PL1 — 宠物疾病诊断 Agent，基于 P1 的 OWL/HermiT 推理引擎。
+### 四个注入点
+
+`OntologyAgent` 是领域无关的通用框架。换场景只需要替换四个注入点：
+
+| 注入点 | PL1 中的实现 | 作用 |
+|--------|-------------|------|
+| `tools_factory` | `create_pl1_tools` | 创建 7 个 LangChain 工具 |
+| `diagnose_fn` | `pl1_diagnose` | 桥接 P1 的 OWL 推理引擎 |
+| `report_builder` | `build_pl1_report` | 格式化为统一 `DiagnosisReport` |
+| `system_prompt` | 宠物诊断助手角色定义 | 约束 Agent 的行为规范 |
+
+```python
+agent = OntologyAgent(
+    tools_factory=create_pl1_tools,    # ← PL1 工具
+    diagnose_fn=pl1_diagnose,          # ← PL1 诊断桥接
+    report_builder=build_pl1_report,   # ← PL1 报告构建
+    system_prompt=SYSTEM_PROMPT,       # ← 兽医助手角色
+    api_key="sk-xxx",
+    model="gpt-4o",
+)
+```
+
+这意味着 PL2（Prolog）、PL3（Jena/SPARQL）、PL4（模糊逻辑）只需要实现自己的四个注入点，Agent 框架零改动复用。
+
+---
+
+## 三、七个工具：Agent 的手和眼
+
+PL1 提供 7 个 LangChain `@tool` 装饰的工具，覆盖**查询 → 收集 → 推理 → 解释**全流程。
+
+### 工具全景
+
+```
+查询本体                收集信息               推理与解释
+─────────              ─────────              ──────────
+lookup_symptom_owl  →  add_observation    →  run_dl_reasoning
+lookup_disease_owl     set_pet_info          explain_subsumption
+                                             get_case_summary
+```
+
+### 工具 1：`lookup_symptom_owl` — 查本体中的症状
+
+```python
+@tool
+def lookup_symptom_owl(symptom_name: str) -> str:
+    """在 OWL 本体中查找症状，返回名称、ID、常见于哪些疾病。"""
+    onto = _get_onto()
+    matched = []
+    for s in onto.search(type=onto.症状):
+        label = s.label[0] if s.label else s.name
+        if symptom_name in label or symptom_name in name:
+            matched.append(s)
+    # ...返回症状信息 + 关联疾病
+```
+
+用户说"发烧"，Agent 调用此工具后发现本体中没有"发烧"，但有"发热"，于是自动修正。这就是**本体对齐**——LLM 负责理解用户意图，本体负责定义规范术语。
+
+### 工具 2：`lookup_disease_owl` — 查疾病定义
+
+返回某疾病的必要症状、排除症状、物种约束。Agent 用它来决定"还需要问什么症状"。
+
+```python
+@tool
+def lookup_disease_owl(disease_name: str) -> str:
+    """返回疾病的必要症状、排除症状、物种约束。"""
+    # 解析 is_a 中的 necessary 限制
+    # 解析 comment 中的 nos: 排除症状
+    # 解析 is_a 中的 hasSpecies 物种约束
+```
+
+### 工具 3-4：`add_observation` + `set_pet_info` — 写入对话状态
+
+```python
+@tool
+def add_observation(symptom_name: str, severity: str = "", details: dict = None) -> str:
+    """向病例添加一条观测记录。"""
+    state.add_observation(symptom_name, severity=severity, details=details)
+    return f"已记录：{symptom_name}"
+
+@tool
+def set_pet_info(species: str, breed: str = "", age: int = None, sex: str = "") -> str:
+    """设置宠物基本信息。"""
+    state.set_subject(species=species, breed=breed, age=age, sex=sex)
+```
+
+这两个工具写入 `ConversationState`——一个纯数据容器，Agent 通过工具闭包捕获同一个 state 实例，保证状态同步。
+
+### 工具 5：`run_dl_reasoning` — 触发 HermiT 推理
+
+```python
+@tool
+def run_dl_reasoning() -> str:
+    """运行 OWL DL 推理，返回诊断报告。"""
+    if not state.is_ready_for_reasoning():
+        return "信息不足，缺少：宠物物种、至少 2 条症状"
+
+    case_dict = state.to_case_dict()       # 通用格式
+    results = diagnose_fn(case_dict)        # PL1 桥接 P1
+    report = report_builder(state, results) # 构建 DiagnosisReport
+    return report.format_for_user()         # 格式化输出
+```
+
+这是整个 PL1 的核心——Agent 在信息收集完毕后调用此工具，触发 P1 的三层推理（OWL 分类 → SWRL 规则 → 排除过滤），返回结构化的诊断报告。
+
+### 工具 6：`explain_subsumption` — 解释推理依据
+
+```python
+@tool
+def explain_subsumption(disease_name: str) -> str:
+    """解释为什么某疾病被推理出来。"""
+    # 列出必要症状：✅ 已观测 / ❌ 未观测
+    # 列出排除症状：⚠️ 已观测（可排除该病）
+```
+
+当用户问"为什么说是猫瘟？"时，Agent 调用此工具，展示推理依据：
+
+```
+### 疾病：猫瘟
+
+**必要症状（共 3 项）**：
+  ✅ 发热（已观测）
+  ✅ 呕吐（已观测）
+  ✅ 腹泻（已观测）
+```
+
+### 工具 7：`get_case_summary` — 当前状态快照
+
+Agent 在推理前调用此工具检查信息是否足够，避免过早触发推理导致空结果。
+
+---
+
+## 四、诊断桥接：P1 与 Agent 的适配层
+
+P1 的 `diagnose()` 函数有自己的输入格式和输出格式，与 agent_core 的通用格式不同。`pl1/diagnose.py` 是两者之间的适配器。
+
+### 输入转换
+
+```python
+# agent_core 通用格式 → P1 格式
+_SPECIES_MAP = {
+    "猫": "cat", "喵": "cat", "猫咪": "cat",
+    "狗": "dog", "犬": "dog", "狗狗": "dog",
+}
+
+def _convert_case_dict(case_dict):
+    p1_case = {
+        "pet_type": _SPECIES_MAP.get(case_dict["subject_type"], ...),
+        "symptoms": case_dict["observations"],
+    }
+    return p1_case
+```
+
+用户说"猫咪"，Agent 记录为 `species="猫"`，PL1 桥接层转换为 `"cat"` 传给 P1。
+
+### 输出转换
+
+```python
+# P1 原始格式 → agent_core 标准格式
+# P1 返回: List[Tuple[owlready2.ThingClass, float]]
+# agent_core 期望: List[Dict]
+
+def _format_results(onto, raw_results, case_dict):
+    formatted = []
+    for disease_cls, confidence in raw_results:
+        formatted.append({
+            "disease": disease_cls.label[0],    # "猫瘟"
+            "confidence": round(confidence, 3),  # 0.99
+            "level": _determine_level(confidence), # "确诊"
+            "disease_id": disease_cls.name,      # "D001"
+            "evidence": _collect_evidence(...),  # ["发热", "呕吐", "腹泻"]
+            "missing": _collect_missing(...),    # []
+        })
+    return formatted
+```
+
+### 降级诊断
+
+当 P1 的 `diagnose()` 函数因任何原因失败时（owlready2 未安装、本体文件损坏等），PL1 有一个降级策略：
+
+```python
+def _fallback_diagnose(onto, case_dict):
+    """降级：手动计算必要症状匹配度。"""
+    for d in onto.search(type=onto.疾病):
+        necessary = [res.value for res in d.is_a
+                     if hasattr(res, 'property') and res.property is onto.necessary]
+        matched = sum(1 for nec in necessary
+                      if any(nec.label[0] in s for s in symptoms))
+        confidence = min(0.99, matched / len(necessary) + 0.1)
+```
+
+这保证了即使没有 HermiT 推理机，PL1 也能给出基本的匹配结果。
+
+---
+
+## 五、对话流程：一次完整的诊断
+
+以"猫瘟"为例，展示 Agent 的完整交互过程：
+
+```
+🐾 用户：我的猫又吐又拉，还发烧，精神也不好
+
+🤖 助手：我来帮您分析一下。首先确认一下，是猫咪对吧？
+        [调用 set_pet_info(species="猫")]
+
+🐾 用户：对，英短，3岁
+
+🤖 助手：好的，英短，3岁。您提到的症状我确认一下：
+        [调用 lookup_symptom_owl("发烧")] → "是否指「发热」？"
+        [调用 add_observation("发热", severity="重度")]
+        [调用 add_observation("呕吐")]
+        [调用 add_observation("腹泻")]
+        [调用 add_observation("精神萎靡")]
+        [调用 get_case_summary()]
+        → ✅ 信息已足够，可以运行推理
+
+🤖 助手：信息收集完毕，正在运行推理...
+        [调用 run_dl_reasoning()]
+```
+
+推理报告输出：
+
+```
+## 推理报告
+
+**对象信息**：类型: 猫 | 子类别: 英短 | 周期: 3
+**观测记录**：发热、呕吐、腹泻、精神萎靡
+
+### 推理结果
+
+1. ● **猫瘟** — 置信度 99%
+   证据：发热、呕吐、腹泻
+
+2. ○ **犬细小病毒** — 置信度 77%
+   证据：呕吐、腹泻
+   缺失：精神萎靡
+
+### 推理路径说明
+
+本推理基于以下 OWL 本体机制：
+
+1. **OWL 等价类（Equivalent Class）**
+   当病例症状满足某疾病的等价类定义时，
+   HermiT 推理机自动将病例分类为该疾病。
+
+2. **SWRL 规则**
+   - necessary 规则：出现任一必要症状 → 标记「疑似」
+   - nos 规则：出现排除症状 → 标记「排除」
+
+3. **物种过滤**
+   仅保留物种为「猫」的疾病。
+
+### 关于「猫瘟」的推理依据
+
+**匹配症状**：发热、呕吐、腹泻
+
+---
+*推理引擎：HermiT 1.4 | OWL 2 DL*
+*本结果由 OWL 本体推理引擎生成，仅供参考，不能替代执业兽医的诊断。*
+```
+
+### Agent 自主决策的关键点
+
+注意 Agent 在这个过程中做了几个**自主决策**：
+
+1. **术语对齐**：用户说"发烧"，Agent 查本体后发现应为"发热"，自动修正
+2. **追问判断**：Agent 通过 `get_case_summary()` 检查信息是否足够，不够会继续追问
+3. **推理时机**：不是收到第一条消息就推理，而是等信息足够后才触发
+4. **解释响应**：用户问"为什么"时，Agent 调用 `explain_subsumption` 展示依据
+
+这些都是 LLM 的自然语言理解能力 + 工具的结构化能力结合的结果。
+
+---
+
+## 六、Agent 兜底机制
+
+LLM 有时候会"卡住"——循环调用工具但不推进推理，或者工具调用序列超出限制。`OntologyAgent` 有一个兜底机制：
+
+```python
+def _force_diagnosis(self) -> str:
+    """LangGraph 循环超限或异常时的安全兜底。"""
+    if self.state.is_ready_for_reasoning():
+        case_dict = self.state.to_case_dict()
+        results = self.diagnose_fn(case_dict)
+        report = self.report_builder(self.state, results)
+        return report.format_for_user()
+    return "当前信息不足以做出可靠推理。"
+```
+
+当 LangGraph 的 `recursion_limit`（默认 `max_turns * 3`）耗尽时，Agent 不返回错误，而是直接用已收集的信息调用推理引擎，保证用户至少能得到一个诊断结果。
+
+---
+
+## 七、单元测试：6 组测试覆盖全链路
+
+PL1 包含完整的单元测试（`examples/tests/test_pl1.py`）：
+
+| 测试组 | 覆盖内容 |
+|--------|---------|
+| 工具集创建 | `create_pl1_tools` 返回 7 个工具，名称正确 |
+| 工具功能 | `add_observation` / `set_pet_info` / `get_case_summary` 正确写入和读取 state |
+| 推理前置检查 | 信息不足时 `run_dl_reasoning` 返回提示而非报错 |
+| 报告构建 | `build_pl1_report` 生成正确的 `DiagnosisReport`，`format_for_user` 输出可读文本 |
+| Agent 集成 | `OntologyAgent` 创建成功、`reset()` 清空状态、工具与 state 同步 |
+| OWL 推理 | `pl1_diagnose` 端到端测试（本体文件存在时运行，不存在时跳过） |
+
+```python
+def test_pl1_diagnose_with_owl():
+    """端到端 OWL 推理测试。"""
+    case_dict = {
+        "subject_type": "cat",
+        "observations": ["发热", "呕吐", "腹泻"],
+    }
+    results = pl1_diagnose(case_dict)
+    assert isinstance(results, list)
+    if results:
+        assert "disease" in results[0]
+        assert "confidence" in results[0]
+```
+
+测试设计原则：不依赖外部服务（OpenAI API），OWL 本体测试有降级跳过机制。
+
+---
+
+## 八、P1 vs PL1：纯引擎 vs Agent 增强
+
+| 维度 | P1（纯推理引擎） | PL1（LLM Agent 增强） |
+|------|------------------|----------------------|
+| 输入方式 | 结构化 JSON | 自然语言对话 |
+| 术语处理 | 必须精确匹配本体 label | LLM 自动对齐（"发烧" → "发热"） |
+| 信息收集 | 用户自行准备完整症状列表 | Agent 主动追问，逐步收集 |
+| 推理触发 | 手动调用 `diagnose()` | Agent 判断信息足够后自动触发 |
+| 结果解释 | 返回 `(class, float)` 元组列表 | 格式化诊断报告 + 推理路径说明 |
+| 交互方式 | 一次性 API 调用 | 多轮对话，可追问、可解释 |
+| 适用场景 | 开发者集成 | 面向终端用户 |
+| 推理引擎 | OWL/HermiT（直接） | OWL/HermiT（通过桥接层，共享） |
+
+关键点：**PL1 没有修改 P1 的推理引擎**，只是在外面包了一层 Agent。P1 的推理能力（三层推理、排除过滤、置信度计算）完全保留。
+
+---
+
+## 九、运行方式
 
 ```bash
 cd ontologyops/examples
@@ -50,14 +426,61 @@ export OPENAI_API_KEY=sk-xxx
 python pl1/run.py
 ```
 
-核心验证：猫 + 发热/呕吐/腹泻 → 猫瘟确诊 99%。
+启动后进入交互式对话：
 
-### 后续 PL 计划
+```
+============================================================
+  PL1 - 宠物疾病诊断 Agent（OWL DL + LLM）
+============================================================
 
-| 编号 | 对应范式 | 状态 |
-|------|---------|------|
-| PL1 | OWL/HermiT 本体推理 | ✅ 已完成 |
-| PL2 | Prolog 逻辑推理 | 规划中 |
-| PL3 | Jena/SPARQL 三元组推理 | 规划中 |
-| PL4 | 模糊逻辑推理 | 规划中 |
-| PL5 | 多范式融合引擎 | 规划中 |
+输入「退出」或「exit」结束会话。
+输入「重新开始」清空当前病例。
+
+🐾 您：我的猫又吐又拉，还发烧
+🤖 助手：...
+```
+
+支持环境变量配置 LLM：
+- `OPENAI_API_KEY` — API 密钥（必须）
+- `OPENAI_MODEL` — 模型名（默认 `gpt-4o`）
+- `OPENAI_BASE_URL` — API 地址（默认 OpenAI 官方，可换兼容接口）
+
+---
+
+## 十、PL 系列路线图
+
+PL1 是 PL 系列的第一个实践，后续计划：
+
+| 编号 | 对应范式 | 推理引擎 | 状态 |
+|------|---------|---------|------|
+| **PL1** | OWL/HermiT 本体推理 | HermiT + SWRL | ✅ 已完成 |
+| PL2 | Prolog 逻辑推理 | SWI-Prolog | 规划中 |
+| PL3 | Jena/SPARQL 三元组推理 | Apache Jena | 规划中 |
+| PL4 | 模糊逻辑推理 | FuzzyOWL | 规划中 |
+| PL5 | 多范式融合引擎 | 上述全部 | 规划中 |
+
+每个 PL 复用同一个 `agent_core` 框架，只需实现自己的四个注入点（`tools_factory` + `diagnose_fn` + `report_builder` + `system_prompt`）。最终 PL5 将融合所有推理范式，Agent 根据问题特征自动选择最合适的推理引擎。
+
+---
+
+## 十一、总结
+
+PL1 解决的核心问题是：**推理引擎再强大，如果用户不会用，价值就归零。**
+
+| 层 | 职责 | 技术 |
+|----|------|------|
+| LLM Agent | 理解意图、收集信息、调度工具 | LangGraph + ChatOpenAI |
+| 桥接层 | 格式转换、降级诊断 | pl1/diagnose.py |
+| 推理引擎 | 确定性推理、可验证结论 | OWL + HermiT + SWRL |
+
+> LLM 负责「听懂人话」，本体推理负责「说对话」。
+> 一个负责不确定性，一个负责确定性。
+> 合在一起，才是企业决策需要的智能体。
+
+---
+
+**项目代码**：[github.com/georgewangchn/OntologyOps](https://github.com/georgewangchn/OntologyOps) → `examples/pl1/`
+
+**前置阅读**：[P1 · OWL / HermiT 本体推理](/blog/p1-owl-hermit-reasoning/) — PL1 的推理引擎基础
+
+**在线阅读**：[《当 LLM 不够用了——本体推理的企业决策实践》](/book/)
