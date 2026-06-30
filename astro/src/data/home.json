@@ -1,0 +1,59 @@
+[
+	{
+		"id": "p1",
+		"cover": "/assets/cover/cover-owl.svg",
+		"title": "P1 · OWL / HermiT 本体推理",
+		"desc": "基于 OWL 本体 + SWRL 规则 + HermiT 推理机，用形式化逻辑诊断宠物疾病",
+		"url": "/blog/p1-owl-hermit-reasoning/",
+		"detail": "/blog/p1-owl-hermit-reasoning/",
+		"category": "owl",
+		"tag": "OWL",
+		"date": "2025-02-15",
+		"mark": true
+	},
+	{
+		"id": "pl1",
+		"cover": "/assets/cover/cover-agent.svg",
+		"title": "PL1 · 兽医诊断 Agent",
+		"desc": "LLM Agent + OWL 推理引擎融合 — 基于 agent_core + P1 本体的端到端诊断 Agent",
+		"url": "/blog/pl-agent-series/",
+		"detail": "/blog/pl-agent-series/",
+		"category": "owl,agent",
+		"tag": "PL1",
+		"date": "2025-06-25",
+		"mark": true
+	},
+	{
+		"id": "p2",
+		"cover": "/assets/cover/cover-prolog.svg",
+		"title": "P2 · Prolog 逻辑推理",
+		"desc": "用 Prolog 事实 + 规则，以逻辑编程范式处理同一诊断问题",
+		"url": "/blog/p2-prolog-logic-reasoning/",
+		"detail": "/blog/p2-prolog-logic-reasoning/",
+		"category": "prolog",
+		"tag": "Prolog",
+		"date": "2025-03-01"
+	},
+	{
+		"id": "p3",
+		"cover": "/assets/cover/cover-jena.svg",
+		"title": "P3 · Jena / SPARQL 三元组推理",
+		"desc": "基于 Apache Jena RDF + SPARQL 查询 + 规则引擎的语义网技术栈",
+		"url": "/blog/p3-jena-sparql-reasoning/",
+		"detail": "/blog/p3-jena-sparql-reasoning/",
+		"category": "jena",
+		"tag": "Jena",
+		"date": "2025-03-15"
+	},
+	{
+		"id": "p4",
+		"cover": "/assets/cover/cover-fuzzy.svg",
+		"title": "P4 · 模糊推理",
+		"desc": "引入模糊逻辑处理不确定性 — 症状不再是'有/无'，而是连续量",
+		"url": "/blog/p4-fuzzy-logic-reasoning/",
+		"detail": "/blog/p4-fuzzy-logic-reasoning/",
+		"category": "fuzzy",
+		"tag": "模糊逻辑",
+		"date": "2025-04-01"
+	}
+]

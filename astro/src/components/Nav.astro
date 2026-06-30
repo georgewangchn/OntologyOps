@@ -1,0 +1,286 @@
+---
+// import Icon, { Props as IconProps } from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import {nav} from '../data/content';
+import NavMobile from "../components/NavMobile.astro";
+---
+
+<nav>
+	<div class="container nav-wrapper">
+		<div class="menu-header">
+			<div class="site-title">
+				<a href="/" class="author">
+					<figure class="avatar">
+						<img class="avatar__img"
+							src={nav.avatar} alt=""
+							draggable="false">
+					</figure>
+					<span class="site-name">森林瀑布</span>
+				</a>
+			</div>
+		</div>
+		<div id="menu-content">
+			<div class="menu-footer pc-nav">
+				<ul class="nav-items">
+					{nav.items?.map(item => (
+						<li>
+							<a
+							 	aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+								 class:list={[
+									'link',
+									{
+										active: Astro.url.pathname === item.href ||
+											(item.href !== '/' && Astro.url.pathname.startsWith(item.href)),
+									},
+								]}
+								href={item.href}
+								target={item.target || '_self'}
+							>
+								{item.label}
+							</a>
+						</li>
+    				))}
+				</ul>
+
+				<div class="theme-toggle" style="transform:scale(0.75)">
+					<ThemeToggle />
+				</div>
+			</div>
+			<NavMobile/>
+		</div>
+	</div>
+</nav>
+<script>
+	class MenuButton extends HTMLElement {
+		constructor() {
+			super();
+
+			// Inject menu toggle button when JS runs.
+			this.appendChild(this.querySelector('template')!.content.cloneNode(true));
+			const btn = this.querySelector('button')!;
+
+			// Hide menu (shown by default to support no-JS browsers).
+			const menu = document.getElementById('menu-content')!;
+			menu.hidden = true;
+
+			/** Set whether the menu is currently expanded or collapsed. */
+			const setExpanded = (expand: boolean) => {
+				btn.setAttribute('aria-expanded', expand ? 'true' : 'false');
+				menu.hidden = !expand;
+			};
+
+			// Toggle menu visibility when the menu button is clicked.
+			btn.addEventListener('click', () => setExpanded(menu.hidden));
+
+			// Hide menu button for large screens.
+			const handleViewports = (e: MediaQueryList | MediaQueryListEvent) => {
+				setExpanded(e.matches);
+				btn.hidden = e.matches;
+			};
+			const mediaQueries = window.matchMedia('(min-width: 50em)');
+			handleViewports(mediaQueries);
+			mediaQueries.addEventListener('change', handleViewports);
+		}
+	}
+	customElements.define('menu-button', MenuButton);
+</script>
+
+<style>
+
+	nav {
+		z-index: 9999;
+		position: relative;
+		font-family: var(--font-brand);
+		font-weight: 500;
+		position: sticky;
+		top: 0;
+		-webkit-backdrop-filter: saturate(300%) blur(5px);
+		backdrop-filter: saturate(300%) blur(5px);
+		background-color: rgba(var(--color-999-rgb), 0.65);
+	}
+	.bg-ticker{
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		top: -50px;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+	}
+	.menu-header {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding: 0;
+	}
+
+	.site-title {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: flex-start;
+		align-items: center;
+		line-height: 1;
+		color: var(--color-0);
+		font-weight: 400;
+		text-decoration: none;
+		font-size: 1.5rem;
+		letter-spacing: 0.1px;
+		&:hover{
+			color:rgb(236, 72, 113);
+		}
+	}
+	.logo {
+		max-height: 30px;
+	}
+	.logo path{
+		fill: var(--color-100);
+	}
+	.author {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		text-decoration: none;
+	}
+    .avatar{
+        display: flex;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        line-height: 1;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .avatar__img{
+		display: block;
+		border-radius: 50%;
+		width: 28px;
+		height: 28px;
+		object-fit: cover;
+    }
+	.site-name {
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--color-100);
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		line-height: 28px;
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.avatar__name{
+		line-height: normal;
+		font-weight: 400;
+		font-size: 22px;
+    }
+	.nav-wrapper{
+		display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1rem;
+	}
+	.nav-items {
+		margin: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		font-size:1rem;
+		font-weight: normal;
+		line-height:1;
+		list-style: none;
+		padding: 0;
+		position: relative;
+		border: 0;
+		gap: calc(var(--gap)*1.5);
+	}
+	.nav-items li{
+		margin:0;
+	}
+	:global(.github-stars) {
+		flex: none;
+	}
+	.link {
+		display: inline-block;
+		color: var(--color-300);
+		text-decoration: none;
+	}
+
+	.link.active {
+		color: var(--color-100);
+		font-weight: bold;
+	}
+
+	.menu-footer {
+		--icon-size: var(--text-xl);
+		--icon-padding: 0.5rem;
+		display: flex;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: .35rem 0rem;
+	}
+
+	.socials {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.625rem;
+		font-size: var(--icon-size);
+	}
+
+	.social {
+		display: flex;
+		padding: var(--icon-padding);
+		text-decoration: none;
+		color: var(--accent-dark);
+		transition: color var(--theme-transition);
+	}
+
+	.social:hover,
+	.social:focus {
+		color: var(--accent-text-over);
+	}
+
+	.theme-toggle {
+		display: flex;
+		align-items: center;
+		height: calc(var(--icon-size) + 2 * var(--icon-padding));
+	}
+	.languages {
+		display: flex;
+		align-items: center;
+		height: calc(var(--icon-size) + 2 * var(--icon-padding));
+	}
+
+	@media (min-width: 60em) {
+		.socials {
+			display: flex;
+			justify-content: flex-end;
+			gap: 0;
+		}
+	}
+	@media (max-width: 576px) {
+		.nav-wrapper{
+			display: flex;
+			align-items: center;
+			gap: 0rem;
+
+		}
+		.menu-header{
+			padding:8px 0;
+		}
+		.menu-footer{
+			padding: 0;
+		}
+	}
+	.pc-nav{
+ 	 	display: none;
+	}
+	@media (min-width: 767px) {
+		.pc-nav{
+			display: flex;
+		}
+	}
+</style>

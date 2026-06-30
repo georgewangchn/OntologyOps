@@ -1,0 +1,160 @@
+---
+import { filterItems } from '../data/content.ts';
+const {count} = Astro.props;
+---
+<div class="section filter ">
+	<div class="border-bottom">
+		<div class="row filter-wrapper relative overflow-hidden col-1a">
+			<ul class="flex filter-list filter-options">
+				<button class="filter-item filter-tag active" class="" data-group="all">
+					全部 <span>({count})</span>
+				</button>
+                {filterItems.map((item) => (
+                    <button  class="filter-item filter-tag" data-group={item.dataGroup}>
+                      {item.content}
+                    </button>
+                ))}
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<style lang="scss">
+:root{
+    --filter-bg:  #fff;
+    --filter-bg-active:#0a0a0a;
+    --filter-bg-hover:rgba(10,10,10,.08);
+    --filter-color:#101010;
+    --filter-color-active:#f4f3f0;
+    --filter-border:1px solid #d0d0d0;
+
+}
+:root.theme-dark{
+    --filter-bg:  #19191b;
+    --filter-color:#d6d5d4;
+    --filter-color-active:#19191b;;
+    --filter-border:1px solid #696765;
+    --filter-bg-active:#f4f3f0;
+    --filter-bg-hover:rgba(243, 244, 247,.08);
+}
+
+
+.type{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+}
+.type-tag{
+    display: inline-block;
+    height: 20px;
+    padding: 0 10px;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: 300;
+    border-radius: 4px;
+    vertical-align: middle;
+    color: var( --filter-color);
+    letter-spacing: 1px;
+    white-space: nowrap;
+
+}
+
+/* serach */
+.filters-group {
+        padding: 0;
+        margin: 0 0 4px;
+        border: 0;
+    }
+    .filter-label {
+        display: block;
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 4px;
+        color: #95a5a6;
+    }
+    .textfield {
+        -webkit-appearance: none;
+        box-sizing: border-box;
+        width: 100%;
+        border: 1px solid #95a5a6;
+        border-radius: 4px;
+        padding: 0.5em;
+        font-size: 1rem;
+        color: #34495e;
+        transition: 0.15s;
+    }
+    .textfield::placeholder {
+        color: #808080;
+        transition: 0.15s;
+        font-family: var(--font-body);
+    }
+
+    .textfield:hover {
+        outline-width: 0;
+        color: #5d6d77;
+        border-color: #5d6d77;
+    }
+/* End serach */
+
+
+.filter{
+    &-wrapper{
+        margin:1rem 0 1rem;
+    }
+    &-list{
+        display:flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: auto;
+    }
+    &-item{
+        display: inline-flex;
+    }
+    &-tag{
+        border-radius: 32px;
+        background-color: var(--filter-bg);
+        padding:10px 24px;
+        font-size: 15px;
+        font-family: var(--font-body);
+        border:var(--filter-border);
+        line-height: 1;
+        letter-spacing: 0.25px;
+        color:var(--filter-color);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.075, 0.82, 0.165, 1);
+        span{
+            font-size: 12px;
+            font-weight: 300;
+            padding:0px 0px 0 3px;
+            vertical-align: text-bottom;
+            opacity: 0.75;
+            line-height: 16px;
+            letter-spacing: -0.25px;
+        }
+        &:hover{
+            background-color: var(--filter-bg-hover);
+            color: var(--filter-color);
+        }
+        &.active{
+            font-weight: 500;
+            background: var(--filter-bg-active);
+            color: var(--filter-color-active);
+        }
+    }
+}
+
+.record{
+    font-size: 12px;
+    color: var(--color-200);
+    &-update{
+        display: flex;
+
+    }
+}
+
+
+</style>

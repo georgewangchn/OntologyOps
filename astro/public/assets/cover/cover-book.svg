@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="533" viewBox="0 0 800 533">
+  <rect width="800" height="533" fill="#1a6b4f"/>
+  <rect width="800" height="533" fill="url(#g)" opacity="0.3"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3d8ab5"/>
+      <stop offset="100%" stop-color="#1a6b4f"/>
+    </linearGradient>
+  </defs>
+  <text x="400" y="280" text-anchor="middle" fill="#faf8f3" font-family="serif" font-size="48" font-weight="bold">📖</text>
+  <text x="400" y="340" text-anchor="middle" fill="#e8ede9" font-family="system-ui,sans-serif" font-size="22" font-weight="600">当LLM不够用了</text>
+  <text x="400" y="370" text-anchor="middle" fill="#c5d4c9" font-family="system-ui,sans-serif" font-size="15">本体推理的企业决策实践</text>
+</svg>

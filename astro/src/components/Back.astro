@@ -1,0 +1,67 @@
+---
+interface Props {
+	href?: string | undefined;
+}
+const { href = "/"} = Astro.props;
+---
+<div class="section-back">
+	<div class="container">
+		<div class="inner-back">
+				<a href={href} class="back ">
+					<svg width="56" height="42" viewBox="0 0 56 42" fill="none" xmlns="http://www.w3.org/2000/svg" class="back-svg">
+						<g clip-path="url(#clip0_1174_525)">
+						<path d="M3.71519 20.9181L52.7203 20.9181M20.7906 38.24L3.7096 20.9182L20.7874 3.59294" stroke="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+						</g>
+						<defs>
+						<clipPath id="clip0_1174_525">
+						<rect width="56" height="42" fill="var(--color-100)"/>
+						</clipPath>
+						</defs>
+					</svg>
+				</a>
+		</div>
+	</div>
+</div>
+<style>
+	.section-back{
+		position: fixed;
+		width: 100%;
+		top: 100px;
+		left: 30px;
+		z-index: 99;
+	}
+	.inner-back {
+	}
+
+	.back {
+		position: relative;
+		border-radius: 40px;
+		width: 56px;
+		height: 56px;
+		border: 1px solid var(--color-0);
+		background-color: var(--color-900);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all .25s ease-in-out;
+
+	}
+	.back-svg {
+		width: 24px;
+		height: auto;
+	}
+	.back-svg path{
+		stroke:var(--color-0);
+	}
+	.back:hover {
+		transform: scale(1.1);
+		background-color: var(--color-0);
+		color:var(--color-900);
+	}
+	.back:hover .back-svg path{
+		stroke:var(--color-900);
+	}
+	@media(max-width: 767px) {
+		.section-back{display: none;}
+	}
+</style>

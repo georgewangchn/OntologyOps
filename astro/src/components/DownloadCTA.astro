@@ -1,0 +1,51 @@
+---
+interface Props {
+	href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<a href={href}  target="_blank"><slot /></a>
+
+<style>
+	a {
+		position: relative;
+		display: flex;
+		place-content: center;
+		text-align: center;
+		padding: 1em 2em;
+		color: var(--color-50);
+		text-decoration: none;
+		line-height: 1.1;
+		border-radius: var(--radius-small);
+		overflow: hidden;
+		background: none;
+		border:1px solid var(--color-50);
+		white-space: nowrap;
+		font-size: var(--text-sm);
+		font-weight: 400;
+		max-width: 320px;
+		margin:0 auto;
+		transition: all 0.35s;
+	}
+	a:hover{
+		
+	}
+
+	/* Overlay for hover effects. */
+	a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		transition: background-color var(--theme-transition);
+		mix-blend-mode: overlay;
+	}
+
+	a:focus::after,
+	a:hover::after {
+		background-color: hsla(var(--color-999-basis), 0.3);
+	}
+
+</style>

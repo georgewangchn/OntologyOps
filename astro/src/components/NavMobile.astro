@@ -1,0 +1,211 @@
+---
+import {nav} from '../data/content';
+---
+
+<div class="mobile-header">
+	<div class="hamburger">
+		<div class="hamburger-toggle">
+				<span></span>
+		</div>
+
+	</div>
+	<div class="m-nav">
+		<div class="m-nav-wrap">
+				<ul class="m-menu">
+						{nav.items?.map(item => (
+							<li class="m-menu-li">
+								<a
+									aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+									class:list={[
+										'm-menu__link l',
+										{
+											active: Astro.url.pathname === item.href ||
+												(item.href !== '/' && Astro.url.pathname.startsWith(item.href)),
+										},
+									]}
+									href={item.href}
+									target={item.target || '_self'}
+								>
+									{item.label}
+								</a>
+							</li>
+						))}
+						<li class="m-menu-li">
+								<div class="theme-toggle" style="transform:scale(1.1);" >
+
+								</div>
+						</li>
+				</ul>
+		</div>
+
+	</div>
+	<div class="m-nav-mask"></div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = () => {
+      document.querySelector('.hamburger-toggle')?.classList.toggle('close-line');
+      document.querySelector('.m-nav')?.classList.toggle('is-active');
+      document.querySelector('.m-nav-mask')?.classList.toggle('is-active');
+    };
+
+    document.querySelector('.hamburger-toggle')?.addEventListener('click', toggle);
+    document.querySelector('.m-nav-mask')?.addEventListener('click', toggle);
+  });
+</script>
+<style lang="scss">
+	//mobile menu m-menu
+
+.pc-nav{
+  display: none;
+}
+
+
+@media (min-width: 767px) {
+  .pc-nav{
+    display: flex;
+  }
+  .hamburger{display: none;}
+  .m-nav{display: none;}
+}
+.hamburger{
+  position: relative;
+  z-index: 9999;
+  &-toggle{
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    width: 60px;
+    height: 60px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    cursor: pointer;
+    span {
+          width: 18px !important;
+          width: 32px;
+          height: 2px;
+          display: block;
+          position: relative;
+          background: var(--color-100);
+          -webkit-transition: all .2s ease-out;
+          transition: all .2s ease-out;
+          &:before, &:after {
+              -webkit-transition: all .3s  ease-out;
+              transition: all .3s  ease-out;
+              content: "";
+              width: 26px;
+              height: 2px;
+              position: absolute;
+              left: 0;
+              background: var(--color-100);
+          }
+          &::before{
+            top: -9px !important;
+          }
+          &::after{
+            top: 9px !important;
+          }
+          }
+  }
+}
+.hamburger-toggle.close-line span {
+  width: 0px !important;
+  transform: translateX(-12px);
+}
+.hamburger-toggle.close-line span::before {
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  top: 0 !important;
+  width: 36px !important;
+}
+.hamburger-toggle.close-line span::after {
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  top: 0 !important;
+  width: 36px !important;
+}
+.m-nav{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--color-999);
+  transition: all .75s ease-in-out;
+  transform: translateX(100%);
+  z-index:999;
+  overflow: hidden;
+  &.is-active{
+    transform: translateX(10%);
+  }
+}
+.m-nav-wrap{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index:99999;
+  margin-left: -20vw;
+}
+.m-nav-mask{
+  position: fixed;
+  right: 0;
+  top:0;
+  bottom:0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  opacity: 0;
+  background-color: var(--accent-overlay);
+  z-index: 990;
+  transition: all 0.5s ease-in-out;
+  transition-delay: 0.15s;
+  width: 0%;
+  &.is-active{
+    opacity: 1;
+    width: 100%;
+  }
+}
+.m-menu{
+  position: relative;
+  margin-top:120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+  @media (max-height:600px) {
+    margin-top:8vh;
+  }
+  &-li{
+    position: relative;
+    text-align: left;
+    padding:2vh 0;
+    vertical-align: middle;
+		text-decoration: none;
+		list-style: none;
+    a.m-menu__link{
+      position: relative;
+      display: inline-block;
+			font-size:1.5rem;
+    }
+    &--github{
+      padding-top: 1vh;
+      padding-bottom: 1vh;
+    }
+  }
+  &__icon{
+    width: 30px;
+    height: 30px;
+    margin-bottom: -2px;
+  }
+}
+
+</style>

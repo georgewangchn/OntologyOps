@@ -1,0 +1,67 @@
+---
+import { socialLinks } from  '../data/content.ts';
+---
+<div class="author border-bottom">
+    <div class="social">
+      {socialLinks.map((link) => (
+        <a href={link.url} target="_blank" class="social-link">
+          <Fragment set:html={link.icon} />
+        </a>
+      ))}
+    </div>
+</div>
+<style is:global>
+  .ic-social{
+    fill:var(--color-100);
+    width: auto;
+    height: 22px;
+  }
+
+  .social{
+    margin:0px auto;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    padding-bottom:8px;
+    }
+    .social a{
+      opacity:0.75;
+    }
+    .social a:hover{
+      opacity:1;
+    }
+
+    .social-link svg{
+        fill: var(--color-400);
+        width: auto;
+        height: 20px;
+        color: var(--color-400);
+    }
+    .social .ic-behance:hover{
+        fill: #0056ff!important;
+    }
+    .social .ic-dribbble:hover{
+        fill: #d145bf!important;
+    }
+    .social .ic-bilibili:hover{
+
+        fill: #00aeec!important;
+    }
+    .social .ic-zcool:hover{
+        fill: #ffd100!important;
+    }
+    .social .ic-rss:hover{
+        fill: #ee802f!important;
+    }
+    .social .ic-github:hover{
+        fill: var(--color-200);
+    }
+    .social .ic-xiaohongshu{
+      width:40px;
+      height: auto;
+    }
+    .social .ic-xiaohongshu:hover{
+        fill: #ff2742!important;
+    }
+</style>

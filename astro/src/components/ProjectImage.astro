@@ -1,0 +1,32 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+interface Props {
+  	imagePath: string;
+    altText?: string;
+}
+const { imagePath, altText} = Astro.props;
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/projects/**/*.{jpeg,jpg,png,gif}');
+if (!images[imagePath]) {
+  throw new Error(`Image not found: ${imagePath}`);
+}
+---
+<Image 
+		src={images[imagePath]()} 
+		alt={altText} 
+		alt="Project Cover"
+		width={400} 
+		format="webp" 
+		quality={80} 
+		decoding="async"
+		loading="lazy"
+		class="project-figure__img" 
+/>
+<style>
+	.project-figure__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+</style>

@@ -1,0 +1,88 @@
+---
+import Icon from './Icon.astro';
+
+const repo = 'ricocc/public-portfolio-site';
+const repoUrl = `https://github.com/${repo}`;
+const fallbackStars = '244';
+---
+
+<a
+	class="github-stars"
+	href={repoUrl}
+	target="_blank"
+	rel="noopener noreferrer"
+	aria-label={`Open ${repo} on GitHub`}
+	data-github-stars
+>
+	<Icon icon="github-logo" size="1.25rem" />
+	<span class="github-stars__count" data-github-stars-count>{fallbackStars}</span>
+</a>
+
+<script is:inline define:vars={{ repo }}>
+	const starLinks = document.querySelectorAll('[data-github-stars]');
+	const starCounts = document.querySelectorAll('[data-github-stars-count]');
+
+	if (starLinks.length && starCounts.length) {
+		window.__githubStarsPromise ||= fetch(`https://api.github.com/repos/${repo}`, {
+			cache: 'no-store',
+			headers: {
+				Accept: 'application/vnd.github+json',
+			},
+		});
+
+		window.__githubStarsPromise
+			.then((response) => (response.ok ? response.json() : null))
+			.then((data) => {
+				if (typeof data?.stargazers_count !== 'number') return;
+				const formattedStars = new Intl.NumberFormat('en', {
+					notation: data.stargazers_count >= 10000 ? 'compact' : 'standard',
+					maximumFractionDigits: 1,
+				}).format(data.stargazers_count);
+				starCounts.forEach((starCount) => {
+					starCount.textContent = formattedStars;
+				});
+				starLinks.forEach((starLink) => {
+					starLink.setAttribute('aria-label', `${repo} has ${data.stargazers_count} GitHub stars`);
+				});
+			})
+			.catch(() => {
+				starLinks.forEach((starLink) => {
+					starLink.setAttribute('data-stars-unavailable', 'true');
+				});
+			});
+	}
+</script>
+
+<style>
+	.github-stars {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		min-width: 4rem;
+		height: 32px;
+		padding: 0 0.65rem;
+		border-radius: 6px;
+		color: var(--color-400);
+		text-decoration: none;
+		border: 1px solid var(--color-700);
+		border-radius: 999px;
+		line-height: 1;
+		transform: translateY(-1px);
+		transition:
+			color var(--theme-transition),
+			background-color var(--theme-transition);
+	}
+
+	.github-stars:hover,
+	.github-stars:focus-visible {
+		color: var(--color-100);
+		background: rgba(var(--color-100-rgb), 0.06);
+	}
+
+	.github-stars__count {
+		font-family: var(--font-body);
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1;
+	}
+</style>

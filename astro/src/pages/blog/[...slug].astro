@@ -1,0 +1,210 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogPostLayout from "../../layouts/BlogPostLayout.astro";
+interface Props {
+	entry: CollectionEntry<'blog'>;
+}
+
+// This is a dynamic route that generates a page for every Markdown file in src/content/
+// Read more about dynamic routes and this `getStaticPaths` function in the Astro docs:
+// https://docs.astro.build/en/core-concepts/routing/#dynamic-routes
+export async function getStaticPaths() {
+	const blog = await getCollection('blog');
+	return blog.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BlogPostLayout title={entry.data.title} description={entry.data.description}>
+	<!-- <Back href="/blog/"/> -->
+	<div class="post article">
+		<main class="post-wrapper">
+			<div class="section-header">
+				<div class="row">
+					<div class="section-content col-1a">
+						<div class="section-title">
+							<div class="title-tag">
+								Article
+							</div>
+							<h1 class="title">
+								{entry.data.title}
+							</h1>
+						</div>
+						<!-- <div class="section-desc  text-center" >
+							{entry.data.description}
+						</div> -->
+					</div>
+
+				</div>
+				<div class="post-line post-line-bottom text-center" >
+					<span class="text-center">更新于：{entry.data.publishDate.toISOString().slice(0,10)}</span>
+					{
+						entry.data.read &&   <span class="" >•</span>
+					<span >{entry.data.read} min read</span>
+					}
+				</div>
+			</div>
+
+
+			<section>
+				<div class="content">
+					<Content />
+				</div>
+			</section>
+
+		</main>
+	</div>
+
+
+	<!-- <div class="action-back">
+		<a class="back-link" href="/blog/"><Icon icon="arrow-left"/> 博客 </a>
+	</div> -->
+	<!-- {entry.data.img && <img src={entry.data.img} alt={entry.data.img_alt || ''} />} -->
+
+</BlogPostLayout>
+
+<style>
+
+
+	.section-content{
+		text-align:center;
+	}
+	.section-desc{
+		text-align:center
+	}
+	.post-line-top{
+		border-top: 1px dashed var(--color-700);
+		padding-top: .5rem;
+		padding-bottom: 2rem;
+		margin-top: .5rem;
+		font-size: .875rem;
+		white-space: nowrap;
+		color:var(--color-500);
+		font-weight:300
+	}
+	.post-line-bottom{
+		border-bottom: 1px dashed var(--color-700);
+		padding-bottom: .5rem;
+		margin:1.25rem auto 2.5rem;
+		font-size: .8rem;
+		white-space: nowrap;
+		color:var(--color-500);
+	}
+	.title-tag{
+		display: inline-block;
+		font-size: 13px;
+		line-height: 1;
+		margin:16px auto 24px;
+		border:1px solid var(--color-700);
+		border-radius: 36px;
+		padding:8px 22px 4px;
+		color: var(--color-300);
+		text-align: center;
+		font-family: var(--font-type);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+	.title{
+		line-height: 1.2;
+		margin: 0.5rem 0;
+		color: var(--color-100);
+		text-align: center;
+	}
+
+	.details {
+		display: flex;
+		flex-direction: column;
+		padding: 0.5rem;
+		gap: 1.5rem;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.tags {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.description {
+		font-size: var(--text);
+	}
+
+	.content {
+		position:relative;
+		color:var(--color-200);
+		margin:3rem 0;
+	}
+
+	.content > :global(* + *) {
+		margin-top: 1rem;
+	}
+
+	.content :global(h1),
+	.content :global(h2),
+	.content :global(h3),
+	.content :global(h4),
+	.content :global(h5) {
+		margin: 1.75em 0 1em;
+		color:var(--color-100);
+	}
+	.content :global(h2){
+		font-size: 1.75rem;
+		color:var(--color-100);
+	}
+	.content :global(h3){
+		font-size: 1.5rem;
+		color:var(--color-100);
+	}
+	.content :global(h4){
+		font-size: 1.25rem;
+		color:var(--color-200);
+	}
+	.content :global(h5){
+		font-size: 1rem;
+		color:var(--color-300);
+	}
+	.content :global(img) {
+		border-radius: 8px;
+	}
+
+	.content :global(p) {
+		margin:16px 0;
+		line-height:1.8
+	}
+	.content :global(ol) {
+		padding-left: 2em;
+    margin: 2em 0;
+	}
+@media(max-width:850px){
+	.post-wrapper{
+		padding: 0 1.25rem;
+	}
+	.title-tag{
+		font-size:12px;
+	}
+}
+@media(max-width:376px){
+	.post-wrapper{
+		padding: 0 1rem;
+	}
+}
+.action-back{
+	display:none;
+}
+@media(min-width:767px){
+	.action-back{
+		position:fixed;
+		display:block;
+		top:74px;
+		left:5%;
+		background:var(--color-999);
+	}
+}
+.article a:link{
+	color:var(--color-blue);
+}
+</style>

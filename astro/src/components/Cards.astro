@@ -1,0 +1,399 @@
+---
+import Filter from '../components/Filter.astro';
+// 引入 JSON 文件并加载数据
+// const cardJsonString = '/assets/data/card.json';
+// const cardData = JSON.parse(cardJsonString);
+// 使用 JSON 数据
+// import cardData from '../components/card.json';
+import cardData from '../data/home.json';
+const cards = [];
+for (const [index,item] of cardData.entries()) {
+  const card = {
+    id: item.id || index,
+    title: item.title,
+    cover: item.cover || "",
+    description: item.desc || "",
+    url: item.url || "",
+    detail: item.detail || "",
+    category: item.category || "other",
+    tag: item.tag || "",
+    date: item.date || "",
+    mark: item.mark|| "",
+    index: index + 1,
+  };
+  cards.push(card);
+}
+// 排序：推荐（mark=true）的卡片始终排在最前面
+cards.sort((a, b) => {
+    const aMarked = a.mark ? 1 : 0;
+    const bMarked = b.mark ? 1 : 0;
+    return bMarked - aMarked;
+});
+const count = cards.length;
+---
+<Filter count={count} />
+<div class="section card">
+    <div class="js-shuffle-sizer" >
+        <div class="card-list my-shuffle-container" id="js-shuffle">
+            {cards.map((card) => (
+              <div class="card-item col-xs-1a col-md-2a col-lg-3a col-xxl-4a" data-groups={JSON.stringify(card.category)} data-date-created={card.date} data-title={card.title}>
+                  <div class="card-header">
+                      <div class="card-type type">
+                          <span class="type-tag">- {card.tag} - </span>
+                      </div>
+                      <div class="card-type type">
+                          <span class="type-tag">(0{card.index})</span>
+                      </div>
+                  </div>
+                  <div class="card-body">
+                      <a href={card.detail ? card.detail:"javascript:void(0)"} class="card-figure" target={card.detail ? "_blank":"_self"}>
+                        (<img class="card-figure__img lazy"
+                              src={card.cover} loading="lazy"
+                              alt="Loading Animations"
+                        >)
+                      </a>
+                  </div>
+                  <div class="card-footer">
+                      <div class="card-detail">
+                          <a href={card.detail ? card.detail :"javascript:void(0)"} target={card.detail ? "_blank":"_self"} class="card-name card-item__title">
+                            {card.mark && <span class="tag-original">推荐</span>}   {card.title}
+                          </a>
+                          <div class="card-info">
+                            {card.description}
+                          </div>
+                      </div>
+                     {card.url && <a href={card.url ? card.url : "javascript:void(0)" } class="card-link card-link__go js-gotip" target={card.url ? "_blank" : "_self"}>
+                      </a> }
+                  </div>
+              </div>
+              ))}
+        </div>
+        <div class="col-sm-1 col-xs-1 my-sizer-element" id="my-sizer-element"></div>
+    </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // 检查是否存在带有类名 '.card-figure__video' 的元素
+      const videos = document.querySelectorAll('.card-figure__video') as NodeListOf<HTMLVideoElement>;;
+
+      // 如果存在视频元素，则执行相关操作
+      if (videos.length > 0) {
+          videos.forEach(video => {
+              // 设置自动播放
+              video.autoplay = true;
+              // 禁止声音
+              video.muted = true;
+              // 循环播放
+              video.loop = true;
+              // 隐藏控制栏（包括进度条、播放/停止按钮和菜单栏）
+              video.controls = false;
+              // 设置 playsinline 属性，以确保在移动设备上也能自动播放
+              video.setAttribute('playsinline', '');
+              // 为了确保视频开始播放，我们可以添加一个 play() 调用
+              video.play().catch(e => {
+                  console.log("Auto-play was prevented:", e);
+                  // 一些浏览器可能会阻止自动播放，特别是在没有用户交互的情况下
+              });
+          });
+      } else {
+
+      }
+  });
+</script>
+
+<script is:inline type="module">
+import '/plugins/shuffle.js';
+var Shuffle = window.Shuffle;
+class Demo {
+  constructor(element) {
+    this.element = element;
+    this.shuffle = new Shuffle(element, {
+      itemSelector: '.card-item',
+      sizer: element.querySelector('.js-shuffle-sizer') });
+    // Log events.
+    this.addShuffleEventListeners();
+    this._activeFilters = [];
+    this.addFilterButtons();
+    this.addSorting();
+    this.addSearchFilter();
+  }
+
+  /**
+   * Shuffle uses the CustomEvent constructor to dispatch events. You can listen
+   * for them like you normally would (with jQuery for example).
+   */
+  addShuffleEventListeners() {
+    this.shuffle.on(Shuffle.EventType.LAYOUT, data => {
+      console.log('layout. data:', data);
+    });
+    this.shuffle.on(Shuffle.EventType.REMOVED, data => {
+      console.log('removed. data:', data);
+    });
+  }
+
+  addFilterButtons() {
+    const options = document.querySelector('.filter-options');
+    if (!options) {
+      return;
+    }
+
+    const filterButtons = Array.from(options.children);
+    const onClick = this._handleFilterClick.bind(this);
+    filterButtons.forEach(button => {
+      button.addEventListener('click', onClick, false);
+    });
+  }
+
+  _handleFilterClick(evt) {
+    const btn = evt.currentTarget;
+    const isActive = btn.classList.contains('active');
+    const btnGroup = btn.getAttribute('data-group');
+
+    this._removeActiveClassFromChildren(btn.parentNode);
+
+    let filterGroup;
+    if (isActive) {
+      btn.classList.remove('active');
+      filterGroup = Shuffle.ALL_ITEMS;
+    } else {
+      btn.classList.add('active');
+      filterGroup = btnGroup;
+    }
+
+    this.shuffle.filter(filterGroup);
+  }
+
+  _removeActiveClassFromChildren(parent) {
+    const { children } = parent;
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].classList.remove('active');
+    }
+  }
+
+  addSorting() {
+    const buttonGroup = document.querySelector('.sort-options');
+    if (!buttonGroup) {
+      return;
+    }
+    buttonGroup.addEventListener('change', this._handleSortChange.bind(this));
+  }
+
+  _handleSortChange(evt) {
+    // Add and remove `active` class from buttons.
+    const buttons = Array.from(evt.currentTarget.children);
+    buttons.forEach(button => {
+      if (button.querySelector('input').value === evt.target.value) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
+
+    // Create the sort options to give to Shuffle.
+    const { value } = evt.target;
+    let options = {};
+
+    function sortByDate(element) {
+      return element.getAttribute('data-created');
+    }
+
+    function sortByTitle(element) {
+      return element.getAttribute('data-title').toLowerCase();
+    }
+
+    if (value === 'date-created') {
+      options = {
+        reverse: true,
+        by: sortByDate };
+
+    } else if (value === 'title') {
+      options = {
+        by: sortByTitle };
+
+    }
+    this.shuffle.sort(options);
+  }
+
+  // Advanced filtering
+  addSearchFilter() {
+    const searchInput = document.querySelector('.js-shuffle-search');
+    if (!searchInput) {
+      return;
+    }
+    searchInput.addEventListener('keyup', this._handleSearchKeyup.bind(this));
+  }
+
+  /**
+   * Filter the shuffle instance by items with a title that matches the search input.
+   * @param {Event} evt Event object.
+   */
+  _handleSearchKeyup(evt) {
+    const searchText = evt.target.value.toLowerCase();
+    this.shuffle.filter((element, shuffle) => {
+      // If there is a current filter applied, ignore elements that don't match it.
+      if (shuffle.group !== Shuffle.ALL_ITEMS) {
+        // Get the item's groups.
+        const groups = JSON.parse(element.getAttribute('data-groups'));
+        const isElementInCurrentGroup = groups.indexOf(shuffle.group) !== -1;
+        // Only search elements in the current group
+        if (!isElementInCurrentGroup) {
+          return false;
+        }
+      }
+      const titleElement = element.querySelector('.card-item__title');
+      const titleText = titleElement.textContent.toLowerCase().trim();
+      return titleText.indexOf(searchText) !== -1;
+    });
+  }}
+document.addEventListener('DOMContentLoaded', () => {
+  window.demo = new Demo(document.getElementById('js-shuffle'));
+});
+
+</script>
+
+<style lang="scss">
+.type{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+}
+.type-tag{
+    display: inline-block;
+    height: 20px;
+    padding: 0 10px;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: 400;
+    border-radius: 4px;
+    /* border: 1px solid var(--color-200); */
+    vertical-align: middle;
+    color: var(--color-100);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+.tag-original{
+  display: block;
+  height: 22px;
+  padding: 0 8px;
+  line-height: 22px;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 4px;
+  vertical-align: middle;
+  color: var(--color-900);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  background-color: var(--color-blue);
+  margin-right:6px;
+}
+.card{
+    &-list{
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        margin:48px auto 48px;
+
+    }
+    &-item{
+        /* width: calc( 33.33% - 12px );
+        margin: 0 12px 36px 12px; */
+        float: left;
+        margin-bottom:1.5rem;
+    }
+    &-header{
+        margin-bottom:6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    &-body{
+        font-size: 0;
+    }
+    &-figure{
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        background-color: rgba(0,0,0,.02);
+        border-radius: var(--radius);
+        /* padding-bottom: 56%; */
+        padding-bottom: calc(2 * 100% / 3);
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        &__img{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            -o-object-fit: cover;
+            object-fit: cover;
+            transition: all 0.5s;
+        }
+        &:hover  .card-figure__img{
+            transform:scale(1.05);
+        }
+        &__video{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            -o-object-fit: cover;
+            object-fit: cover;
+            transition: all 0.5s;
+        }
+        &:hover  .card-figure__video{
+            transform:scale(1.05);
+        }
+
+    }
+    &-footer{
+        width: 100%;
+        margin-top:12px;
+        margin-bottom:12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    &-name{
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-200);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+    }
+    &-info{
+        display: block;
+        font-size: 14px;
+        font-size: 0.875rem;
+        color: var(--color-300);
+        font-weight: 400;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        margin-top: 4px;
+    }
+    &-link__go {
+            background-repeat: no-repeat;
+            background-position: 6px center;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>%3Cpath d='M5 15L15 5M15 5H7.5M15 5V12.5' stroke='%23737373' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/>%3C/svg>");
+            width: 32px;
+            height: 32px;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            transition: all 0.35s ease-in-out;
+            &:hover {
+            transform: rotate(45deg);
+           }
+    }
+}
+</style>
+
+

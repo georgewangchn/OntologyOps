@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Cards from '../components/Cards.astro';
+import {homeTdk} from '../data/content';
+---
+
+<BaseLayout
+    title={homeTdk.title || ''}
+    description={homeTdk.description || ''}
+    keywords={homeTdk.keywords || ''}
+>
+    {/* ── 著作 Banner ── */}
+    <section class="section-book">
+        <div class="container">
+            <a href="/book/index.html" class="book-banner" target="_self">
+                <div class="book-banner__cover">
+                    <img src="/assets/cover/book-cover.png" alt="当LLM不够用了——本体推理的企业决策实践" loading="lazy" />
+                </div>
+                <div class="book-banner__info">
+                    <span class="book-banner__tag">著作</span>
+                    <h2 class="book-banner__title">《当LLM不够用了——本体推理的企业决策实践》</h2>
+                    <p class="book-banner__desc">
+                        这本书系统讲解如何用本体推理技术解决企业决策中的知识表示与自动推理问题。<br />
+                        从 OWL 公理体系、SWRL 规则到 HermiT 推理引擎，从理论到 12 章完整实战 — 完整在线阅读。<br />
+                        <strong>本体推理 ≠ 知识图谱。推理能力才是本体的灵魂。</strong>
+                    </p>
+                    <span class="book-banner__cta">在线阅读 →</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    {/* ── GovernanceOps Demo ── */}
+    <section class="section-demo">
+        <div class="container">
+            <a href="/demo/index.html" target="_blank" class="demo-banner">
+                <div class="demo-banner__cover">
+                    <img src="/assets/cover/governanceops-demo.png" alt="GovernanceOps Demo" loading="lazy" />
+                    <span class="demo-banner__play">▶</span>
+                </div>
+                <div class="demo-banner__info">
+                    <span class="demo-banner__tag">演示视频</span>
+                    <h2 class="demo-banner__title">GovernanceOps Demo</h2>
+                    <p class="demo-banner__desc">
+                        企业治理运维 —— 用本体推理替代人工流转，让决策从"人人负责、无人负责"的主观人治，<br />
+                        推向可验证、可追踪、可审计的机制治。OWL + SWRL + HermiT 推理引擎驱动。
+                    </p>
+                    <span class="demo-banner__cta">观看演示 →</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    {/* ── OntologyOps 开源项目 ── */}
+    <section class="section-projects">
+        <div class="container">
+            <a href="https://github.com/georgewangchn/OntologyOps" target="_blank" class="project-banner">
+                <div class="project-banner__info">
+                    <span class="project-banner__tag">开源项目</span>
+                    <h2 class="project-banner__title">OntologyOps</h2>
+                    <p class="project-banner__desc">
+                        本体即代码 — CI/CD for Knowledge。<br />
+                        让本体像代码一样被管理，让知识像软件一样持续交付。版本化本体管理 + 自动推理验证。
+                    </p>
+                    <span class="project-banner__cta">GitHub →</span>
+                </div>
+                <div class="project-banner__icon">
+                    <svg viewBox="0 0 80 80" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="40" cy="40" r="34"/>
+                        <path d="M26 40h28M40 26v28"/>
+                        <circle cx="40" cy="40" r="14" stroke-dasharray="3 3"/>
+                    </svg>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    {/* ── 多范式推理实战 ── */}
+    <section class="section-practice">
+        <div class="container">
+            <div class="section-label">
+                <span class="section-label__tag">PRACTICE</span>
+                <h2 class="section-label__title">多范式推理实战</h2>
+                <p class="section-label__desc">
+                    同一个诊断问题，四种推理范式 — 不为比较优劣，只为理解每种范式的思维方式与适用边界。
+                </p>
+            </div>
+            <Cards />
+        </div>
+    </section>
+
+</BaseLayout>
+
+<style lang="scss">
+/* ── Book Banner ── */
+.section-book {
+    padding: 48px 0 24px;
+}
+.book-banner {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-100);
+    background: linear-gradient(135deg, var(--color-900), var(--color-999));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-large);
+    padding: 32px;
+    transition: all 0.3s ease;
+    &:hover {
+        border-color: var(--accent-regular);
+        box-shadow: var(--shadow-md);
+        .book-banner__cta {
+            color: var(--accent-regular);
+        }
+        .book-banner__cover img {
+            transform: scale(1.03);
+        }
+    }
+    &__cover {
+        flex-shrink: 0;
+        width: 140px;
+        height: 210px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+    }
+    &__info {
+        flex: 1;
+    }
+    &__tag {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--accent-regular);
+        background: var(--color-featured);
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        font-family: var(--font-type);
+    }
+    &__title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        color: var(--color-100);
+    }
+    &__desc {
+        font-size: 0.9rem;
+        color: var(--color-300);
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+    &__cta {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--color-200);
+        transition: color 0.3s;
+    }
+}
+
+/* ── Demo Banner ── */
+.section-demo {
+    padding: 24px 0;
+}
+.demo-banner {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-100);
+    background: var(--color-900);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-large);
+    padding: 32px;
+    transition: all 0.3s ease;
+    &:hover {
+        border-color: var(--accent-regular);
+        box-shadow: var(--shadow-md);
+        .demo-banner__play {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .demo-banner__cta {
+            color: var(--accent-regular);
+        }
+        .demo-banner__cover img {
+            transform: scale(1.02);
+        }
+    }
+    &__cover {
+        flex-shrink: 0;
+        width: 200px;
+        height: 112px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+    }
+    &__play {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        opacity: 0.85;
+        transition: all 0.3s ease;
+    }
+    &__info {
+        flex: 1;
+    }
+    &__tag {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--accent-regular);
+        background: var(--color-featured);
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        font-family: var(--font-type);
+    }
+    &__title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        color: var(--color-100);
+    }
+    &__desc {
+        font-size: 0.875rem;
+        color: var(--color-300);
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+    &__cta {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--color-200);
+        transition: color 0.3s;
+    }
+}
+
+/* ── Project Banner ── */
+.section-projects {
+    padding: 24px 0;
+}
+.project-banner {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--color-100);
+    background: var(--color-900);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-large);
+    padding: 32px;
+    transition: all 0.3s ease;
+    &:hover {
+        border-color: var(--accent-regular);
+        box-shadow: var(--shadow-md);
+        .project-banner__cta {
+            color: var(--accent-regular);
+        }
+        .project-banner__icon {
+            color: var(--accent-regular);
+            transform: rotate(90deg);
+        }
+    }
+    &__info {
+        flex: 1;
+    }
+    &__tag {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--accent-regular);
+        background: var(--color-featured);
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        font-family: var(--font-type);
+    }
+    &__title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        color: var(--color-100);
+    }
+    &__desc {
+        font-size: 0.875rem;
+        color: var(--color-300);
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+    &__cta {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--color-200);
+        transition: color 0.3s;
+    }
+    &__icon {
+        flex-shrink: 0;
+        color: var(--color-400);
+        transition: all 0.4s ease;
+    }
+}
+
+/* ── Section Label ── */
+.section-label {
+    text-align: center;
+    margin: 48px 0 32px;
+    &__tag {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        font-family: var(--font-type);
+        color: var(--color-300);
+        margin-bottom: 8px;
+    }
+    &__title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--color-100);
+        margin-bottom: 8px;
+    }
+    &__desc {
+        font-size: 0.875rem;
+        color: var(--color-300);
+        max-width: 560px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+}
+
+/* ── Practice Section ── */
+.section-practice {
+    padding: 24px 0 48px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .book-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+        &__cover {
+            width: 120px;
+            height: 165px;
+        }
+    }
+    .demo-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+        &__cover {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            aspect-ratio: 16/9;
+        }
+    }
+    .project-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+        &__icon {
+            display: none;
+        }
+    }
+}
+</style>

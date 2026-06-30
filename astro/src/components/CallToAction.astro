@@ -1,0 +1,58 @@
+---
+interface Props {
+	href?: string;
+	target?: string;
+}
+
+const { href="javascript:(void)",target="self" } = Astro.props;
+---
+
+<a href={href} target={target} class="post-btn"><slot /></a>
+
+<style>
+
+	 a {
+		--btn-color: #101010;
+		--color--yellow: #f7d252;
+   		--color--dark-yellow: #ecba0e;
+		position: relative;
+		display: inline-flex;
+		place-content: center;
+		text-align: center;
+		padding: 1.125em 2em ;
+		color: var(--btn-color)!important;
+		text-decoration: none;
+		line-height: 1.1;
+		border-radius: var(--radius-small);
+		overflow: hidden;
+		background: var(--color--yellow);
+		white-space: nowrap;
+		font-size: var(--text-sm);
+		font-weight: 600;
+		margin:0;
+		transition: all 0.35s;
+		border-radius:36px;
+		min-width: 144px;
+	}
+ 	 a:hover{
+		border-color: var(--color--dark-yellow);
+		background-color: var(--color--dark-yellow);
+		box-shadow: 0 0 24px 11px rgba(247, 210, 82,.75);
+	}
+
+	/* Overlay for hover effects. */
+	a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		transition: background-color var(--theme-transition);
+		mix-blend-mode: overlay;
+	}
+
+	a:focus::after,
+	a:hover::after {
+		background-color: hsla(var(--color-999-basis), 0.3);
+	}
+
+</style>

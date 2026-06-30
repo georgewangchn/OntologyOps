@@ -1,0 +1,168 @@
+---
+interface Props {
+	tag?: string;
+	description?: string;
+}
+const {tag='PROJECT', description } = Astro.props;
+---
+
+
+<div class="section-header">
+	<div class="row">
+		<div class="section-content col-1a">
+			<div class="section-title">
+                <div class="title-tag">
+                    {tag}
+                </div>
+                <div class="title">
+                    <slot />
+                </div>
+			</div>
+            {description && <div class="section-desc" >
+				<div class="section-saying">
+                 <p> {description}</p>
+				</div>
+			</div>}
+
+            <section class="border-top" style="margin-top:3rem;">
+		</div>
+	</div>
+</div>
+
+<style lang="scss">
+// report
+.section{
+   &-header{
+        margin:24px 0 48px;
+    }
+   &-content{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: var(--color-100);
+    }
+
+    &-title{
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        h1{
+            font-size: 60px;
+            font-size: 3.75rem;
+            line-height: 1.2;
+            font-weight: 500;
+        }
+    }
+    &-author{
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 12px;
+        min-width: -webkit-fit-content;
+        min-width: -moz-fit-content;
+        min-width: fit-content;
+    }
+    &-avatar{
+        display: inline-block;
+        position: relative;
+        line-height: 1;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        &__img{
+            display: block;
+            border-radius: 50%;
+        }
+        &__name{
+            line-height: normal;
+            font-weight: 400;
+            font-size: 22px;
+        }
+    }
+    &-desc{
+        max-width: 480px;
+        margin:24px auto 0px;
+        text-align: center;
+    }
+    &-saying{
+        font-size: 1rem;
+        line-height: 160%;
+        font-weight: 400;
+        color:var(--color-300);
+        strong{
+            display: block;
+            font-weight: 600;
+            margin-bottom:1em;
+            color:var(--color-100);
+        }
+        p{
+            font-size: 0.875rem;
+            margin-bottom:0.5em;
+        }
+        a:link{
+            color:#11A371;
+        }
+        a:hover{
+            opacity: 0.75;
+        }
+    }
+}
+.title svg{
+    width: auto;
+    height: 80px;
+}
+.title-tag{
+    display: inline-block;
+    font-size: 13px;
+    line-height: 1;
+    margin:16px auto 24px;
+    border:1px solid var(--color-700);
+    border-radius: 36px;
+    padding:8px 22px 4px;
+    color: var(--color-300);
+    text-align: center;
+    font-family: var(--font-type);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.section-show .card-item{
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 0;
+}
+@media(max-width: 1023px) {
+    .section-title h1{
+        font-size: 3rem;
+    }
+}
+@media(max-width: 812px) {
+    .section-title h1{
+        font-size: 2.5rem;
+    }
+}
+@media(max-width: 767px) {
+    .section-content{
+        align-items: center;
+    }
+    .section-author{
+       justify-content: center;
+    }
+
+}
+@media(max-width: 576px) {
+    .section-content{
+        align-items: center;
+    }
+    .section-author{
+       justify-content: center;
+    }
+    .section-title h1{
+        font-size: 3rem;
+    }
+    .section-saying{
+        margin: 2rem 0.5rem;
+    }
+}
+</style>

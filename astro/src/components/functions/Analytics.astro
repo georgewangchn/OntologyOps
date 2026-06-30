@@ -1,0 +1,35 @@
+---
+const gaId = import.meta.env.PUBLIC_GA4_ID;
+const UMAMIId = import.meta.env.PUBLIC_UMAMI_ID;
+// const gaId = '';
+
+if (!gaId) {
+    //console.warn("Google Analytics ID (PUBLIC_GA4_ID) is missing!");
+}
+
+if (!UMAMIId) {
+    //console.warn("Umami ID (PUBLIC_UMAMI_ID) is missing!");
+}
+---
+
+<!-- GA4 跟踪代码 -->
+{gaId && (
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} ></script>
+    <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaId);
+    </script>
+)}
+
+<!-- UMAMIId 跟踪代码 -->
+{UMAMIId && (
+    <script
+        is:inline
+        async
+        defer
+        data-website-id={UMAMIId}
+        src="https://cloud.umami.is/script.js"
+    ></script>
+)}

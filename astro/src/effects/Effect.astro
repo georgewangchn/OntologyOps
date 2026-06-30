@@ -1,0 +1,370 @@
+<div class="train-1">
+	<div class="effects train-icons">
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/bezier.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/game.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/hourglass.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/image.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/rocket.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/compass.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/battery.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/lamp.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/coffee-cup.png)"></div>
+		</div>
+		<div class="effects__img">
+			<div class="effects__img-inner" style="background-image:url(/assets/effects/3dicons/weather.png)"></div>
+		</div>
+	</div>
+</div>
+<!-- <div class="train-switch train-switch-abs">
+    <button data-state="0" class="font-type train-yellow"><span>ICONS</span> </button>
+    <button data-state="1" class="font-type train-blue"> <span>LOGO</span></button>
+		<button data-state="2" class="font-type train-green"><span>PRISM</span></button>
+</div>
+ -->
+
+<script is:inline src="/plugins/effects/imagesloaded.pkgd.min.js"></script>
+<script is:inline src="/plugins/effects/gsap.min.js"></script>
+<script is:inline type="module">
+	import { preloadImages } from '/plugins/effects/utils.js';
+	import { ImageTrail } from '/plugins/effects/imageTrail.js';
+
+	// 图片数组定义
+	const images = [
+		'bezier.png',
+		'game.png',
+		'hourglass.png',
+		'image.png',
+		'rocket.png',
+		'compass.png',
+		'battery.png',
+		'lamp.png',
+		'coffee-cup.png',
+		'weather.png'
+	];
+	const logoImages = [
+		'apple.png',
+		'blender.png',
+		'dribbble.png',
+		'figma.png',
+		'github.png',
+		'pin.png',
+		'react.png',
+		'sketch.png',
+		'vue.png',
+		'wechat.png'
+	];
+	const need3d = [
+		'01.png',
+		'02.png',
+		'03.png',
+		'04.png',
+		'05.png',
+		'06.png',
+		'07.png',
+		'08.png',
+		'09.png',
+		'10.png'
+	];
+	// 定义事件，用于组件间通信
+	const EFFECT_CHANGE_EVENT = 'effect-state-changed';
+
+	// 获取当前效果状态
+	const getCurrentState = () => {
+		try {
+			// 检查是否过期
+			const expiry = localStorage.getItem('effectStateExpiry');
+			if (expiry && parseInt(expiry) < Date.now()) {
+				// 已过期，清除状态
+				localStorage.removeItem('effectState');
+				localStorage.removeItem('effectStateExpiry');
+				return 0;
+			}
+
+			const savedState = localStorage.getItem('effectState');
+			return savedState ? parseInt(savedState) : 0;
+		} catch (e) {
+			console.error('无法从localStorage读取状态:', e);
+			return 0;
+		}
+	};
+
+	// DOM 元素
+	const effects = document.querySelector('.effects');
+	const effectsImgs = document.querySelectorAll('.effects__img-inner');
+
+	// 更新图片
+	const changeImages = (imagesArr, folderPath) => {
+		effectsImgs.forEach((img, index) => {
+			img.style.backgroundImage = `url(${folderPath}${imagesArr[index]})`;
+		});
+	};
+
+	// 更新效果类名
+	const updateEffectsClass = (state) => {
+		effects.className = 'effects'; // 重置类名
+		switch (state) {
+			case 0:
+				effects.classList.add('train-icons');
+				break;
+			case 1:
+				effects.classList.add('train-logo');
+				break;
+			case 2:
+				effects.classList.add('train-prism');
+				break;
+			default:
+				effects.classList.add('train-icons');
+		}
+	};
+
+	// 初始化状态
+	const initializeState = (state) => {
+		updateEffectsClass(state);
+		switch (state) {
+			case 0:
+				changeImages(images, '/assets/effects/3dicons/');
+				break;
+			case 1:
+				changeImages(logoImages, '/assets/effects/logo/');
+				break;
+			case 2:
+				changeImages(need3d, '/assets/effects/need3d/');
+				break;
+			default:
+				changeImages(images, '/assets/effects/3dicons/');
+		}
+	};
+
+		// 保存 ImageTrail 实例
+	let imageTrailInstance = null;
+
+	// 图片预加载
+	preloadImages('.effects__img-inner').then(() => {
+		imageTrailInstance = new ImageTrail(document.querySelector('.effects'));
+	});
+
+	// 初始化页面
+	const currentState = getCurrentState();
+	initializeState(currentState);
+
+	document.addEventListener('DOMContentLoaded', () => {
+		// 确保imageTrailInstance已创建后再检查
+		const checkInstanceInterval = setInterval(() => {
+			if (imageTrailInstance) {
+			// 如果当前状态是3，则禁用鼠标跟随效果
+			if (currentState === 3) {
+				imageTrailInstance.disable();
+			}
+			clearInterval(checkInstanceInterval);
+			}
+		}, 100);
+		});
+
+		window.addEventListener(EFFECT_CHANGE_EVENT, (e) => {
+		const newState = e.detail.state;
+
+		// 更新图片 & 类名
+		initializeState(newState);
+
+		// 控制鼠标跟随
+		if (imageTrailInstance) {
+			if (newState === 3) {
+			imageTrailInstance.disable();
+			} else {
+			imageTrailInstance.enable();
+			// 重要：确保在启用后重新开始渲染循环
+			imageTrailInstance.restartRender();
+			}
+		}
+		});
+</script>
+<style>
+.train-switch button{
+	display: block;
+	background-color: unset;
+	border-radius: 36px;
+	border:1px solid var(--train-color);
+	background-color: rgba(0,0,0,.3)
+	color: var(--color-100);
+	font-size:12px;
+	line-height: 22px;
+	padding:0;
+	width:64px;
+	text-align: center;
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+	background-color: var(--train-color);
+	border-color: var(--train-color);
+  box-shadow: 0 0 12px 6px rgba(var(--train-color-rgb), .3);
+	transition:all 0.25s ease-in-out;
+}
+.train-switch button:hover{
+	color: var(--color-900);
+	background-color: var(--train-color);
+	border-color: var(--train-color);
+  box-shadow: 0 0 12px 6px rgba(var(--train-color-rgb), .75);
+}
+.train-switch button span{
+	padding-top:3px;
+	display: inline-block;
+}
+.train-switch button {
+   display: none;
+}
+
+.train-yellow{
+	--train-color:#f7d252;
+	--train-color-rgb:247, 210, 82;
+}
+.train-blue{
+	--train-color:#4da7e8;
+	--train-color-rgb:77, 167, 232;
+}
+.train-green{
+	--train-color:#1bc47d;
+	--train-color-rgb:27, 196, 125;
+}
+</style>
+<style>
+:root {
+	--img-width: 90px;
+	--img-ratio: 1/1;
+	--img-offset-x: 0px;
+	--img-offset-y: 00px;
+	--img-border-radius: 8px;
+	--color-bg-content: rgba(255,255,255,0.05);
+	--color-bg-trains: rgba(255,255,255,0.05);
+}
+
+a:focus {
+	/* Provide a fallback style for browsers
+	 that don't support :focus-visible */
+	outline: none;
+	background: lightgrey;
+}
+
+a:focus:not(:focus-visible) {
+	/* Remove the focus indicator on mouse-focus for browsers
+	 that do support :focus-visible */
+	background: inherit;
+}
+
+a:focus-visible {
+	/* Draw a very noticeable focus style for
+	 keyboard-focus on browsers that do support
+	 :focus-visible */
+	outline: 2px solid red;
+	background: transparent;
+}
+.trains {
+	position: relative;
+	text-align: right;
+	grid-area: trains;
+	background: var(--color-bg-trains);
+	border-radius: 8px;
+	padding: 0.5rem;
+	display: flex;
+	grid-column-gap: 0.5rem;
+	grid-row-gap: 0.5rem;
+	align-items: flex-end;
+	align-content: flex-end;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	z-index: 200;
+}
+.trains span {
+	width: 100%;
+}
+.train {
+	background: var(--color-bg);
+	aspect-ratio: 1;
+	flex: none;
+	width: 3rem;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	border-radius: 5px;
+}
+
+.train--current {
+	color: rgba(255,255,255,0.5);
+}
+
+
+.effects {
+	grid-area: content;
+	border-radius: 8px;
+	background: var(--color-bg-content);
+	position: relative;
+	z-index: 100;
+}
+
+.effects__img {
+	width: var(--img-width);
+	aspect-ratio: var(--img-ratio);
+	border-radius: var(--img-border-radius);
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	overflow: hidden;
+	will-change: transform, filter;
+}
+
+.effects__img-inner {
+	background-position: 50% 50%;
+	width: calc(100% + var(--img-offset-x));
+	height: calc(100% + var(--img-offset-y));
+	background-size: contain!important;
+	object-fit: contain!important;
+	position: absolute;
+	top: calc( -1 * var(--img-offset-y) / 2 );
+	left: calc( -1 * var(--img-offset-x) / 2 );
+}
+
+@media screen and (min-width: 53em) {
+	.trains {
+		justify-self: end;
+		grid-column-gap: 0.5rem;
+		grid-row-gap: 1rem;
+		padding: 1rem;
+	}
+}
+.train-1{
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index:99;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+/* .effects{
+	position: fixed;
+	z-index:99;
+	width: 100%;
+	height: 100%;
+} */
+@media (max-width:768px) {
+	.train-1{
+		display: none!important;
+	}
+}
+</style>

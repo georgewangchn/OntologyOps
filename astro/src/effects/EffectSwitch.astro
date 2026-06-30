@@ -1,0 +1,197 @@
+<div class="train-switch">
+    <button data-state="0" class="font-type train-yellow"><span>DESIGN</span> </button>
+    <button data-state="1" class="font-type train-blue"> <span>SKILL</span></button>
+    <button data-state="2" class="font-type train-green"><span>NEED3D</span></button>
+	<button data-state="3" class="font-type train-white"><span>OFF</button>
+</div>
+
+<script is:inline type="module">
+    // 定义事件，用于组件间通信
+    const EFFECT_CHANGE_EVENT = 'effect-state-changed';
+
+    // localStorage 操作函数
+    const saveState = (state) => {
+        try {
+            localStorage.setItem('effectState', state.toString());
+            // 设置过期时间 (48小时)
+            const expiry = Date.now() + 48 * 60 * 60 * 1000;
+            localStorage.setItem('effectStateExpiry', expiry.toString());
+        } catch (e) {
+            console.error('无法保存状态到localStorage:', e);
+        }
+    };
+
+    const getCurrentState = () => {
+        try {
+            // 检查是否过期
+            const expiry = localStorage.getItem('effectStateExpiry');
+            if (expiry && parseInt(expiry) < Date.now()) {
+                // 已过期，清除状态
+                localStorage.removeItem('effectState');
+                localStorage.removeItem('effectStateExpiry');
+                return 0;
+            }
+
+            const savedState = localStorage.getItem('effectState');
+            return savedState ? parseInt(savedState) : 0;
+        } catch (e) {
+            console.error('无法从localStorage读取状态:', e);
+            return 0;
+        }
+    };
+
+    // 获取按钮元素
+    const buttons = document.querySelectorAll('.train-switch button');
+
+    // 更新按钮显示
+    const updateButtonDisplay = (state) => {
+        buttons.forEach((button, index) => {
+            button.style.display = index === state ? 'block' : 'none';
+        });
+    };
+
+    // 初始化页面
+    const currentState = getCurrentState();
+    updateButtonDisplay(currentState);
+
+    // 按钮点击事件
+    // 按钮点击事件
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const newState = (index + 1) % 4; // 循环切换状态
+
+            // 保存状态到 localStorage，48小时有效
+            saveState(newState);
+
+            // 更新按钮显示
+            updateButtonDisplay(newState);
+
+            // 触发自定义事件，通知效果组件更新
+            window.dispatchEvent(new CustomEvent(EFFECT_CHANGE_EVENT, {
+                detail: { state: newState }
+            }));
+        });
+    });
+</script>
+<style>
+.magic-click{
+	position: absolute;
+	top: -6px;
+	display: block;
+	left: 72px;
+	opacity: 0;
+}
+.train-switch-abs{
+	position: fixed;
+	left:calc( 5% + 50px);
+	top: 15px;
+	z-index: 9999;
+    pointer-events: auto; /* 添加这一行，确保按钮可以接收鼠标事件 */
+}
+.train-switch{
+	position: relative;
+	display: block;
+}
+@media (max-width: 1280px) {
+	.train-switch-abs{
+		position: fixed;
+		left:0;
+		right:0;
+		margin:0 auto;
+		top: 15px;
+		z-index: 9999;
+	}
+}
+
+@media (max-width:768px) {
+	.train-switch{
+		display: none!important;
+	}
+}
+.train-switch button{
+	display: block;
+	background-color: unset;
+	border-radius: 36px;
+	border:1px solid var(--train-color);
+	background-color: rgba(0,0,0,.3);
+	color: var(--color-100);
+	font-size:12px;
+	line-height: 22px;
+	padding:0;
+	width:75px;
+	text-align: center;
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+	background-color: var(--train-color);
+	border-color: var(--train-color);
+    box-shadow: 0 0 12px 6px rgba(var(--train-color-rgb), .3);
+	transition:all 0.25s ease-in-out;
+}
+.train-switch button:hover{
+	color: var(--color-900);
+	background-color: var(--train-color);
+	border-color: var(--train-color);
+    box-shadow: 0 0 12px 6px rgba(var(--train-color-rgb), .75);
+}
+.train-switch button span{
+	padding-top:3px;
+	display: inline-block;
+}
+.train-switch button {
+   display: none;
+}
+
+.train-yellow{
+	--train-color:#f7d252;
+	--train-color-rgb:247, 210, 82;
+}
+.train-blue{
+	--train-color:#4da7e8;
+	--train-color-rgb:77, 167, 232;
+}
+.train-green{
+	--train-color:#1bc47d;
+	--train-color-rgb:27, 196, 125;
+}
+.train-white{
+	--train-color:#dedede;
+	--train-color-rgb:200,200,200;
+}
+.animated {
+	animation-duration: .75s; /* 动画持续时间 */
+	animation-fill-mode: forwards;
+}
+
+.fadeIn{
+	animation-name: fadeIn;
+}
+@keyframes fadeIn {
+	from {
+		opacity: 0; /* 初始透明度 */
+	}
+	to {
+		opacity: 1; /* 最终透明度 */
+
+	}
+}
+
+.fadeInRight{
+	animation-name: fadeInRight;
+}
+@keyframes fadeInRight {
+	from {
+		opacity: 0; /* 初始透明度 */
+		transform: translateX(-8px); /* 初始位置偏移 */
+	}
+	to {
+		opacity: 1; /* 最终透明度 */
+		transform: translateX(0); /* 最终位置 */
+	}
+}
+.delay-300{
+	animation-delay: 300ms;
+}
+.delay-750{
+	animation-delay: 750ms;
+}
+</style>

@@ -1,0 +1,63 @@
+---
+title: "PL Agent 系列 — LLM + 本体推理 Agent"
+description: "将 LLM Agent 与本体推理引擎融合：用户用自然语言描述症状，Agent 自主调用工具查询本体、收集信息、触发推理，让推理能力对普通用户变得可及。"
+publishDate: 2025-06-20
+read: 10
+tags: ["Agent", "LLM", "LangGraph", "本体推理"]
+category: "技术"
+---
+
+## PL 系列概述
+
+在完成 P1-P4（四种纯规则推理范式）之后，我们进入 PL 系列 — **PL = P* + LLM Agent**。
+
+核心思想很简单：纯规则推理引擎很强大，但需要用户理解如何结构化输入（症状列表、物种信息等）。LLM Agent 充当"翻译层"：
+
+> 用户说 "我的猫又吐又拉还发烧" → Agent 自动查本体、收集信息、触发推理、返回诊断报告。
+
+每个 PL 与对应的 P 共享同一个推理引擎，只是外面包了一层 Agent。
+
+### 架构
+
+```
+用户自然语言
+    ↓
+OntologyAgent (agent_core)
+    ├── System Prompt (领域角色定义)
+    ├── Tools (领域专用工具集)
+    └── Reasoning Engine (P1-P5 的推理引擎)
+```
+
+### Agent 工具集
+
+每个 PL 提供一组 LangChain `@tool` 装饰的工具：
+
+- `lookup_symptom_owl(symptom_name)` — 在本体中查找症状
+- `lookup_disease_owl(disease_name)` — 查找疾病定义
+- `add_observation(observation)` — 记录用户描述的症状
+- `set_subject_info(species, breed, ...)` — 设置领域对象信息
+- `run_reasoning()` — 触发推理引擎
+- `get_case_summary()` — 返回当前病例/案例摘要
+- `explain_reasoning(disease_name)` — 解释推理依据
+
+### PL1 已就绪
+
+PL1 — 宠物疾病诊断 Agent，基于 P1 的 OWL/HermiT 推理引擎。
+
+```bash
+cd ontologyops/examples
+export OPENAI_API_KEY=sk-xxx
+python pl1/run.py
+```
+
+核心验证：猫 + 发热/呕吐/腹泻 → 猫瘟确诊 99%。
+
+### 后续 PL 计划
+
+| 编号 | 对应范式 | 状态 |
+|------|---------|------|
+| PL1 | OWL/HermiT 本体推理 | ✅ 已完成 |
+| PL2 | Prolog 逻辑推理 | 规划中 |
+| PL3 | Jena/SPARQL 三元组推理 | 规划中 |
+| PL4 | 模糊逻辑推理 | 规划中 |
+| PL5 | 多范式融合引擎 | 规划中 |

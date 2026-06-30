@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GovernanceOps Demo — OntologyOps 第一个应用场景</title>
+<style>
+  /* ═══════ 林间书房色彩体系 ═══════ */
+  :root {
+    --page:   #faf8f3;
+    --card:   #ffffff;
+    --pine:   #1a6b4f;
+    --pLight: #e8f2ed;
+    --stream: #3d8ab5;
+    --sLight: #ecf4f9;
+    --ink:    #2d2d38;
+    --body:   #4a4a58;
+    --muted:  #787888;
+    --dim:    #a0a0b0;
+    --line:   #e0ded8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--page);
+    color: var(--body);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 48px 20px;
+  }
+  .container { max-width: 960px; width: 100%; }
+
+  .back {
+    color: var(--stream); text-decoration: none; font-size: 14px;
+    display: inline-block; margin-bottom: 28px; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .back:hover { color: var(--pine); }
+
+  .tag {
+    display: inline-block;
+    background: var(--sLight);
+    color: var(--stream);
+    padding: 5px 14px; border-radius: 20px; font-size: 13px;
+    margin-bottom: 20px; font-weight: 550;
+    border: 1px solid rgba(61,138,181,0.22);
+  }
+
+  h1 {
+    font-size: 28px; font-weight: 700; color: var(--ink);
+    margin-bottom: 10px; letter-spacing: 0.04em;
+  }
+
+  .subtitle {
+    color: var(--muted); font-size: 16px; margin-bottom: 36px;
+    line-height: 1.75;
+  }
+
+  .video-wrap {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden; margin-bottom: 36px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  video { width: 100%; display: block; }
+
+  .note {
+    font-size: 14px; color: var(--muted); line-height: 1.9;
+    border-top: 1px solid var(--line); padding-top: 28px;
+  }
+  .note strong { color: var(--ink); font-weight: 650; }
+  .note a {
+    color: var(--stream); text-decoration: none; font-weight: 500;
+  }
+  .note a:hover { color: var(--pine); }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../" class="back">← 返回 OntologyOps</a>
+
+  <span class="tag">第一个应用场景</span>
+  <h1>GovernanceOps Demo</h1>
+  <p class="subtitle">
+    企业治理运维 —— 用本体推理技术，将决策从"人人负责、无人负责"的主观人治，<br>
+    推向可验证、可追踪、可审计的机制治。
+  </p>
+
+  <div class="video-wrap">
+    <video src="governanceops-demo.mp4" controls autoplay muted loop playsinline></video>
+  </div>
+
+  <div class="note">
+    <strong>关于 GovernanceOps</strong><br>
+    我们提出 <strong>"ERP 管资源、CRM 管客户、GovernanceOps 管决策"</strong> 的新一代企业治理范式。
+    GovernanceOps 是 OntologyOps 架构的第一个落地场景，演示了如何用本体推理链替代传统人工流转，
+    让每一项企业决策都有据可查、有迹可循。<br><br>
+    📖 <a href="../book/">配套书籍《当LLM不够用了》在线阅读</a>
+    &nbsp;·&nbsp;
+    💻 <a href="https://github.com/georgewangchn/OntologyOps">GitHub 仓库</a>
+  </div>
+</div>
+</body>
+</html>

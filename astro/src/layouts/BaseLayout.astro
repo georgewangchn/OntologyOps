@@ -1,0 +1,49 @@
+---
+// Component Imports
+import MainHead from '../components/MainHead.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+interface Props {
+	title?: string | undefined;
+	description?: string | undefined;
+	keywords?: string | undefined;
+}
+const { title, description,keywords } = Astro.props;
+---
+<html lang=en>
+	<head>
+		<MainHead title={title} description={description}  keywords={keywords} />
+	</head>
+	<body class="_body">
+		<div class="">
+			<Nav transition:persist/>
+			<slot />
+			<Footer />
+		</div>
+
+		<script>
+			// Add “loaded” class once the document has completely loaded.
+			addEventListener('load', () => document.documentElement.classList.add('loaded'));
+		</script>
+
+		<style>
+			:root {
+				--bg-svg-blend-mode: overlay;
+				--bg-blend-mode: darken;
+			}
+			:root.theme-dark {
+				--bg-svg-blend-mode: darken;
+				--bg-blend-mode: lighten;
+			}
+			/* These backgrounds are displayed below the fold, so we lazy load them
+			   once the `.loaded` class has been set.  */
+			:root.loaded {
+
+			}
+			:root.loaded.theme-dark {
+
+			}
+
+		</style>
+	</body>
+</html>

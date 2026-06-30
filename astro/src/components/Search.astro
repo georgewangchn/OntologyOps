@@ -1,0 +1,118 @@
+<div class="filters-group filters-fixed">
+  <div class="filters-box">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"  class="search-icon"><title>search icon</title><path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" data-sentry-element="path"></path><path d="M14 14.0001L11.1 11.1001" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" data-sentry-element="path"></path></svg>
+      <!-- <label for="filters-search-input" class="filter-label">Search</label> -->
+      <input class="textfield filter__search js-shuffle-search" type="search" placeholder="搜索项目..." id="filters-search-input" />
+  </div>
+</div>
+
+
+
+
+<style lang="scss">
+  :root{
+      --filter-bg:  #fff;
+      --filter-bg-active:#0a0a0a;
+      --filter-bg-hover:rgba(10,10,10,.08);
+      --filter-color:#232323;
+      --filter-color-active:#f3f4f7;
+      --filter-border:1px solid #e7e7e7;
+
+  }
+  :root.theme-dark{
+      --filter-bg:  #0a0a0a;
+      --filter-color:#f3f4f7;
+      --filter-color-active:#0a0a0a;;
+      --filter-border:1px solid #e7e7e7;
+      --filter-bg-active:#f3f4f7;
+      --filter-bg-hover:rgba(243, 244, 247,.08);
+  }
+
+/* serach */
+.filters-wrapper{
+    margin-bottom:1rem;
+}
+.filters-group {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.filters-box{
+  position: relative;
+  border: var(--filter-border);
+  background: var(--filter-bg);
+  border-radius: 36px;
+  box-sizing: border-box;
+  padding:12px 20px;
+  column-gap: 12px;
+  margin: 24px auto;
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+  width: 80%;
+  max-width: 400px;
+  .search-icon{
+    width: 24px;
+    height: 24px;
+    color: var(--color-200);
+  }
+}
+
+.filter-label {
+    display: inline-block;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 4px;
+    color: var(--color-300);
+    margin-right:6px;
+}
+.filter-tip{
+    font-size: 13px;
+    color: var(--color-500);
+    line-height: 1;
+    margin-left:12px;
+    text-align: left;
+    padding:12px;
+}
+.textfield {
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+    font-size: 1rem;
+    color: var(--color-100);
+    transition: 0.15s;
+    display: inline-block;
+    padding: 0;
+    border:0;
+    margin:0 auto;
+    background: none;
+}
+
+.textfield::placeholder {
+    color: var(--color-300);
+    transition: 0.15s;
+}
+
+.textfield:hover {
+    outline-width: 0;
+
+  }
+
+/* End serach */
+.filters-fixed{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom:0px;
+  margin:0 auto;
+  z-index: 999;
+}
+
+</style>

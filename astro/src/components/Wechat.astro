@@ -1,0 +1,39 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('popup-wechat');
+    const closeWechat = document.getElementById('close-wechat');
+    const wechatButtons = document.querySelectorAll('.wechat');
+    const wechatMask = document.querySelector('.wechat-mask');
+  
+    function showPopup() {
+        if (popup && popup instanceof Element) {
+            popup.removeAttribute('hidden');
+        } else {
+
+        }
+    }
+  
+    function hidePopup() {
+        if (popup && popup instanceof Element) {
+            popup.setAttribute('hidden', '');
+        } else {
+
+        }
+    }
+  
+    wechatButtons.forEach(button => {
+        button.addEventListener('click', showPopup);
+    });
+  
+    if (closeWechat && closeWechat instanceof Element) {
+        closeWechat.addEventListener('click', hidePopup);
+    } else {
+
+    }
+  
+    if (wechatMask && wechatMask instanceof Element) {
+        wechatMask.addEventListener('click', hidePopup);
+    } else {
+    }
+  });
+  </script>

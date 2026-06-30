@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import BlogPostLayout from "../layouts/BlogPostLayout.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import CallToAction from "../components/CallToAction.astro";
+import {pageTag, pageDescription,aboutTdk} from '../data/content';
+---
+
+<BlogPostLayout
+	title={aboutTdk.title || ''}
+	description = {aboutTdk.description || ''}
+	keywords = {aboutTdk.keywords || ''}
+>
+
+	<div class="post">
+		<main class="post-wrapper about">
+			<SectionHeader
+				tag={pageTag.about}
+				description={pageDescription.about}>
+				 关于我
+			</SectionHeader>
+
+			<section class="border-top" style="padding-top: 2rem;">
+				<div class="content">
+					<p>
+						我是 <strong style="font-size:1.2em">森林瀑布</strong>，《当LLM不够用了——本体推理的企业决策实践》一书的作者，
+						同时也是 <a href="https://github.com/georgewangchn/OntologyOps">OntologyOps</a> 开源项目的创建者。
+					</p>
+					<p>
+						拥有丰富的 AI 算法研发经验，精通主流机器学习、深度学习模型及知识图谱、自然语言处理相关技术，熟悉大模型微调实践。
+						深耕 ToB 领域，具备产品从 0 到 1 落地实战经验，擅长业务导向统筹资源推进项目。
+						曾任职多家企业担任算法骨干、项目负责人，兼具团队管理与创业合作经验，技术功底扎实，实战落地能力突出。
+					</p>
+				</div>
+			</section>
+
+			<section>
+				<h3 class="post-title">技术实践</h3>
+				<div class="content">
+					<div class="skill-grid">
+						<div class="skill-card">
+							<div class="skill-card__title">本体推理</div>
+							<div class="skill-card__desc">OWL / SWRL / HermiT、Prolog、Jena / SPARQL、模糊逻辑 — 四种范式，同一问题，不同解法</div>
+						</div>
+						<div class="skill-card">
+							<div class="skill-card__title">知识工程</div>
+							<div class="skill-card__desc">知识图谱构建、本体工程方法论、语义网技术栈 — 让知识可计算、可推理、可验证</div>
+						</div>
+						<div class="skill-card">
+							<div class="skill-card__title">LLM + 推理融合</div>
+							<div class="skill-card__desc">Agent 架构设计、工具调用、多范式推理引擎 — 当 LLM 不够用，用推理补上</div>
+						</div>
+						<div class="skill-card">
+							<div class="skill-card__title">企业决策系统</div>
+							<div class="skill-card__desc">GovernanceOps、可审计可验证的自动决策 — 从"人人负责"到"机制治"</div>
+						</div>
+						<div class="skill-card">
+							<div class="skill-card__title">机器学习 / 深度学习</div>
+							<div class="skill-card__desc">主流模型实践、大模型微调、NLP 应用 — 从算法研究到工程落地</div>
+						</div>
+						<div class="skill-card">
+							<div class="skill-card__title">ToB 产品落地</div>
+							<div class="skill-card__desc">产品 0→1 构建、项目统筹、团队管理 — 技术驱动，业务导向</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<h3 class="post-title">关于这个博客</h3>
+				<div class="content">
+					<p>
+						这是一个以"多范式推理实战营"为核心的技术博客。选一个具体的诊断问题（宠物疾病），
+						用四种不同的推理范式去解决它 — 不是为了证明谁更好，而是为了理解每种范式的思维方式和适用边界。
+					</p>
+					<p>
+						技术的本质不是工具，而是思维方式。不同的推理范式就像不同的语言 — 学会说多种语言，
+						才能真正理解思想的形状。
+					</p>
+					<p>
+						如果你对本体推理、知识工程、或 AI 在企业决策中的实际落地感兴趣，欢迎关注。
+					</p>
+					<p style="margin-top:24px;">
+						<CallToAction
+						target="_blank"
+						href="https://github.com/georgewangchn/OntologyOps"
+						>
+						  GitHub 开源项目
+						</CallToAction>
+					</p>
+				</div>
+			</section>
+		</main>
+	</div>
+</BlogPostLayout>
+
+<style>
+	.about {
+		display: flex;
+		flex-direction: column;
+		margin:0 auto;
+	}
+	p{
+		margin:0.75rem 0;
+	}
+	figure{
+		margin:2rem 0;
+	}
+	img{max-width: 100%;}
+	.portrait{
+		border-radius: 100px;
+		margin:12px 0 12px;
+		overflow: hidden;
+		text-align: left;
+	}
+	a, a:link{
+		color:var(--color-blue);
+	}
+
+	.skill-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1rem;
+		margin: 1.5rem 0;
+	}
+	.skill-card {
+		background: var(--color-999);
+		border: 1px solid var(--color-800);
+		border-radius: 10px;
+		padding: 1.2rem 1.4rem;
+		transition: border-color 0.2s, box-shadow 0.2s;
+	}
+	.skill-card:hover {
+		border-color: var(--color-blue);
+		box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+	}
+	.skill-card__title {
+		font-weight: 700;
+		font-size: 1.05rem;
+		color: var(--color-100);
+		margin-bottom: 0.5rem;
+	}
+	.skill-card__desc {
+		font-size: 0.9rem;
+		color: var(--color-400);
+		line-height: 1.7;
+	}
+</style>

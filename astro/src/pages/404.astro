@@ -1,0 +1,38 @@
+---
+import BlogPostLayout from "../layouts/BlogPostLayout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import { notFoundTdk } from  "../data/content"
+---
+<BlogPostLayout
+	title={notFoundTdk.title  || ''}
+	description= {notFoundTdk.description  || ''}
+	keywords = {notFoundTdk.keywords  || ''}
+>
+	<div class="post">
+		<main class="post-wrapper 404">
+			<section>
+				<div class="content">
+					<p class="man">
+						<img src="/assets/404-man.svg" alt="">
+					</p>
+					<p class="text">
+						404 Not Found<br/>
+						这里什么都没有。
+					</p>
+					<div class="btn">
+						<CallToAction href="/" target="_self">
+								返回主页
+						</CallToAction>
+					</div>
+				</div>
+			</section>
+		</main>
+	</div>
+</BlogPostLayout>
+
+<style>
+body{min-height: 100vh;}
+.man{margin-bottom: 0;}
+p{text-align: center;}
+.btn{margin:2rem auto 4em;text-align:center;}
+</style>

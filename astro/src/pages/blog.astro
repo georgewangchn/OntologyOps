@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import BlogPostLayout from "../layouts/BlogPostLayout.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import PostPreview from '../components/PostPreview.astro';
+import {pageTag, pageDescription, blogTdk} from '../data/content';
+
+const allPosts = (await getCollection('blog')).sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+
+// 按 category 分组
+const categories = [...new Set(allPosts.map(p => p.data.category || '技术'))];
+const postsByCategory: Record<string, typeof allPosts> = {};
+for (const cat of categories) {
+	postsByCategory[cat] = allPosts.filter(p => (p.data.category || '技术') === cat);
+}
+---
+
+<BlogPostLayout
+		title={blogTdk.title || ''}
+		description = {blogTdk.description || ''}
+		keywords = {blogTdk.keywords || ''}
+>
+	<div class="post">
+		<main class="post-wrapper about">
+			<SectionHeader
+			tag={pageTag.blog}
+			description={pageDescription.blog}>
+				博客
+			</SectionHeader>
+
+			{/* 分类筛选 */}
+			<div class="blog-filter">
+				<button class="blog-filter__item active" data-category="all">
+					全部 <span>({allPosts.length})</span>
+				</button>
+				{categories.map(cat => (
+					<button class="blog-filter__item" data-category={cat}>
+						{cat} <span>({postsByCategory[cat].length})</span>
+					</button>
+				))}
+			</div>
+
+			<section class="border-top">
+				<div class="posts">
+					<div class="posts-container">
+						{allPosts.map((post) => (
+							<PostPreview post={post} data-category={post.data.category || '技术'} />
+						))}
+					</div>
+				</div>
+			</section>
+		</main>
+	</div>
+</BlogPostLayout>
+
+<style lang="scss">
+.blog-filter {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin: 1.5rem 0 0;
+	&__item {
+		border-radius: 32px;
+		background: var(--color-900);
+		padding: 8px 20px;
+		font-size: 14px;
+		font-family: var(--font-body);
+		border: 1px solid var(--border);
+		line-height: 1;
+		color: var(--color-200);
+		cursor: pointer;
+		transition: all 0.3s ease;
+		span {
+			font-size: 11px;
+			opacity: 0.6;
+			margin-left: 2px;
+		}
+		&:hover {
+			background: var(--color-featured);
+			color: var(--accent-regular);
+			border-color: var(--accent-regular);
+		}
+		&.active {
+			background: var(--accent-regular);
+			color: var(--color-999);
+			border-color: var(--accent-regular);
+			span { opacity: 0.8; }
+		}
+	}
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	const filterBtns = document.querySelectorAll('.blog-filter__item');
+	const postItems = document.querySelectorAll<HTMLElement>('.post-item');
+
+	filterBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			const category = btn.getAttribute('data-category');
+
+			// 更新按钮状态
+			filterBtns.forEach(b => b.classList.remove('active'));
+			btn.classList.add('active');
+
+			// 筛选文章
+			postItems.forEach(item => {
+				if (category === 'all') {
+					item.style.display = '';
+				} else {
+					item.style.display = item.getAttribute('data-category') === category ? '' : 'none';
+				}
+			});
+		});
+	});
+});
+</script>

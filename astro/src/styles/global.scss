@@ -1,0 +1,1043 @@
+// Responsive mixin
+// @include breakAt(lg-device) { style goes here }
+@mixin breakAt($point) {
+    @if $point==xxxl-device {
+        @media (max-width: 1600px) {
+            @content;
+        }
+    }
+
+    @else if $point==xxl-device {
+        @media (max-width: 1367px) {
+            @content;
+        }
+    }
+
+    @else if $point==xl-device {
+        @media (max-width: 1023px) {
+            @content;
+        }
+    }
+
+    @else if $point==lg-device {
+        @media (max-width: 991px) {
+            @content;
+        }
+    }
+
+    @else if $point==md-device {
+        @media (max-width: 767px) {
+            @content;
+        }
+    }
+
+    @else if $point==sm-device {
+        @media (max-width: 576px) {
+            @content;
+        }
+    }
+
+    @else if $point==xs-device {
+        @media (max-width: 480px) {
+            @content;
+        }
+    }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+SC:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+.special-elite-regular {
+    font-family: "Special Elite", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+@import url("https://chinese-fonts-cdn.deno.dev/packages/hwmct/dist/汇文明朝体/result.css");
+.font-huiwen {
+    font-family:'Huiwen-mincho'!important;
+    font-weight:400!important;
+}
+
+/* Global variables */
+:root {
+    /* Gradients */
+    --gradient-stop-1: var(--accent-light);
+    --gradient-stop-2: var(--accent-regular);
+    --gradient-stop-3: var(--accent-dark);
+    --gradient-subtle: linear-gradient(150deg, var(--color-900) 19%, var(--color-999) 150%);
+    --gradient-accent: linear-gradient(150deg,
+            var(--gradient-stop-1),
+            var(--gradient-stop-2),
+            var(--gradient-stop-3));
+    --gradient-accent-orange: linear-gradient(150deg,
+            #ca7879,
+            var(--accent-regular),
+            var(--accent-dark));
+    --gradient-stroke: linear-gradient(180deg, var(--color-900), var(--color-700));
+
+    /* Shadows */
+    --shadow-sm: 0px 6px 3px rgba(9, 11, 17, 0.01), 0px 4px 2px rgba(9, 11, 17, 0.01),
+        0px 2px 2px rgba(9, 11, 17, 0.02), 0px 0px 1px rgba(9, 11, 17, 0.03);
+    --shadow-md: 0px 28px 11px rgba(9, 11, 17, 0.01), 0px 16px 10px rgba(9, 11, 17, 0.03),
+        0px 7px 7px rgba(9, 11, 17, 0.05), 0px 2px 4px rgba(9, 11, 17, 0.06);
+    --shadow-lg: 0px 62px 25px rgba(9, 11, 17, 0.01), 0px 35px 21px rgba(9, 11, 17, 0.05),
+        0px 16px 16px rgba(9, 11, 17, 0.1), 0px 4px 9px rgba(9, 11, 17, 0.12);
+
+}
+
+/* Global variables */
+
+:root {
+    /* 林间书房 — 暖白书页基调 */
+    --color-0: #1e2d23;
+    --color-50: #2c3a31;
+    --color-100: #3a4a3e;
+    --color-200: #5a6d5e;
+    --color-300: #6b7d72;
+    --color-400: #8a9a8e;
+    --color-500: #aab8ac;
+    --color-600: #c5d0c7;
+    --color-700: #dce5de;
+    --color-800: #eef2ec;
+    --color-900: #f5f7f3;
+    --color-999-basis: 42, 12%, 97%;
+    --color-999_40: hsla(var(--color-999-basis), 0.4);
+    --color-999: #faf8f3;
+    --color-999-rgb: 250, 248, 243;
+    /* 林间书房 — 四色体系 */
+    /* Pine/松绿 #1a6b4f — 主色 */
+    --accent-light: #3ca882;
+    --accent-regular: #1a6b4f;
+    --accent-dark: #0d4a35;
+    --accent-overlay: hsla(160, 60%, 25%, 0.35);
+    --accent-subtle-overlay: var(--accent-overlay);
+    --accent-text-over: var(--color-999);
+    --link-color: var(--accent-regular);
+
+    --color-selected: #c5e8d8;
+    --color-actived: #c5e8d8;
+    --color-link: #1a6b4f;
+    --color-white: #fff;
+    --color-white-rgb: 255, 255, 255;
+    --color-primary-lighter: #d5eee2;
+    --color-primary-light: #3ca882;
+    --color-primary-main: #1a6b4f;
+    /* Stream/水蓝 #3d8ab5 — 副色 */
+    --color-purple: #3d8ab5;
+    --color-blue: #3d8ab5;
+    --color-cyan: #5ba8cc;
+    --color-pink: #b8781a;
+    /* Amber/琥珀 #b8781a — 强调 */
+    --color-yellow: #b8781a;
+    --color-green: #1a6b4f;
+    --color-orange: #d49128;
+    --color-errors: #d43a3a;
+    --color-featured: #edf7f2;
+    --color-underlined: 26, 107, 79;
+    --color-divider: #dce5de;
+    --border: #d8e0d8;
+    --border-color: rgb(107, 125, 114);
+    --card-color: rgba(26, 107, 79, 0.08);
+    --card-color-selected: rgba(26, 107, 79, 0.18);
+
+    /* //width: */
+    --max-width: 90%;
+    --size-top: 64px;
+    --size-bottom: 64px;
+
+    /* sidebar */
+    --sidebar-width: 280px;
+    --gutter: 20px;
+    --gap: 16px;
+    --cell: 8px;
+
+    /* radius */
+    --radius-small: 4px;
+    --radius: 6px;
+    --radius-normal: 8px;
+    --radius-large: 12px;
+
+    /* Fonts */
+    --font-system: system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC", "Helvetica Neue", "Open Sans", "Hiragino Sans GB", 微软雅黑, STHeiti, "WenQuanYi Micro Hei", Arial, SimSun, sans-serif;
+    --font-body: "Inter", "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "MiSans", "Lantinghei SC", "Noto Sans SC", "Microsoft YaHei", "HanHei SC", "Helvetica Neue", "Open Sans", "Hiragino Sans GB", 微软雅黑, STHeiti, "WenQuanYi Micro Hei", Arial, SimSun, sans-serif;
+    --font-brand: "Inter", "Noto Sans SC", var(--font-system);
+    --font-type: 'Special Elite', var(--font-system);
+    /* Transitions */
+    --theme-transition: 0.25s ease-in-out;
+    --text-size: 16px;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text: 1rem;
+    --text-base: 1rem;
+    --text-md: 1.125rem;
+    --text-lg: 1.5rem;
+    --text-xl: 2rem;
+    --text-2xl: 2.25rem;
+    --text-3xl: 3rem;
+    --text-4xl: 4rem;
+    --text-5xl: 4.5rem;
+
+    /* //aspect-ratio: ; */
+    --img-resizing-site: 12 / 9;
+    --img-resizing-post: 10 / 6;
+    --img-resizing-paronamic: 2 / 1;
+    --img-resizing-desktop: 19 / 10;
+
+    /*------------------------------------------------------------------
+    #button style
+    -------------------------------------------------------------------*/
+    --button-rounded: 8px;
+    --button-rounded-full: 72px;
+    --button-height: 48px;
+    --button-pad: 24px;
+    --button-bg: var(--color-primary);
+    --button-color: var(--color-white);
+    --button-color-border: var(--bg-1);
+
+
+    @media(max-width: 1440px) {
+        --pad-inner: 108px;
+        --max-width: 90%;
+    }
+
+    @media(max-width: 1280px) {
+        --pad-inner: 96px;
+        --max-width: 1024px;
+    }
+
+    @media(max-width: 1023px) {
+        --pad-inner: 48px;
+        --max-width: 960px;
+    }
+
+    @media(max-width: 811px) {
+        --pad-inner: 24px;
+        --max-width: calc(100% - 32px);
+    }
+
+    @media(max-width: 576px) {
+        --pad-inner: 16px;
+        --max-width: calc(100% - 32px);
+    }
+
+}
+
+
+:root.theme-dark {
+    --color-0: #e8ede9;
+    --color-50: #e8ede9;
+    --color-100: #e8ede9;
+    --color-200: #c5d0c7;
+    --color-300: #aab8ac;
+    --color-400: #8a9a8e;
+    --color-500: #6b7d72;
+    --color-600: #5a6d5e;
+    --color-700: #3a4a3e;
+    --color-800: #2c3a31;
+    --color-900: #1e2d23;
+    --color-999-basis: 150, 8%, 10%;
+    --color-999: #171c18;
+    --color-999-rgb: 23, 28, 24;
+    --border: #2c3a31;
+    --color-underlined: 60, 168, 130;
+
+    --accent-light: #4dc895;
+    --accent-regular: #3ca882;
+    --accent-dark: #e8ede9;
+    --accent-overlay: hsla(153, 45%, 55%, 0.35);
+    --accent-subtle-overlay: hsla(150, 25%, 10%, 0.5);
+    --accent-text-over: var(--color-0);
+
+
+    --link-color: var(--accent-light);
+
+    --gradient-stop-1: #1a6b4f;
+    --gradient-subtle: linear-gradient(150deg, var(--color-900) 19%, var(--color-999) 81%);
+    --gradient-accent-orange: linear-gradient(150deg,
+            #b8781a,
+            var(--accent-regular),
+            var(--accent-light));
+    --gradient-stroke: linear-gradient(180deg, var(--color-600), var(--color-800));
+
+    --shadow-sm: 0px 6px 3px rgba(0,0,0,0.15), 0px 4px 2px rgba(0,0,0,0.1),
+        0px 2px 2px rgba(0,0,0,0.12), 0px 0px 1px rgba(0,0,0,0.15);
+    --shadow-md: 0px 28px 11px rgba(0,0,0,0.12), 0px 16px 10px rgba(0,0,0,0.15),
+        0px 7px 7px rgba(0,0,0,0.18), 0px 2px 4px rgba(0,0,0,0.2);
+    --shadow-lg: 0px 62px 25px rgba(0,0,0,0.1), 0px 35px 21px rgba(0,0,0,0.15),
+        0px 16px 16px rgba(0,0,0,0.2), 0px 4px 9px rgba(0,0,0,0.25);
+}
+
+.darkmode--activated {
+    /* dark mode */
+    --color-1: #f0f0f0;
+    --color-2: #e0e0e0;
+    --color-3: #a0a0a0;
+    --color-4: #808080;
+}
+
+/* Global variables */
+html,
+body {
+    height: 100%;
+    overflow-x: hidden;
+    background-color: var(--color-999);
+    color: var(--color-100);
+    font-family: var(--font-body) !important;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    font-size: var(--text-size);
+    font-weight: 400;
+    letter-spacing: 0.2px;
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    max-width: 100%;
+    border: none;
+    height: auto;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+ul,
+li,
+ol,
+p {
+    padding: 0;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    line-height: 1.1;
+    font-family: var(--font-brand);
+    font-weight: 600;
+    color: var(--color-0);
+}
+
+h1 {
+    font-size: var(--text-5xl);
+}
+
+h2 {
+    font-size: var(--text-4xl);
+}
+
+h3 {
+    font-size: var(--text-3xl);
+}
+
+h4 {
+    font-size: var(--text-2xl);
+}
+
+h5 {
+    font-size: var(--text-xl);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
+
+.content pre {
+    padding: 1em 1em;
+    border-radius: 6px;
+}
+
+pre,
+code {
+    font-size: 14px;
+    font-family: 'Inconsolata', 'monospace', 'system-ui', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+p code {
+    background-color: var(--color-800);
+    padding: 2px 6px;
+    margin: 0 2px;
+    border-radius: 3px;
+}
+
+mark {
+    background-color: var(--color-yellow);
+}
+
+mark code {
+    background: none !important;
+}
+
+// =================================================================================
+// =================================================================================
+
+
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: inherit;
+}
+
+
+/*------------------------------------------------------------------
+	 #sites reset style
+	-------------------------------------------------------------------*/
+figure img {
+    display: block
+}
+
+input,
+select,
+textarea,
+button {
+    font-size: var(--text-base);
+    border: 0;
+
+}
+
+img {
+    max-width: 100%;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+p {
+    margin-bottom: 1em
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+/*------------------------------------------------------------------
+	 #模块 样式
+	-------------------------------------------------------------------*/
+.item-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/*------------------------------------------------------------------
+	 #设置滚动条
+	-------------------------------------------------------------------*/
+/* 增加选择器优先级,并添加 html 和 body 的滚动条样式 */
+html,
+body {
+    &::-webkit-scrollbar {
+        width: 6px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--color-800) !important;
+        border-radius: 6px !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--color-yellow) !important;
+        border-radius: 6px !important;
+
+        &:hover {
+            background: var(--color-blue) !important;
+        }
+
+        &:active {
+            background: var(--color-green) !important;
+        }
+    }
+}
+
+/* 为其他可滚动元素添加样式 */
+* {
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--color-800);
+        border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--color-yellow);
+        border-radius: 6px;
+
+        &:hover {
+            background: var(--color-blue);
+        }
+
+        &:active {
+            background: var(--color-green);
+        }
+    }
+}
+
+/* 移动端隐藏 html 和 body 的滚动条 */
+@media (max-width: 767px) {
+	html,
+	body {
+		&::-webkit-scrollbar {
+			width: 3px !important;
+		}
+	}
+	* {
+		&::-webkit-scrollbar {
+			width: 3px;
+		}
+	}
+}
+/*------------------------------------------------------------------
+	 #common base class  style
+	-------------------------------------------------------------------*/
+:focus {
+    outline: 0;
+}
+
+.block {
+    display: block;
+}
+
+.flex {
+    display: flex;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.pointer-none {
+    pointer-events: none
+}
+
+.relative {
+    position: relative
+}
+
+.absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.mb-0 {
+    margin-bottom: 0
+}
+
+.p-0 {
+    padding: 0
+}
+
+.pt-0 {
+    padding-top: 0
+}
+
+.pb-0 {
+    padding-bottom: 0
+}
+
+.no-scroll {
+    overflow: hidden
+}
+
+.no-pointer {
+    pointer-events: none
+}
+
+.text-uppercase {
+    text-transform: uppercase
+}
+
+.text-default {
+    font-size: var(--text-base);
+    font-weight: lighter
+}
+
+.text-center {
+    text-align: center
+}
+
+.text-right {
+    text-align: right
+}
+
+.text-bold {
+    font-weight: bold
+}
+
+.text-regular {
+    font-weight: 400
+}
+
+.text-strikethrough {
+    text-decoration: line-through
+}
+
+.text-red {
+    color: var(--color-errors)
+}
+
+
+/* 图片比例设置 */
+.ar-sites {
+    width: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    aspect-ratio: var(--img-resizing-site) !important
+}
+
+.ar-paronamic {
+    width: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    aspect-ratio: 2/1 !important
+}
+
+.ar-desktop {
+    width: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    aspect-ratio: var(--img-resizing-desktop) !important
+}
+
+.color-primary {
+    color: var(--color-primary)
+}
+
+.is-hidden {
+    display: none !important
+}
+
+.is-grab {
+    cursor: -webkit-grab;
+    cursor: grab
+}
+
+.is-grabbing {
+    cursor: -webkit-grabbing;
+    cursor: grabbing
+}
+
+@media(max-width: 1023px) {
+    .hidden-lg {
+        display: none
+    }
+}
+
+.border-top {
+    border-top: 1px dashed var(--border);
+}
+
+.border-bottom {
+    border-bottom: 1px dashed var(--border);
+}
+
+.radius0 {
+    border-radius: 0 !important;
+}
+
+.radiust0 {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.radiusb0 {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.notbg {
+    background: none !important;
+}
+
+
+/*------------------------------------------------------------------
+	 #Heading style
+	-------------------------------------------------------------------*/
+.font-type {
+    font-family: var(--font-type) !important;
+}
+
+.text-large {
+    font-size: 18px;
+}
+
+.text-medium {
+    font-size: 18px;
+}
+
+.text-underlined {
+    -webkit-text-decoration-line: underline;
+    text-decoration-line: underline;
+    -webkit-text-decoration-style: solid;
+    text-decoration-style: solid;
+    -webkit-text-decoration-color: var(--color-primary);
+    text-decoration-color: var(--color-primary);
+    text-decoration-thickness: 1px;
+    text-underline-offset: .2em
+}
+
+.text-truncated {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, #f29914 15%, #0bbbe3 76%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.link-underlined {
+    position: relative;
+    display: inline-block;
+    line-height: normal;
+    color: rgb(var(--color-underlined));
+    cursor: pointer
+}
+
+.link-underlined:before {
+    --color-underlined: rgb(48, 48, 48);
+    content: "";
+    position: absolute;
+    bottom: -0.2em;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(to right, rgb(48, 48, 48) 45%, rgba(48, 48, 48, 0.3) 55%);
+    background-size: 220% 100%;
+    background-position: 100% 50%;
+    transition: .3s ease-out
+}
+
+.link-underlined--white {
+    --color-underlined: 255, 255, 255
+}
+
+.link-underlined--red {
+    --color-underlined: 250, 93, 41
+}
+
+.link-underlined:hover:before {
+    background-position: 0% 50%
+}
+
+.link-disable {
+    pointer-events: none;
+    cursor: default;
+}
+
+.overflow-x-scroll {
+    overflow-x: scroll;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+/*------------------------------------------------------------------
+	 #Common Page style
+	-------------------------------------------------------------------*/
+
+.inner {
+    width: 100%;
+    // max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 var(--pad-inner)
+}
+
+.inner--sm {
+    max-width: 900px
+}
+
+.inner--lg {
+    max-width: 1200px
+}
+
+.inner--xl {
+    max-width: 1400px
+}
+
+.inner--xxl {
+    max-width: 1600px
+}
+
+.inner--xxxl {
+    max-width: 1800px
+}
+
+
+/*------------------------------------------------------------------
+	 #button style
+	-------------------------------------------------------------------*/
+
+.button {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--button-height);
+    padding: 0 var(--button-pad);
+    background-color: var(--button-bg);
+    font-size: var(--text-base);
+    color: var(--button-color);
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+    // transition: color .3s, background .3s, border .3s
+
+    &:focus {
+        outline: none
+    }
+
+    &:hover {
+        color: var(--color-white);
+        background-color: #383838
+    }
+
+    &[class*="--tag"] {
+        background: transparent;
+        border-radius: var(--button-rounded-full);
+        color: var(--color-primary);
+        font-size: var(--text-md);
+        border: 1px solid rgba(var(--color-primary-rgb), 0.3)
+    }
+
+    &[class*="--tag"]:hover {
+        background: transparent;
+        border-color: var(--color-primary);
+        color: var(--color-primary)
+    }
+
+    &[class*="--large"] {
+        --button-height: 72px;
+        min-width: var(--button-height);
+        height: var(--button-height);
+        padding: 0 1.6em;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: var(--button-height)
+    }
+
+    &[class*="--medium"] {
+        --button-height: 60px;
+        min-width: var(--button-height);
+        height: var(--button-height);
+        padding: 0 1.2em;
+        font-size: 18px;
+        line-height: var(--button-height)
+    }
+
+    &[class*="--small"] {
+        min-width: 44px;
+        height: 44px;
+        padding: 0 20px;
+        line-height: 44px
+    }
+
+    &[class*="--x-small"] {
+        min-width: 32px;
+        height: 32px;
+        padding: 0 12px;
+        line-height: 32px
+    }
+
+    &[class*="--extra-pad"] {
+        padding: 0 3em
+    }
+
+    &[class*="--rounded"] {
+        border-radius: var(--button-rounded)
+    }
+
+    &[class*="--rounded-full"] {
+        border-radius: var(--button-rounded-full)
+    }
+
+    &[class*="--color"] {
+        padding: 0;
+        border: none;
+        outline: 1px solid rgba(var(--color-primary-rgb), 0.3);
+        aspect-ratio: 1/1
+    }
+
+    &[class*="--color"]:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 8px solid var(--button-color-border);
+        border-radius: 50%;
+        transition: border .3s
+    }
+
+    &[class*="--color"]:hover:before {
+        border-width: 4px
+    }
+
+    &[class*="--full"] {
+        width: 100%
+    }
+
+    &[class*="--circle"] {
+        padding: 0;
+        border-radius: 50%
+    }
+
+    &[class*="--square"] {
+        padding: 0;
+        aspect-ratio: 1/1
+    }
+
+    &[class*="--circle"] {
+        padding: 0;
+        border-radius: 50%;
+        aspect-ratio: 1/1
+    }
+
+    &[class*="--dark"] {
+        color: var(--color-white);
+        border-color: rgba(255, 255, 255, .4)
+    }
+
+    &[class*="--dark"]:hover {
+        color: var(--color-primary);
+        border-color: var(--color-white);
+        background: var(--color-white)
+    }
+
+    &[class*="--white"] {
+        --button-bg: var(--color-white);
+        color: var(--color-primary)
+    }
+
+    &[class*="--red"] {
+        --button-bg: #FA5D29;
+        color: var(--color-white)
+    }
+
+    &[class*="--gray"] {
+        --button-bg: #d3d3d3;
+        color: var(--color-primary)
+    }
+
+    &[class*="--outline"] {
+        background: transparent;
+        border: 1px solid var(--color-primary);
+        color: var(--color-primary)
+    }
+
+    &[class*="--outline--gray"] {
+        border-color: #d3d3d3
+    }
+
+    &[class*="--outline--white"] {
+        border-color: #fff;
+        color: #fff
+    }
+
+    &[class*="--outline--white"]:hover {
+        background: #fff;
+        color: #222
+    }
+
+    &.is-active {
+        background-color: var(--bg-secondary);
+        color: var(--color-white)
+    }
+
+    &:hover {
+        color: var(--color-white);
+        background-color: #383838
+    }
+
+    svg {
+        position: relative;
+        vertical-align: middle;
+        fill: currentColor;
+        transition: fill .3s
+    }
+
+    &:hover svg {
+        fill: currentColor;
+    }
+}
+
+@include breakAt(md-device) {
+    .button[class*="--tag"] {
+        --button-height: 36px;
+        --button-pad: 16px;
+        font-size: var(--text-base)
+    }
+
+    .button[class*="--large"] {
+        --button-height: 48px;
+        font-size: var(--text-base)
+    }
+
+    .button[class*="--medium"] {
+        --button-height: 48px
+    }
+}
+
+@include breakAt(sm-device) {
+    .grid {
+        display: flex;
+        flex-direction: column
+    }
+
+    [class*=grid__col-] {
+        grid-column: auto
+    }
+
+    :root {
+        --pad-inner: 16px
+    }
+
+    .header-main__ico {
+        display: flex
+    }
+
+    .wrapper {
+        overflow-x: hidden
+    }
+
+    .hidden-sm {
+        display: none
+    }
+
+    .show-sm {
+        display: block
+    }
+}
+
+.section-divider {
+    width: 100%;
+    height: 1px;
+    border: none;
+    background-color: var(--color-divider);
+    margin: var(--size-top, 64px) 0 var(--size-bottom, 64px);
+}

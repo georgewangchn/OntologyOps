@@ -1,0 +1,52 @@
+---
+import { footerText } from '../data/content';
+---
+
+<footer>
+	<div class="group">
+		<p>{footerText}</p>
+	</div>
+
+</footer>
+<style>
+	footer {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+		margin-top: 4rem;
+		padding: 3rem 2rem 3rem;
+		text-align: center;
+		color: var(--color-400);
+		font-size: var(--text-sm);
+	}
+
+	footer a {
+		color: var(--color-400);
+		text-decoration: 1px solid underline transparent;
+		text-underline-offset: 0.25em;
+		transition: text-decoration-color var(--theme-transition);
+	}
+
+	footer a:hover,
+	footer a:focus {
+		text-decoration-color: currentColor;
+	}
+
+	.group {
+		display: block;
+		width: 100%;
+		text-align: center;
+	}
+	.group p{
+		text-align: center;
+	}
+
+	.socials {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+</style>
+

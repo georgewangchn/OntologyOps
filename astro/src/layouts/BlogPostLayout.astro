@@ -1,0 +1,137 @@
+---
+// Component Imports
+import MainHead from '../components/MainHead.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title?: string | undefined;
+	keywords?: string | undefined;
+	description?: string | undefined;
+}
+const { title, description,keywords} = Astro.props;
+---
+<html lang=en>
+	<head>
+		<MainHead title={title} description={description}  keywords={keywords}/>
+	</head>
+	<body class="_body">
+		<div class="">
+			<Nav transition:persist/>
+			<div class="section post">
+				<div class="container">
+					<slot />
+				</div>
+			</div>
+			<Footer />
+		</div>
+
+		<style is:global lang="scss">
+			:root {
+				--bg-svg-blend-mode: overlay;
+				--bg-blend-mode: darken;
+			}
+
+			:root.theme-dark {
+				--bg-svg-blend-mode: darken;
+				--bg-blend-mode: lighten;
+			}
+			img {
+				max-width: 100%;
+			}
+
+			.post {
+				display: block;
+				max-width: 1020px;
+				width:100%;
+				margin:0 auto;
+			}
+
+			section {
+				position: relative;
+				margin:0 auto 36px;
+				width: 100%;
+				font-size: 16px;
+			}
+			p{
+				line-height: 1.6;
+				margin-bottom:0.875em;
+				text-align: left;
+			}
+			strong{
+				font-weight: bold;
+			}
+			ul{
+				padding-left: 2em;
+				margin:2em 0;
+			}
+			ul ul{
+				padding-left: 1em;
+				margin:.75em 0 2em;
+			}
+			ul li{
+				margin:0.5em 0 .75em;
+			}
+			.post-header{
+				width:100%;
+				margin:24px auto 24px;
+				padding-bottom:2rem;
+				border-bottom: 1px solid var(--border);
+			}
+			h1{
+				font-size: 2.25rem;
+				font-weight: bold;
+				color:var(--color-100);
+				text-align: center;
+				line-height:1.333;
+				margin:1rem auto 0.5rem;
+			}
+			h2{
+				font-size: 2rem;
+				font-weight: bold;
+				color:var(--color-100);
+
+			}
+			h3{
+				font-size: 1.5rem;
+				font-weight: bold;
+				color:var(--color-100);
+
+			}
+			a:hover{
+				text-decoration: underline;
+			}
+			.post-title {
+				grid-column-start: 1;
+				font-size: 1.5rem;
+				color: var(--color-100);
+			}
+
+			.content {
+				margin-top:20px;
+				color: var(--color-200);
+				font-size: 1rem;
+			}
+			@media(max-width: 576px) {
+				.post{
+					h1{
+						font-size:1.75rem;
+						margin-top:2rem;
+					}
+					h2{
+						font-size:1.5rem;
+					}
+					h3{
+						font-size:1.25rem;
+					}
+					.post-title{
+						font-size:1.25rem;
+					}
+					p,ul,li{
+						font-size:0.875rem;
+					}
+				}
+			}
+		</style>
+	</body>
+</html>
