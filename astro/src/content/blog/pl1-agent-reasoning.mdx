@@ -1,7 +1,7 @@
 ---
-title: "PL1 · LLM Agent + OWL 本体推理 — 让推理引擎听得懂人话"
-description: "PL1 将 P1 的 OWL/HermiT 推理引擎用 LangGraph Agent 包装，用户用自然语言描述宠物症状，Agent 自动查本体、收集信息、触发推理、解释结果。"
-publishDate: 2025-06-20
+title: "PL1 · LLM Agent / OWL 推理"
+description: "将 P1 的 OWL/HermiT 推理引擎用 LangGraph Agent 包装，用户用自然语言描述宠物症状，Agent 自动查本体、收集信息、触发推理、解释结果。"
+publishDate: 2025-06-25
 read: 25
 tags: ["Agent", "LLM", "LangGraph", "本体推理", "OWL"]
 category: "技术"
@@ -172,7 +172,12 @@ def set_pet_info(species: str, breed: str = "", age: int = None, sex: str = "") 
 def run_dl_reasoning() -> str:
     """运行 OWL DL 推理，返回诊断报告。"""
     if not state.is_ready_for_reasoning():
-        return "信息不足，缺少：宠物物种、至少 2 条症状"
+        missing = []
+        if not state.subject.is_complete():
+            missing.append("宠物物种")
+        if len(state.observations) < state.min_observations_for_reasoning:
+            missing.append(f"至少 {state.min_observations_for_reasoning} 条症状")
+        return f"信息不足，缺少：{', '.join(missing)}"
 
     case_dict = state.to_case_dict()       # 通用格式
     results = diagnose_fn(case_dict)        # PL1 桥接 P1
@@ -334,7 +339,7 @@ def _fallback_diagnose(onto, case_dict):
 **匹配症状**：发热、呕吐、腹泻
 
 ---
-*推理引擎：HermiT 1.4 | OWL 2 DL*
+*推理引擎：OWL-DL (HermiT) + SWRL*
 *本结果由 OWL 本体推理引擎生成，仅供参考，不能替代执业兽医的诊断。*
 ```
 
@@ -409,7 +414,7 @@ def test_pl1_diagnose_with_owl():
 | 术语处理 | 必须精确匹配本体 label | LLM 自动对齐（"发烧" → "发热"） |
 | 信息收集 | 用户自行准备完整症状列表 | Agent 主动追问，逐步收集 |
 | 推理触发 | 手动调用 `diagnose()` | Agent 判断信息足够后自动触发 |
-| 结果解释 | 返回 `(class, float)` 元组列表 | 格式化诊断报告 + 推理路径说明 |
+| 结果解释 | 返回 `List[Tuple[ThingClass, float]]` | 格式化诊断报告 + 推理路径说明 |
 | 交互方式 | 一次性 API 调用 | 多轮对话，可追问、可解释 |
 | 适用场景 | 开发者集成 | 面向终端用户 |
 | 推理引擎 | OWL/HermiT（直接） | OWL/HermiT（通过桥接层，共享） |
