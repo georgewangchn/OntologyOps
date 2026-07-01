@@ -1,2 +1,5 @@
-# Cloudflare Workers Assets redirects
-# html_handling: none in wrangler.jsonc already prevents 307 redirects on .html files
+# 覆盖旧版本中无效的 _redirects 规则
+# 旧版用了 200! 导致 Cloudflare API 解析失败
+# 新版用合法三字段格式显式覆盖
+/baidu_verify_codeva-LSnHZRk2TW.html /baidu_verify_codeva-LSnHZRk2TW.html 200
+/googlec9fc9bacd45a7c0e.html /googlec9fc9bacd45a7c0e.html 200
