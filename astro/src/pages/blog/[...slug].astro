@@ -17,9 +17,19 @@ export async function getStaticPaths() {
 }
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+const articleData = {
+	publishDate: entry.data.publishDate.toISOString(),
+	author: '森林瀑布',
+	tags: entry.data.tags,
+};
 ---
 
-<BlogPostLayout title={entry.data.title} description={entry.data.description}>
+<BlogPostLayout
+	title={entry.data.title}
+	description={entry.data.description}
+	image={entry.data.img}
+	articleData={articleData}
+>
 	<!-- <Back href="/blog/"/> -->
 	<div class="post article">
 		<main class="post-wrapper">

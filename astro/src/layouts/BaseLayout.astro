@@ -7,12 +7,13 @@ interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
 	keywords?: string | undefined;
+	image?: string | undefined;
 }
-const { title, description,keywords } = Astro.props;
+const { title, description, keywords, image } = Astro.props;
 ---
-<html lang=en>
+<html lang="zh-CN">
 	<head>
-		<MainHead title={title} description={description}  keywords={keywords} />
+		<MainHead title={title} description={description} keywords={keywords} image={image} type="website" />
 	</head>
 	<body class="_body">
 		<div class="">

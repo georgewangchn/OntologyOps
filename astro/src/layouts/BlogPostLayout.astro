@@ -8,12 +8,19 @@ interface Props {
 	title?: string | undefined;
 	keywords?: string | undefined;
 	description?: string | undefined;
+	image?: string | undefined;
+	articleData?: {
+		publishDate?: string;
+		modifiedDate?: string;
+		author?: string;
+		tags?: string[];
+	} | undefined;
 }
-const { title, description,keywords} = Astro.props;
+const { title, description, keywords, image, articleData } = Astro.props;
 ---
-<html lang=en>
+<html lang="zh-CN">
 	<head>
-		<MainHead title={title} description={description}  keywords={keywords}/>
+		<MainHead title={title} description={description} keywords={keywords} image={image} type="article" articleData={articleData} />
 	</head>
 	<body class="_body">
 		<div class="">

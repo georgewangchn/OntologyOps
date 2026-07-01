@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
-const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://yoursite.com/';
+const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://senlinpubu.top';
 export default defineConfig({
   devToolbar: {
     enabled: false,
