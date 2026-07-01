@@ -14,9 +14,9 @@ export const nav: Nav = {
     items: [
         { label: '首页', href: '/', target: '_self' },
         { label: '著作', href: '/book/index.html', target: '_self' },
-        { label: '项目', href: '/project', target: '_self' },
-        { label: '博客', href: '/blog', target: '_self' },
-        { label: '关于', href: '/about', target: '_self' },
+        { label: '项目', href: '/project/', target: '_self' },
+        { label: '博客', href: '/blog/', target: '_self' },
+        { label: '关于', href: '/about/', target: '_self' },
     ],
 };
 

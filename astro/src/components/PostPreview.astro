@@ -8,7 +8,7 @@ const { data, id } = Astro.props.post;
 const category = Astro.props['data-category'] || data.category || '技术';
 ---
 
-<a href={`/blog/${id}`} class="post-item border-bottom" data-category={category}>
+<a href={`/blog/${id}/`} class="post-item border-bottom" data-category={category}>
 	<div class="post-title">
 		<h3>
 			{data.title}
