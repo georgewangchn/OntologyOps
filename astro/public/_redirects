@@ -1,4 +1,0 @@
-# 禁止 Cloudflare 对 .html 文件做 307 重定向
-# 验证文件需要直接返回 200，不能跳转
-/baidu_verify_codeva-LSnHZRk2TW.html 200!
-/googlec9fc9bacd45a7c0e.html 200!
