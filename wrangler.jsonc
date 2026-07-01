@@ -1,17 +1,4 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "ontologyops",
-  "main": "worker.js",
-  "compatibility_date": "2026-06-30",
-  "observability": {
-    "enabled": true
-  },
-  "assets": {
-    "directory": "./astro/dist",
-    "binding": "ASSETS",
-    "html_handling": "none"
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  "name": "ontologyops"
 }
