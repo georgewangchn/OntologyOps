@@ -1,4 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "ontologyops"
+  "name": "ontologyops",
+  "compatibility_date": "2026-06-30",
+  "assets": {
+    "directory": "./astro/dist",
+    "html_handling": "none"
+  }
 }
