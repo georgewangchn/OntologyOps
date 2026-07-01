@@ -1,0 +1,2 @@
+# Cloudflare Workers Assets redirects
+# html_handling: none in wrangler.jsonc already prevents 307 redirects on .html files
