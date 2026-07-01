@@ -16,7 +16,20 @@ export default defineConfig({
   envPrefix: 'PUBLIC_',
   site: SITE_URL,
   base: '/',
-  integrations: [sitemap(), mdx()],
+  integrations: [sitemap({
+    changefreq: 'weekly',
+    priority: 0.7,
+    lastmod: new Date(),
+    customPages: ['https://senlinpubu.top/book/index.html'],
+    serialize(item) {
+      // 给书籍页面更高优先级
+      if (item.url.includes('/book/')) {
+        item.priority = 0.8;
+        item.changefreq = 'monthly';
+      }
+      return item;
+    },
+  }), mdx()],
   css: {
     preprocessorOptions: {
       sass: {
