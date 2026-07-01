@@ -1,0 +1,8 @@
+{
+  "name": "ontologyops",
+  "compatibility_date": "2026-06-30",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "none"
+  }
+}
