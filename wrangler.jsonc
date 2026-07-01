@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ontologyops",
-  "main": "worker.js",
   "compatibility_date": "2026-06-30",
   "observability": {
     "enabled": true
