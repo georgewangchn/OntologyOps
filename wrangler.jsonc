@@ -6,7 +6,8 @@
     "enabled": true
   },
   "assets": {
-    "directory": "./astro/dist"
+    "directory": "./astro/dist",
+    "html_handling": "none"
   },
   "compatibility_flags": [
     "nodejs_compat"
