@@ -1,7 +1,13 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Cards from '../components/Cards.astro';
 import {homeTdk} from '../data/content';
+
+const allPosts = await getCollection('blog');
+const latestPosts = allPosts
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -9,6 +15,20 @@ import {homeTdk} from '../data/content';
     description={homeTdk.description || ''}
     keywords={homeTdk.keywords || ''}
 >
+    {/* ── 最新博客 ── */}
+    <section class="section-blog-feed">
+        <div class="container">
+            <div class="blog-feed">
+                {latestPosts.map((post, i) => (
+                    <a href={`/blog/${post.id}/`} class="blog-feed__item">
+                        <span class="blog-feed__date">{post.data.publishDate.toISOString().slice(0, 10)}</span>
+                        <span class="blog-feed__title">{post.data.title}</span>
+                    </a>
+                ))}
+            </div>
+        </div>
+    </section>
+
     {/* ── 著作 Banner ── */}
     <section class="section-book">
         <div class="container">
@@ -92,6 +112,51 @@ import {homeTdk} from '../data/content';
 </BaseLayout>
 
 <style lang="scss">
+/* ── Latest Blog Feed ── */
+.section-blog-feed {
+    padding: 36px 0 0;
+}
+.blog-feed {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 10px 0;
+        border-top: 1px solid var(--border);
+        text-decoration: none;
+        color: var(--color-100);
+        transition: all 0.2s ease;
+        &:hover {
+            color: var(--accent-regular);
+            .blog-feed__title {
+                color: var(--accent-regular);
+            }
+        }
+    }
+    &__date {
+        flex-shrink: 0;
+        font-size: 12px;
+        font-family: var(--font-type);
+        color: var(--color-400);
+        letter-spacing: 0.5px;
+        min-width: 82px;
+    }
+    &__title {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--color-100);
+        transition: color 0.2s;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
 /* ── Book Banner ── */
 .section-book {
     padding: 48px 0 24px;
@@ -366,6 +431,17 @@ import {homeTdk} from '../data/content';
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
+    .blog-feed {
+        &__item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            padding: 8px 0;
+        }
+        &__date {
+            min-width: auto;
+        }
+    }
     .book-banner {
         flex-direction: column;
         text-align: center;
