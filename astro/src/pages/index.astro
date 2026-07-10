@@ -18,13 +18,16 @@ const latestPosts = allPosts
     {/* ── 最新博客 ── */}
     <section class="section-blog-feed">
         <div class="container">
-            <div class="blog-feed">
-                {latestPosts.map((post, i) => (
-                    <a href={`/blog/${post.id}/`} class="blog-feed__item">
-                        <span class="blog-feed__date">{post.data.publishDate.toISOString().slice(0, 10)}</span>
-                        <span class="blog-feed__title">{post.data.title}</span>
-                    </a>
-                ))}
+            <div class="blog-feed-card">
+                <span class="blog-feed-card__label">最新文章</span>
+                <div class="blog-feed-card__list">
+                    {latestPosts.map((post) => (
+                        <a href={`/blog/${post.id}/`} class="blog-feed-card__item">
+                            <span class="blog-feed-card__title">{post.data.title}</span>
+                            <span class="blog-feed-card__date">{post.data.publishDate.toISOString().slice(5, 7)}-{post.data.publishDate.toISOString().slice(8, 10)}</span>
+                        </a>
+                    ))}
+                </div>
             </div>
         </div>
     </section>
@@ -114,29 +117,51 @@ const latestPosts = allPosts
 <style lang="scss">
 /* ── Latest Blog Feed ── */
 .section-blog-feed {
-    padding: 36px 0 0;
+    padding: 32px 0 0;
 }
-.blog-feed {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
+.blog-feed-card {
+    background: linear-gradient(135deg, var(--color-900), var(--color-999));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-large);
+    padding: 20px 28px;
+    transition: border-color 0.3s ease;
+    &:hover {
+        border-color: var(--accent-regular);
+    }
+    &__label {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--color-400);
+        font-family: var(--font-type);
+        margin-bottom: 14px;
+    }
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
     &__item {
         display: flex;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
-        padding: 10px 0;
-        border-top: 1px solid var(--border);
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
         text-decoration: none;
         color: var(--color-100);
-        transition: all 0.2s ease;
+        padding: 6px 0;
+        transition: color 0.2s ease;
         &:hover {
             color: var(--accent-regular);
-            .blog-feed__title {
-                color: var(--accent-regular);
-            }
         }
+    }
+    &__title {
+        font-size: 0.9rem;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
     }
     &__date {
         flex-shrink: 0;
@@ -144,16 +169,6 @@ const latestPosts = allPosts
         font-family: var(--font-type);
         color: var(--color-400);
         letter-spacing: 0.5px;
-        min-width: 82px;
-    }
-    &__title {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: var(--color-100);
-        transition: color 0.2s;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
 }
 
@@ -431,15 +446,12 @@ const latestPosts = allPosts
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-    .blog-feed {
+    .blog-feed-card {
+        padding: 16px 20px;
         &__item {
             flex-direction: column;
-            align-items: flex-start;
             gap: 2px;
-            padding: 8px 0;
-        }
-        &__date {
-            min-width: auto;
+            padding: 4px 0;
         }
     }
     .book-banner {
