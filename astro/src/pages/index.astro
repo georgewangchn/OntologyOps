@@ -19,7 +19,10 @@ const latestPosts = allPosts
     <section class="section-blog-feed">
         <div class="container">
             <div class="blog-feed-card">
-                <span class="blog-feed-card__label">最新文章</span>
+                <div class="blog-feed-card__header">
+                    <span class="blog-feed-card__label">最新文章</span>
+                    <a href="/blog/" class="blog-feed-card__more">更多 →</a>
+                </div>
                 <div class="blog-feed-card__list">
                     {latestPosts.map((post) => (
                         <a href={`/blog/${post.id}/`} class="blog-feed-card__item">
@@ -135,7 +138,21 @@ const latestPosts = allPosts
         text-transform: uppercase;
         color: var(--color-400);
         font-family: var(--font-type);
+    }
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 14px;
+    }
+    &__more {
+        font-size: 0.85rem;
+        color: var(--color-300);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        &:hover {
+            color: var(--accent-regular);
+        }
     }
     &__list {
         display: flex;

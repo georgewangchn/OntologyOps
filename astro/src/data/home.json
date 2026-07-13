@@ -24,6 +24,42 @@
 		"mark": true
 	},
 	{
+		"id": "pl2",
+		"cover": "/assets/cover/cover-agent.svg",
+		"title": "PL2 · Prolog 诊断 Agent",
+		"desc": "LLM Agent + Prolog SLD 归结推理 — 封闭世界假设下的递归推理与传播链查询",
+		"url": "/blog/pl2-prolog-agent/",
+		"detail": "/blog/pl2-prolog-agent/",
+		"category": "prolog,agent",
+		"tag": "PL2",
+		"date": "2025-06-28",
+		"mark": true
+	},
+	{
+		"id": "pl3",
+		"cover": "/assets/cover/cover-agent.svg",
+		"title": "PL3 · SPARQL 诊断 Agent",
+		"desc": "LLM Agent + Jena SPARQL 查询推理 — 三元组语义网与传递闭包的 Agent 化实践",
+		"url": "/blog/pl3-sparql-agent/",
+		"detail": "/blog/pl3-sparql-agent/",
+		"category": "jena,agent",
+		"tag": "PL3",
+		"date": "2025-06-30",
+		"mark": true
+	},
+	{
+		"id": "pl4",
+		"cover": "/assets/cover/cover-agent.svg",
+		"title": "PL4 · 模糊推理 Agent",
+		"desc": "LLM Agent + Mamdani 模糊推理 — 症状模糊化与去模糊化的 Agent 化诊断",
+		"url": "/blog/pl4-fuzzy-agent/",
+		"detail": "/blog/pl4-fuzzy-agent/",
+		"category": "fuzzy,agent",
+		"tag": "PL4",
+		"date": "2025-07-01",
+		"mark": true
+	},
+	{
 		"id": "p2",
 		"cover": "/assets/cover/cover-prolog.svg",
 		"title": "P2 · Prolog 逻辑推理",
