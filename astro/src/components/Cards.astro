@@ -358,6 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
         justify-content: space-between;
         align-items: flex-start;
     }
+    &-detail{
+        min-width: 0;
+        flex: 1;
+    }
     &-name{
         font-size: 18px;
         font-weight: 600;
@@ -369,15 +373,16 @@ document.addEventListener('DOMContentLoaded', () => {
         align-items: center;
     }
     &-info{
-        display: block;
-        font-size: 14px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         font-size: 0.875rem;
         color: var(--color-300);
         font-weight: 400;
-        text-overflow: ellipsis;
         overflow: hidden;
-        white-space: nowrap;
+        text-overflow: ellipsis;
         margin-top: 4px;
+        line-height: 1.5;
     }
     &-link__go {
             background-repeat: no-repeat;
