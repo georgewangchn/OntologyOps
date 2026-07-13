@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-诊断主流程 —— 多范式分层仲裁
+诊断主流程 —— 多范式贝叶斯元推理
 
-核心差异：
-  P1-P5：单一推理引擎
-  P6：五引擎分层仲裁（P1-P3 确定性 → P4 模糊 → P5 概率 → 仲裁器）
+核心范式转变（对比旧版分层仲裁）：
+  旧版：P1+P2+P3 投票 → P4 模糊 → P5 概率 → 仲裁器加权(0.6/0.4)
+  新版：P2+P4+P5 并行 → 各引擎输出转似然比(LR) → 贝叶斯乘法融合 → 归一化
+
+关键改进：
+  1. P1-P3 取其一（P2 Prolog），消除知识源冗余
+  2. 各引擎输出统一转为似然比，语义对齐
+  3. 贝叶斯乘法融合有概率论保证（贝叶斯定理链式法则）
 """
 
-from reasoner import diagnose, print_diagnosis
+from reasoner import diagnose, print_diagnosis, explain
 import json
 import os
 
@@ -23,7 +28,7 @@ def diagnose_from_json(json_path):
 
 
 def diagnose_interactive():
-    print("🏥 多范式分层仲裁诊断系统（交互模式）")
+    print("多范式贝叶斯元推理诊断系统（交互模式）")
     print("=" * 60)
 
     case = {}
@@ -31,7 +36,7 @@ def diagnose_interactive():
     symptoms_input = input("症状（逗号分隔）：").strip()
     case["symptoms"] = [s.strip() for s in symptoms_input.split(",") if s.strip()]
 
-    print(f"\n📋 病例：{case['pet_type']}，症状：{', '.join(case['symptoms'])}")
+    print(f"\n病例：{case['pet_type']}，症状：{', '.join(case['symptoms'])}")
     results = diagnose(case)
     print_diagnosis(results)
     return results

@@ -1,5 +1,9 @@
 """
-PL6 诊断函数 —— 包装 P6 的多范式分层仲裁引擎。
+PL6 诊断函数 —— 包装 P6 的贝叶斯元推理引擎。
+
+核心变化（对比旧版）：
+  旧版：包装分层仲裁引擎（P1-P5 分层投票 + 加权融合）
+  新版：包装贝叶斯元推理引擎（P2+P4+P5 并行 + 似然比乘法融合）
 """
 
 import os
@@ -29,7 +33,7 @@ def pl6_diagnose(case_dict: dict) -> list:
         from reasoner import diagnose as p6_diagnose
         results = p6_diagnose(p6_case)
     except Exception as e:
-        logger.error(f"P6 仲裁推理引擎执行失败：{e}")
+        logger.error(f"P6 贝叶斯元推理引擎执行失败：{e}")
         results = _fallback_diagnose(p6_case)
 
     return results
@@ -49,7 +53,7 @@ def _convert_case_dict(case_dict: dict) -> dict:
 
 def _fallback_diagnose(case_dict: dict) -> list:
     """
-    降级诊断：当 P6 仲裁引擎失败时，仅使用 P5 贝叶斯推理。
+    降级诊断：当 P6 元推理引擎失败时，仅使用 P5 贝叶斯推理。
     """
     logger.warning("使用降级诊断策略（仅贝叶斯推理）")
 
@@ -71,7 +75,7 @@ def _fallback_diagnose(case_dict: dict) -> list:
                 "disease_id": did,
                 "evidence": [],
                 "missing": [],
-                "engine_results": {"P5": {"confidence": conf, "level": level}},
+                "engine_results": {"P5": {"confidence": conf, "level": level, "lr": 1.0}},
                 "conflict": False,
                 "arbitration_note": "降级模式：仅贝叶斯推理可用",
             })

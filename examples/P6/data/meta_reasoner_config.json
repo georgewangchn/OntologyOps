@@ -1,0 +1,47 @@
+{
+  "paradigm": "贝叶斯元推理 (Bayesian Meta-Reasoning)",
+  "description": "P6 多范式证据融合配置 — 各引擎输出统一转为似然比(LR)，以贝叶斯乘法融合",
+  "design_rationale": {
+    "problem_1": "P1/P2/P3 知识源冗余：同一份领域知识的三种编码形式，投票=一人投三票",
+    "problem_2": "P4 与 P1-P3 输入空间重叠：coverage 计算逻辑与 P1-P3 置信度完全相同",
+    "problem_3": "旧版权重 0.6/0.4 无理论依据：贝叶斯后验概率和模糊匹配度语义不同，不能加权平均",
+    "solution": "各引擎并行推理，输出统一转为似然比(LR)，以贝叶斯乘法融合后归一化"
+  },
+  "engines": {
+    "structural": {
+      "engine": "P2 (Prolog/SLD, CWA)",
+      "reason": "P1/P2/P3 共享同一知识源，取其一即可。P2 的 CWA 最适合诊断场景",
+      "increment": "疾病-症状必要性关系 + 排除关系"
+    },
+    "fuzzy": {
+      "engine": "P4 (Mamdani)",
+      "reason": "唯一提供症状严重度连续信息的引擎",
+      "increment": "症状严重度（连续 0-1）"
+    },
+    "bayesian": {
+      "engine": "P5 (Naive Bayes)",
+      "reason": "唯一提供先验概率和条件概率表的引擎",
+      "increment": "先验概率 + CPT"
+    }
+  },
+  "lr_mapping": {
+    "lr_confirmed": 5.0,
+    "lr_suspect": 1.5,
+    "lr_low_match": 0.8,
+    "lr_excluded": 0.1,
+    "fuzzy_lr_k": 3.0,
+    "lr_max": 100.0,
+    "lr_min": 0.01,
+    "conflict_lr_ratio": 5.0
+  },
+  "lr_mapping_explanation": {
+    "lr_confirmed": "确定性推理确诊时的似然比，>1 表示证据支持该疾病",
+    "lr_suspect": "确定性推理疑似时的似然比，弱支持",
+    "lr_excluded": "确定性推理排除时的似然比，<1 表示证据反对该疾病",
+    "fuzzy_lr_k": "模糊匹配度转LR的指数映射灵敏度，k越大LR变化越剧烈",
+    "fuzzy_formula": "LR_fuzzy = exp(k * (confidence - 0.5))，conf=0.5时LR=1(中性)",
+    "bayesian_formula": "LR_bayesian = posterior / prior，后验相对先验的提升倍数",
+    "conflict_lr_ratio": "最大LR与最小LR的比值超过此阈值时标记冲突"
+  },
+  "fusion_formula": "P_final(D) proportional to P_prior(D) x LR_struct x LR_fuzzy x LR_bayesian"
+}

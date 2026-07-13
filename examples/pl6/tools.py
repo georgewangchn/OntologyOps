@@ -2,8 +2,12 @@
 PL6 工具集 —— 8 个 LangChain @tool 函数
 
 PL6 独有工具：
-  - compare_engine_results: 对比五种推理引擎的结果差异
-  - explain_arbitration: 解释仲裁器的冲突消解逻辑
+  - compare_engine_results: 对比三种推理引擎的结果差异 + 各引擎似然比
+  - explain_arbitration: 解释贝叶斯元推理的融合逻辑
+
+核心变化（对比旧版）：
+  旧版：解释分层仲裁（P1-P3 投票 + P4/P5 加权 0.6/0.4）
+  新版：解释贝叶斯元推理（各引擎输出转 LR + 乘法融合 + 归一化）
 """
 
 import os
@@ -69,6 +73,22 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
         """查找疾病在多种推理引擎中的知识表示。"""
         lines = [f"疾病「{disease_name}」的多引擎知识表示："]
 
+        # P2 Prolog (结构化规则)
+        try:
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "P2", "src"))
+            from reasoner import load_knowledge_base
+            prolog = load_knowledge_base()
+            related = list(prolog.query(f"disease(D, '{disease_name}', Species)"))
+            if related:
+                did = related[0]["D"]
+                nec = list(prolog.query(f"necessary({did}, S)"))
+                nos = list(prolog.query(f"nos({did}, S)"))
+                lines.append(f"  P2(Prolog): ID={did}, 必要={[r['S'] for r in nec]}, 排除={[r['S'] for r in nos]}")
+            else:
+                lines.append(f"  P2(Prolog): 未找到")
+        except Exception as e:
+            lines.append(f"  P2(Prolog): 加载失败")
+
         # P4 模糊
         try:
             sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "P4", "src"))
@@ -110,7 +130,7 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
 
     @tool
     def run_multi_engine_reasoning() -> str:
-        """运行多范式分层仲裁推理，返回融合后的诊断结果。"""
+        """运行多范式贝叶斯元推理，返回融合后的诊断结果。"""
         if not state.is_ready_for_reasoning():
             return "信息不足，请先设置宠物信息并记录至少2个症状。"
 
@@ -128,7 +148,7 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
 
     @tool
     def compare_engine_results() -> str:
-        """对比五种推理引擎的结果差异（PL6 独有）。"""
+        """对比三种推理引擎的结果差异及各引擎似然比（PL6 独有）。"""
         if not state.is_ready_for_reasoning():
             return "信息不足，请先设置宠物信息并记录至少2个症状。"
 
@@ -138,33 +158,54 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
         except Exception as e:
             return f"推理失败：{e}"
 
-        lines = ["多引擎结果对比："]
+        lines = ["多引擎结果对比（贝叶斯元推理）："]
         for r in results[:5]:
-            lines.append(f"\n  {r['disease']} (最终: {r['confidence']:.2%} [{r['level']}])")
+            lines.append(f"\n  {r['disease']} (最终后验: {r['confidence']:.2%} [{r['level']}])")
             if r.get("conflict"):
-                lines.append(f"    ⚠️ 存在冲突")
+                lines.append(f"    [!] 似然比方向冲突")
             for engine, info in r.get("engine_results", {}).items():
-                lines.append(f"    {engine}: {info['confidence']:.2f} [{info['level']}]")
-            lines.append(f"    仲裁：{r.get('arbitration_note', '')}")
+                lines.append(f"    {engine}: conf={info['confidence']:.2f} [{info['level']}] LR={info['lr']:.2f}")
+            lines.append(f"    融合：{r.get('arbitration_note', '')}")
 
         return "\n".join(lines)
 
     @tool
     def explain_arbitration() -> str:
-        """解释仲裁器的冲突消解逻辑（PL6 独有）。"""
-        return """仲裁器冲突消解逻辑：
+        """解释贝叶斯元推理的融合逻辑（PL6 独有）。"""
+        return """贝叶斯元推理融合逻辑：
 
-1. 确定性层（P1+P2+P3）一致确诊 → 直接采纳，置信度=1.0
-2. 确定性层一致排除 → 直接排除，置信度=0.0
-3. 确定性层冲突 → 标记冲突，以贝叶斯后验为准
-4. 确定性层部分一致 → 加权融合：贝叶斯×0.6 + 模糊×0.4
-5. 模糊与概率差异 > 0.3 → 标注冲突
+1. 引擎选择
+   - P2 (Prolog/SLD, CWA)：确定性推理，提供结构化规则知识
+   - P4 (Mamdani 模糊)：提供症状严重度连续信息
+   - P5 (朴素贝叶斯)：提供先验概率 + 条件概率表
+   - P1/P3 不再运行：与 P2 共享同一知识源，投票=一人投三票
 
-权重设计理由：
-  贝叶斯 0.6 > 模糊 0.4
-  因为贝叶斯输出有概率论保证，模糊输出是启发式匹配度
-  贝叶斯利用先验知识，模糊不利用
-  贝叶斯考虑负证据（未出现症状），模糊忽略"""
+2. 似然比转换（各引擎输出统一为 LR）
+   - P2 确定性推理：
+     确诊 -> LR=5.0 (强支持)
+     疑似 -> LR=1.5 (弱支持)
+     排除 -> LR=0.1 (强反对)
+   - P4 模糊推理：
+     LR = exp(3.0 * (confidence - 0.5))
+     conf=0.5 -> LR=1.0 (中性)
+     conf=1.0 -> LR=4.48 (强支持)
+     conf=0.0 -> LR=0.22 (强反对)
+   - P5 贝叶斯推理：
+     LR = posterior / prior (后验相对先验的提升倍数)
+
+3. 贝叶斯乘法融合
+   P_final(D) proportional to P_prior(D) x LR_struct x LR_fuzzy x LR_bayesian
+   归一化后得到最终后验概率分布
+
+4. 冲突检测
+   如果各引擎的 LR 方向不一致（一个 >1 支持，一个 <1 反对），
+   且最大 LR / 最小 LR > 5.0，标记冲突。
+
+为什么比旧版分层仲裁更好：
+   - 旧版权重 0.6/0.4 无理论依据，贝叶斯后验和模糊匹配度语义不同不能加权
+   - 新版似然比有概率论保证（贝叶斯定理链式法则）
+   - 各引擎增量信息被显式利用：规则知识->LR_struct, 严重度->LR_fuzzy, 先验+CPT->LR_bayesian
+   - P1-P3 不再冗余运行，消除假一致性"""
 
     @tool
     def get_case_summary() -> str:

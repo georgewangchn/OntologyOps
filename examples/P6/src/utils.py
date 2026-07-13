@@ -14,15 +14,15 @@ def load_json(path):
 
 def format_results(results, top_n=5):
     lines = []
-    lines.append("─" * 60)
-    lines.append("  📋 诊断结果（多范式分层仲裁推理）")
-    lines.append("─" * 60)
+    lines.append("-" * 60)
+    lines.append("  诊断结果（多范式贝叶斯元推理）")
+    lines.append("-" * 60)
     for i, r in enumerate(results[:top_n], 1):
-        bar = "█" * int(r["confidence"] * 10)
-        conflict_tag = " ⚠️冲突" if r["conflict"] else ""
+        bar = "|" * int(r["confidence"] * 10)
+        conflict_tag = " [冲突]" if r["conflict"] else ""
         lines.append(f"  {i}. {r['disease']:<16} {r['confidence']:.2%}  {bar} [{r['level']}]{conflict_tag}")
-        lines.append(f"     仲裁：{r['arbitration_note']}")
+        lines.append(f"     融合：{r['arbitration_note']}")
         for engine, info in r["engine_results"].items():
-            lines.append(f"     {engine}: {info['confidence']:.2f} [{info['level']}]")
-    lines.append("─" * 60)
+            lines.append(f"     {engine}: conf={info['confidence']:.2f} [{info['level']}] LR={info['lr']:.2f}")
+    lines.append("-" * 60)
     return "\n".join(lines)

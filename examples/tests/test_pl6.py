@@ -91,9 +91,18 @@ def test_explain_arbitration():
     tools = create_pl6_tools(state, pl6_diagnose, build_pl6_report)
     explain = next(t for t in tools if t.name == "explain_arbitration")
     result = explain.invoke({})
-    assert "仲裁" in result
+    assert "似然比" in result or "LR" in result
     assert "贝叶斯" in result
-    assert "模糊" in result
+    assert "乘法融合" in result
+
+
+def test_explain_arbitration_no_old_weights():
+    """确保旧版的 0.6/0.4 权重不再出现"""
+    state = ConversationState()
+    tools = create_pl6_tools(state, pl6_diagnose, build_pl6_report)
+    explain = next(t for t in tools if t.name == "explain_arbitration")
+    result = explain.invoke({})
+    assert "0.6" not in result or "0.4" not in result
 
 
 def test_build_pl6_report():
@@ -102,14 +111,19 @@ def test_build_pl6_report():
     state.set_subject(species="猫")
     state.add_observation("发热")
     results = [{
-        "disease": "猫瘟", "confidence": 0.91, "level": "确诊（多引擎一致）",
+        "disease": "猫瘟", "confidence": 0.91, "level": "高概率",
         "disease_id": "D001", "evidence": ["发热"], "missing": [],
-        "engine_results": {"P1": {"confidence": 1.0, "level": "确诊"}},
-        "conflict": False, "arbitration_note": "确定性一致确诊"
+        "engine_results": {
+            "P2": {"confidence": 1.0, "level": "确诊", "lr": 5.0},
+            "P4": {"confidence": 0.86, "level": "高", "lr": 3.2},
+            "P5": {"confidence": 0.91, "level": "高概率", "lr": 18.2},
+        },
+        "conflict": False,
+        "arbitration_note": "贝叶斯元推理：P_prior(0.0500) x LR_P2(5.0) x LR_P4(3.2) x LR_P5(18.2)"
     }]
     report = build_pl6_report(state, results)
     assert isinstance(report, DiagnosisReport)
-    assert report.reasoning_engine == "Multi-Engine Arbiter (P1-P5 分层仲裁)"
+    assert "似然比" in report.reasoning_engine or "Meta-Reasoner" in report.reasoning_engine
 
 
 def test_build_pl6_report_format():
@@ -117,9 +131,10 @@ def test_build_pl6_report_format():
     state.set_subject(species="犬")
     state.add_observation("咳嗽")
     results = [{
-        "disease": "犬副流感", "confidence": 0.75, "level": "高度疑似",
+        "disease": "犬副流感", "confidence": 0.75, "level": "高概率",
         "disease_id": "D010", "evidence": ["咳嗽"], "missing": ["打喷嚏"],
-        "engine_results": {}, "conflict": False, "arbitration_note": "加权融合"
+        "engine_results": {}, "conflict": False,
+        "arbitration_note": "贝叶斯元推理融合"
     }]
     report = build_pl6_report(state, results)
     formatted = report.format_for_user()
