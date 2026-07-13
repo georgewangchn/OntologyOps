@@ -60,6 +60,30 @@
 		"mark": true
 	},
 	{
+		"id": "pl5",
+		"cover": "/assets/cover/cover-agent.svg",
+		"title": "PL5 · 贝叶斯推理 Agent",
+		"desc": "LLM Agent + 朴素贝叶斯推理 — 后验概率诊断与先验似然比查询",
+		"url": "/blog/pl5-bayesian-agent/",
+		"detail": "/blog/pl5-bayesian-agent/",
+		"category": "bayesian,agent",
+		"tag": "PL5",
+		"date": "2025-07-05",
+		"mark": true
+	},
+	{
+		"id": "pl6",
+		"cover": "/assets/cover/cover-agent.svg",
+		"title": "PL6 · 多范式仲裁 Agent",
+		"desc": "LLM Agent + P1-P5 分层仲裁 — 多引擎融合推理与冲突消解",
+		"url": "/blog/pl6-arbiter-agent/",
+		"detail": "/blog/pl6-arbiter-agent/",
+		"category": "arbiter,agent",
+		"tag": "PL6",
+		"date": "2025-07-10",
+		"mark": true
+	},
+	{
 		"id": "p2",
 		"cover": "/assets/cover/cover-prolog.svg",
 		"title": "P2 · Prolog 逻辑推理",
@@ -91,5 +115,27 @@
 		"category": "fuzzy",
 		"tag": "模糊逻辑",
 		"date": "2025-04-01"
+	},
+	{
+		"id": "p5",
+		"cover": "/assets/cover/cover-fuzzy.svg",
+		"title": "P5 · 贝叶斯概率推理",
+		"desc": "朴素贝叶斯网络 — 先验概率 × 似然 → 后验概率，概率推理而非模糊匹配",
+		"url": "/blog/p5-bayesian-reasoning/",
+		"detail": "/blog/p5-bayesian-reasoning/",
+		"category": "bayesian",
+		"tag": "贝叶斯",
+		"date": "2025-04-15"
+	},
+	{
+		"id": "p6",
+		"cover": "/assets/cover/cover-fuzzy.svg",
+		"title": "P6 · 多范式分层仲裁",
+		"desc": "P1-P5 融合引擎 — 确定性推理先行 → 模糊量化 → 概率校准 → 仲裁裁决",
+		"url": "/blog/p6-arbiter-reasoning/",
+		"detail": "/blog/p6-arbiter-reasoning/",
+		"category": "arbiter",
+		"tag": "仲裁",
+		"date": "2025-05-01"
 	}
 ]

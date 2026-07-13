@@ -110,5 +110,7 @@ export const filterItems: FilterItem[] = [
 	{ content: "Prolog", dataGroup: "prolog" },
 	{ content: "Jena", dataGroup: "jena" },
 	{ content: "模糊逻辑", dataGroup: "fuzzy" },
+	{ content: "贝叶斯", dataGroup: "bayesian" },
+	{ content: "仲裁", dataGroup: "arbiter" },
 	{ content: "Agent", dataGroup: "agent" },
 ];

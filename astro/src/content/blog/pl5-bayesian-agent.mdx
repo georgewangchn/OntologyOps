@@ -1,0 +1,122 @@
+---
+title: "PL5 · LLM Agent / 贝叶斯推理"
+description: "将 P5 的朴素贝叶斯推理引擎用 LangGraph Agent 包装，用户用自然语言描述宠物症状，Agent 自动查知识库、收集信息、触发概率推理、解释后验概率，还能查询先验概率和似然比。"
+publishDate: 2025-04-20
+read: 20
+tags: ["Agent", "LLM", "LangGraph", "贝叶斯推理", "Bayesian", "概率推理"]
+category: "技术"
+---
+
+> 多范式推理实战营 · PL 系列 5/7
+> *本文是「多范式推理实战营」PL 系列第 5 篇。PL1-PL5 覆盖五种推理范式 + LLM Agent 增强，PL6 将实现多范式融合仲裁引擎。*
+
+---
+
+## 一、PL5 是什么
+
+PL5 = P5（朴素贝叶斯推理引擎）+ LLM Agent（LangGraph ReAct 循环）。
+
+用户用自然语言描述宠物症状，Agent 自动：
+1. 查询贝叶斯知识库中的症状-疾病关联
+2. 查询疾病的先验概率和似然比
+3. 收集症状信息
+4. 触发贝叶斯推理
+5. 解释后验概率的推理链
+
+## 二、与 PL1-PL4 的核心差异
+
+| 维度 | PL1-PL3 | PL4 | PL5 |
+|------|---------|-----|-----|
+| 推理输出 | 确诊/排除（二元） | 置信度（匹配度） | **后验概率** |
+| 先验知识 | 不使用 | 不使用 | **核心输入** |
+| 负证据 | 不考虑未出现的症状 | 不考虑未出现的症状 | **P(¬S\|D) 降低后验** |
+| 罕见病处理 | 与常见病同等 | 与常见病同等 | **先验天然压低** |
+| 独有工具 | — | get_symptom_severity | **query_prior_and_likelihood** |
+
+### PL4 vs PL5：模糊匹配 vs 概率推理
+
+PL4 的 Agent 会追问症状严重度（"体温多少度？""呕吐频率？"），因为模糊推理需要连续输入。
+
+PL5 的 Agent 不需要追问严重度——贝叶斯推理用的是二元症状（有/无）。但 PL5 的 Agent 有一个 PL4 没有的能力：**查询先验概率和似然比**，让用户理解"为什么这个病概率高"。
+
+## 三、工具集
+
+PL5 暴露 8 个 @tool 给 Agent：
+
+| 工具 | 功能 | 对应 PL4 |
+|------|------|---------|
+| lookup_symptom_bayesian | 查找症状关联疾病 + P(S\|D) | lookup_symptom_fuzzy |
+| lookup_disease_bayesian | 查找疾病先验 + CPT | lookup_disease_fuzzy |
+| add_observation | 记录症状（二元，不需严重度） | add_observation（需严重度） |
+| set_pet_info | 设置宠物信息 | 相同 |
+| run_bayesian_reasoning | 执行贝叶斯推理 | run_fuzzy_reasoning |
+| explain_bayesian_reasoning | 解释推理链（先验→似然→后验） | explain_fuzzy_reasoning |
+| **query_prior_and_likelihood** | **查询先验概率和似然比** | 无对应 |
+| get_case_summary | 病例摘要 | 相同 |
+
+### query_prior_and_likelihood（PL5 独有）
+
+这个工具让 Agent 能回答用户的问题："为什么猫瘟的概率比猫肠炎高？"
+
+Agent 调用后会返回：
+```
+猫瘟 (D001):
+  先验概率 P(D) = 8.00%
+  各症状似然比：
+    发热: LR = 6.0x （强支持证据）
+    呕吐: LR = 8.5x （强支持证据）
+    腹泻: LR = 6.7x （强支持证据）
+    咳嗽: LR = 0.3x （强反对证据）
+    流鼻涕: LR = 0.2x （强反对证据）
+```
+
+似然比 LR = P(S|D) / P(S|¬D)：
+- LR > 10：强支持证据
+- LR > 3：中等支持证据
+- LR < 0.3：强反对证据
+- LR < 1：弱反对证据
+
+## 四、系统提示词设计
+
+PL5 的系统提示词强调三个 PL4 没有的概念：
+
+1. **后验概率语义**："你的输出是后验概率，不是匹配度或模糊值"
+2. **先验概率作用**："先验概率让常见病天然占优"
+3. **负证据**："未出现的症状也参与推理（通过 P(¬S|D) 降低后验）"
+
+同时明确告知 Agent：贝叶斯推理**不需要症状严重度**（与 PL4 不同），只需要症状有/无。
+
+## 五、诊断桥接层
+
+`diagnose.py` 的 `_convert_case_dict` 比 PL4 简单——不需要提取 `symptom_details`：
+
+```python
+# PL4: 需要提取 symptom_details（症状严重度详情）
+p4_case["symptom_details"] = case_dict.get("symptom_details", {})
+
+# PL5: 只需要二元症状
+p5_case["symptom_type"] = _SPECIES_MAP.get(raw_type, raw_type)
+p5_case["symptoms"] = case_dict.get("observations", [])
+```
+
+降级策略与 PL1-PL4 一致：当 P5 推理引擎失败时，`_fallback_diagnose` 手动实现朴素贝叶斯计算（先验 × 似然 → 归一化）。
+
+## 六、报告构建
+
+PL5 的 `reasoning_engine` 标注为 `"Naive Bayes (贝叶斯网络)"`，disclaimer 强调：
+
+> 后验概率基于先验概率和条件概率表计算，具有严格的概率论语义。结果表示"给定症状时疾病的概率"，而非症状匹配程度。
+
+## 七、总结
+
+PL5 完成了从"模糊匹配"到"概率推理"的跨越。五种 PL 的递进路线：
+
+- PL1-PL3：确定性推理 + Agent（不同知识表示，同一确定性本质）
+- PL4：模糊推理 + Agent（处理"边缘模糊"，不处理概率）
+- PL5：概率推理 + Agent（处理"概率不确定性"，有严格数学基础）
+
+下一步 PL6 将实现**多范式融合仲裁引擎**——将 PL1-PL5 的推理结果统一调度，分层仲裁。
+
+---
+
+*作者：森林瀑布 | 多范式推理实战营 PL5 | 2025-04-20*

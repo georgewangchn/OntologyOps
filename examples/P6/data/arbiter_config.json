@@ -1,0 +1,31 @@
+{
+  "paradigm": "多范式分层仲裁",
+  "description": "P6 多范式融合仲裁配置",
+  "layers": {
+    "layer1_deterministic": {
+      "engines": ["P1", "P2", "P3"],
+      "role": "确定性推理先行",
+      "consensus_rule": "全部确诊→高置信度；全部排除→直接排除；冲突→进入第二层"
+    },
+    "layer2_fuzzy": {
+      "engines": ["P4"],
+      "role": "模糊量化",
+      "thresholds": {
+        "high": 0.7,
+        "low": 0.3
+      }
+    },
+    "layer3_bayesian": {
+      "engines": ["P5"],
+      "role": "概率校准",
+      "weight": 0.6
+    }
+  },
+  "arbitration": {
+    "fuzzy_weight": 0.4,
+    "bayesian_weight": 0.6,
+    "conflict_threshold": 0.3,
+    "high_confidence_threshold": 0.65,
+    "low_confidence_threshold": 0.30
+  }
+}
