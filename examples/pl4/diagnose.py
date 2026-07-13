@@ -60,11 +60,16 @@ def pl4_diagnose(case_dict: dict) -> list:
     # 转换为 P4 期望的格式
     p4_case = _convert_case_dict(case_dict)
 
-    # 加载知识库并执行推理
-    from reasoner import load_knowledge_base, diagnose as p4_diagnose
+    # 加载知识库
+    kb = _load_kb()
 
-    kb = load_knowledge_base()
-    raw_results = p4_diagnose(kb, p4_case)
+    # 尝试调用 P4 的模糊推理引擎
+    try:
+        from reasoner import diagnose as p4_diagnose
+        raw_results = p4_diagnose(kb, p4_case)
+    except Exception as e:
+        logger.error(f"P4 模糊推理引擎执行失败：{e}")
+        raw_results = _fallback_diagnose(kb, p4_case)
 
     # 转换为 agent_core 标准格式
     return _format_results(raw_results, p4_case, kb)
@@ -95,6 +100,114 @@ def _convert_case_dict(case_dict: dict) -> dict:
     p4_case["symptom_details"] = case_dict.get("symptom_details", {})
 
     return p4_case
+
+
+def _load_kb():
+    """懒加载 P4 知识库，带缓存。"""
+    global _KB_CACHE
+    if _KB_CACHE is not None:
+        return _KB_CACHE
+    try:
+        from reasoner import load_knowledge_base
+        _KB_CACHE = load_knowledge_base()
+    except Exception as e:
+        logger.error(f"加载 P4 知识库失败：{e}")
+        _KB_CACHE = _load_kb_fallback()
+    return _KB_CACHE
+
+
+_KB_CACHE = None
+
+
+def _load_kb_fallback() -> dict:
+    """
+    当 reasoner.load_knowledge_base 失败时（如 scikit-fuzzy 未安装），
+    直接从 JSON 文件加载知识库结构（不含模糊控制器）。
+    """
+    import json
+    kb_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "P4", "data", "fuzzy_kb.json"
+    )
+    with open(kb_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _fallback_diagnose(kb: dict, case_dict: dict) -> list:
+    """
+    降级诊断：当 P4 的 Mamdani 模糊推理引擎失败时，
+    基于知识库中的疾病定义和症状基线严重度进行简化模糊匹配。
+
+    代替完整的 Mamdani 推理流程，使用以下简化策略：
+    1. 覆盖率 = matched_necessary / total_necessary
+    2. 强度 = 平均症状基线严重度（0-1）
+    3. 排除度 = 1.0 if 存在排除症状 else 0.0
+    4. 置信度 = coverage * 0.5 + intensity * 0.3 + (1 - exclusion) * 0.2
+    """
+    logger.warning("使用降级诊断策略（简化模糊匹配）")
+
+    pet_type = case_dict.get("pet_type", "pet")
+    symptoms = case_dict.get("symptoms", [])
+    baselines = kb.get("symptom_baselines", {})
+
+    results = []
+
+    for disease in kb.get("diseases", []):
+        did = disease["id"]
+        dname = disease["name"]
+        species = disease.get("species", "pet")
+
+        # 物种过滤
+        if species != "pet" and species != pet_type:
+            continue
+
+        necessary = disease.get("necessary_symptoms", [])
+        if not necessary:
+            continue
+
+        # 覆盖率
+        matched = 0
+        for nec in necessary:
+            if any(nec in s or s in nec for s in symptoms):
+                matched += 1
+        coverage = matched / len(necessary)
+
+        if coverage == 0:
+            continue
+
+        # 强度（平均基线严重度）
+        intensities = []
+        for nec in necessary:
+            if any(nec in s or s in nec for s in symptoms):
+                intensities.append(baselines.get(nec, 0.5))
+        intensity = sum(intensities) / len(intensities) if intensities else 0.5
+
+        # 排除度
+        exclusion_symptoms = disease.get("exclusion_symptoms", [])
+        has_exclusion = False
+        for exs in exclusion_symptoms:
+            if any(exs in s or s in exs for s in symptoms):
+                has_exclusion = True
+                break
+        exclusion = 1.0 if has_exclusion else 0.0
+
+        # 简化置信度计算
+        confidence = coverage * 0.5 + intensity * 0.3 + (1 - exclusion) * 0.2
+        confidence = min(0.99, confidence)
+
+        # 模糊等级
+        if confidence >= 0.65:
+            level = "高"
+        elif confidence >= 0.35:
+            level = "中"
+        else:
+            level = "低"
+
+        results.append((dname, confidence, level, did))
+
+    # 按置信度降序
+    results.sort(key=lambda x: -x[1])
+    return results
 
 
 def _format_results(raw_results: list, case_dict: dict, kb: dict) -> list:

@@ -242,6 +242,32 @@ def test_pl1_agent_state_sync():
 # 测试 6: pl1_diagnose（需要 OWL 本体）
 # ============================================================
 
+def test_convert_case_dict():
+    """测试 case_dict 格式转换。"""
+    from pl1.diagnose import _convert_case_dict, _SPECIES_MAP
+
+    case = {
+        "subject_type": "猫",
+        "observations": ["发热", "呕吐"],
+    }
+    p1_case = _convert_case_dict(case)
+    assert p1_case["pet_type"] == "cat"
+    assert p1_case["symptoms"] == ["发热", "呕吐"]
+
+    # 测试别名
+    case2 = {"subject_type": "猫咪", "observations": []}
+    p1_case2 = _convert_case_dict(case2)
+    assert p1_case2["pet_type"] == "cat"
+
+    case3 = {"subject_type": "狗狗", "observations": []}
+    p1_case3 = _convert_case_dict(case3)
+    assert p1_case3["pet_type"] == "dog"
+
+
+# ============================================================
+# 测试 7: pl1_diagnose（需要 OWL 本体）
+# ============================================================
+
 def test_pl1_diagnose_with_owl():
     """
     测试 pl1_diagnose 函数（需要 OWL 本体文件存在）。
