@@ -18,9 +18,9 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from agent_core import OntologyAgent, ConversationState
-from pl5.tools import create_pl5_tools
-from pl5.diagnose import pl5_diagnose
-from pl5.report import build_pl5_report
+from PL5.tools import create_pl5_tools
+from PL5.diagnose import pl5_diagnose
+from PL5.report import build_pl5_report
 
 
 # ============================================================
@@ -213,7 +213,7 @@ def test_pl5_agent_state_sync():
 # ============================================================
 
 def test_convert_case_dict():
-    from pl5.diagnose import _convert_case_dict, _SPECIES_MAP
+    from PL5.diagnose import _convert_case_dict, _SPECIES_MAP
     case = {
         "subject_type": "猫",
         "observations": ["发热", "呕吐"],

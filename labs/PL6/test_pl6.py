@@ -9,9 +9,9 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from agent_core import OntologyAgent, ConversationState
-from pl6.tools import create_pl6_tools
-from pl6.diagnose import pl6_diagnose, _convert_case_dict
-from pl6.report import build_pl6_report
+from PL6.tools import create_pl6_tools
+from PL6.diagnose import pl6_diagnose, _convert_case_dict
+from PL6.report import build_pl6_report
 
 
 @pytest.fixture

@@ -28,6 +28,7 @@ import sys
 import json
 import math
 import logging
+import importlib.util
 
 logger = logging.getLogger(__name__)
 
@@ -42,9 +43,35 @@ _ENGINE_DIRS = {
     "P5": os.path.join(os.path.dirname(__file__), "../../P5/src"),
 }
 
-for path in _ENGINE_DIRS.values():
-    if path not in sys.path:
-        sys.path.insert(0, path)
+# 按文件路径显式加载各引擎的 reasoner.py，使用唯一模块名，避免
+# P2/P4/P5/P6 四个目录下同名 reasoner.py（及 utils.py）造成的模块名冲突。
+# 若不显式区分，Python 只会加载 sys.path 上第一个同名模块，导致 P6 实际
+# 误用其他引擎的推理函数（例如 P2 引擎被静默丢弃、P4/P5 指向同一实现）。
+_ENGINE_REASONERS = {}
+
+
+def _load_engine_reasoner(engine_key):
+    """加载指定引擎的 reasoner.py 为独立模块（唯一名），返回该模块对象。"""
+    if engine_key in _ENGINE_REASONERS:
+        return _ENGINE_REASONERS[engine_key]
+
+    engine_dir = os.path.normpath(_ENGINE_DIRS[engine_key])
+    module_name = f"_p6_{engine_key.lower()}_reasoner"
+    reasoner_path = os.path.join(engine_dir, "reasoner.py")
+
+    # 将本引擎目录置于 sys.path 最前，确保其内部 `from utils import`
+    # 也能解析到本引擎自己的 utils.py，而非其他引擎的同名模块。
+    if engine_dir in sys.path:
+        sys.path.remove(engine_dir)
+    sys.path.insert(0, engine_dir)
+
+    spec = importlib.util.spec_from_file_location(module_name, reasoner_path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = mod
+    spec.loader.exec_module(mod)
+
+    _ENGINE_REASONERS[engine_key] = mod
+    return mod
 
 
 def diagnose(case_dict):
@@ -176,9 +203,9 @@ def _run_structural_engine(case_dict):
     - P3 需要外部 Fuseki 服务，依赖重
     """
     try:
-        from reasoner import load_knowledge_base as p2_load, diagnose as p2_diagnose
-        prolog = p2_load()
-        raw, excluded = p2_diagnose(prolog, case_dict)
+        _p2 = _load_engine_reasoner("P2")
+        prolog = _p2.load_knowledge_base()
+        raw, excluded = _p2.diagnose(prolog, case_dict)
 
         results = {}
         for name, conf, is_confirmed, did in raw:
@@ -213,9 +240,9 @@ def _run_structural_engine(case_dict):
 def _run_fuzzy_engine(case_dict):
     """运行 P4 模糊推理引擎"""
     try:
-        from reasoner import load_knowledge_base as p4_load, diagnose as p4_diagnose
-        kb = p4_load()
-        raw = p4_diagnose(kb, case_dict)
+        _p4 = _load_engine_reasoner("P4")
+        kb = _p4.load_knowledge_base()
+        raw = _p4.diagnose(kb, case_dict)
 
         results = {}
         for name, conf, level, did in raw:
@@ -233,9 +260,9 @@ def _run_fuzzy_engine(case_dict):
 def _run_bayesian_engine(case_dict):
     """运行 P5 贝叶斯推理引擎"""
     try:
-        from reasoner import load_knowledge_base as p5_load, diagnose as p5_diagnose
-        kb = p5_load()
-        raw = p5_diagnose(kb, case_dict)
+        _p5 = _load_engine_reasoner("P5")
+        kb = _p5.load_knowledge_base()
+        raw = _p5.diagnose(kb, case_dict)
 
         results = {}
         for name, conf, level, did in raw:
@@ -395,8 +422,8 @@ def _collect_disease_candidates(struct_results, fuzzy_results, bayesian_results)
 
     # 从 P5 知识库获取先验概率
     try:
-        from reasoner import load_knowledge_base as p5_load
-        kb = p5_load()
+        _p5 = _load_engine_reasoner("P5")
+        kb = _p5.load_knowledge_base()
         for disease in kb["diseases"]:
             if disease["id"] in all_diseases:
                 all_diseases[disease["id"]]["prior"] = disease.get("prior", 0.05)

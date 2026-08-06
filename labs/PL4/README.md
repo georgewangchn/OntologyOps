@@ -81,7 +81,7 @@ PL4 提供 8 个 LangChain `@tool` 工具：
 ## 项目结构
 
 ```
-pl4/
+PL4/
 ├── README.md           # 本文档
 ├── __init__.py         # 模块入口
 ├── run.py              # 启动脚本（交互式对话循环 + 系统提示词）
@@ -96,7 +96,7 @@ pl4/
 │   ├── src/kb_builder.py     # CSV + 专家知识 → fuzzy_kb.json
 │   ├── src/utils.py          # 严重度计算 + 覆盖率/强度/排除度
 │   └── data/fuzzy_kb.json    # 模糊知识库
-└── tests/test_pl4.py   # 单元测试
+└── test_pl4.py   # 单元测试
 ```
 
 ---
@@ -106,7 +106,7 @@ pl4/
 ### 1. 安装依赖
 
 ```bash
-cd ontologyops/examples
+cd labs
 pip install -r agent_core/requirements.txt
 pip install scikit-fuzzy numpy
 ```
@@ -132,15 +132,15 @@ export OPENAI_BASE_URL=https://api.openai.com/v1
 ### 交互式对话
 
 ```bash
-cd ontologyops/examples
-python pl4/run.py
+cd labs
+python PL4/run.py
 ```
 
 ### 运行测试
 
 ```bash
-cd ontologyops/examples
-python -m pytest tests/test_pl4.py -v
+cd labs
+python -m pytest test_pl4.py -v
 ```
 
 测试覆盖（7 组）：
@@ -196,9 +196,9 @@ PL4 保留了严重度信息——39.5°C 的高烧和 38.5°C 的低烧不再�
 ## 参考资料
 
 1. [P4 · 模糊逻辑推理](../P4/README.md) — PL4 的推理引擎基础
-2. [PL1 · LLM Agent / OWL 推理](../pl1/README.md) — 对比项目
-3. [PL2 · LLM Agent / Prolog 推理](../pl2/README.md) — 对比项目
-4. [PL3 · LLM Agent / SPARQL 推理](../pl3/README.md) — 对比项目
+2. [PL1 · LLM Agent / OWL 推理](../PL1/README.md) — 对比项目
+3. [PL2 · LLM Agent / Prolog 推理](../PL2/README.md) — 对比项目
+4. [PL3 · LLM Agent / SPARQL 推理](../PL3/README.md) — 对比项目
 5. scikit-fuzzy 文档：https://scikit-fuzzy.readthedocs.io/
 6. [PL4 博客文章](https://senlinpubu.top/blog/pl4-fuzzy-agent/) — 完整技术讲解
 7. 「当LLM不够用了」系列

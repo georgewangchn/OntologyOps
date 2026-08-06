@@ -9,6 +9,6 @@ PL1 —— P1 (OWL 本体推理) + LLM Agent
     + system_prompt             ← 宠物疾病诊断角色定义
 
 运行：
-  cd ontologyops/examples
-  python pl1/run.py
+  cd labs
+  python -m PL1.run
 """

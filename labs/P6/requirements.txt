@@ -1,0 +1,15 @@
+# P6 多范式贝叶斯元推理 —— 依赖清单
+#
+# P6 融合 P2(Prolog) + P4(模糊) + P5(贝叶斯) 三个引擎，需汇总三者依赖。
+# 注意：P6 不依赖 P1（OWL/HermiT），因为 P1/P2/P3 共享同一知识源，取 P2 即可。
+#
+# 运行时还需系统级 SWI-Prolog（P2 引擎需要，见 setup_env.sh）。
+pyswip>=0.2.11       # P2 Prolog 桥接
+scikit-fuzzy>=0.4.2  # P4 Mamdani 模糊推理
+numpy>=1.21.0        # P4 数值计算
+scipy>=1.7.0         # P4/scikit-fuzzy 依赖
+networkx>=2.6        # P4/scikit-fuzzy 依赖
+packaging>=21.0      # scikit-fuzzy 内部依赖（显式声明避免缺包）
+pandas>=1.5.0        # P2/P4 的 kb_builder.py 用 pandas 读 CSV
+pytest>=8.0.0        # 测试
+# P5 是纯标准库实现，无第三方依赖

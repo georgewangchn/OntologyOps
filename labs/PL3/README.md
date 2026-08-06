@@ -86,7 +86,7 @@ PL3 提供 8 个 LangChain `@tool` 工具：
 ## 项目结构
 
 ```
-pl3/
+PL3/
 ├── README.md           # 本文档
 ├── __init__.py         # 模块入口
 ├── run.py              # 启动脚本（交互式对话循环 + 系统提示词）
@@ -101,7 +101,7 @@ pl3/
 │   ├── src/local_reasoner.py # rdflib 本地推理（降级）
 │   ├── src/kb_builder.py     # CSV → Turtle 三元组
 │   └── data/pet.ttl          # 知识库文件
-└── tests/test_pl3.py   # 单元测试
+└── test_pl3.py   # 单元测试
 ```
 
 ---
@@ -111,7 +111,7 @@ pl3/
 ### 1. 安装依赖
 
 ```bash
-cd ontologyops/examples
+cd labs
 pip install -r agent_core/requirements.txt
 pip install rdflib
 ```
@@ -137,15 +137,15 @@ export OPENAI_BASE_URL=https://api.openai.com/v1
 ### 交互式对话
 
 ```bash
-cd ontologyops/examples
-python pl3/run.py
+cd labs
+python PL3/run.py
 ```
 
 ### 运行测试
 
 ```bash
-cd ontologyops/examples
-python -m pytest tests/test_pl3.py -v
+cd labs
+python -m pytest test_pl3.py -v
 ```
 
 测试覆盖（7 组）：
@@ -197,8 +197,8 @@ PL3（OWA）：未断言腹泻 ≠ 没有腹泻
 ## 参考资料
 
 1. [P3 · Jena/SPARQL 三元组推理](../P3/README.md) — PL3 的推理引擎基础
-2. [PL1 · LLM Agent / OWL 推理](../pl1/README.md) — 对比项目
-3. [PL2 · LLM Agent / Prolog 推理](../pl2/README.md) — 对比项目
+2. [PL1 · LLM Agent / OWL 推理](../PL1/README.md) — 对比项目
+3. [PL2 · LLM Agent / Prolog 推理](../PL2/README.md) — 对比项目
 4. rdflib 文档：https://rdflib.readthedocs.io/
 5. Apache Jena 文档：https://jena.apache.org/
 6. [PL3 博客文章](https://senlinpubu.top/blog/pl3-sparql-agent/) — 完整技术讲解

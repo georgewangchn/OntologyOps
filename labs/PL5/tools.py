@@ -101,10 +101,17 @@ def create_pl5_tools(state, diagnose_fn, report_builder):
         return f"已记录症状：{symptom_name}（{severity}）。当前已记录 {len(state.observations)} 个症状。"
 
     @tool
-    def set_pet_info(species: str, breed: str = "", age: str = "", sex: str = "") -> str:
+    def set_pet_info(species: str, breed: str = "", age: int = None, sex: str = "") -> str:
         """设置宠物基本信息。species 必填（猫/狗），其他可选。"""
         state.set_subject(species=species, breed=breed, age=age, sex=sex)
-        return f"已设置宠物信息：{species}，{breed}，{age}岁，{sex}。"
+        parts = [f"物种：{species}"]
+        if breed:
+            parts.append(f"品种：{breed}")
+        if age is not None:
+            parts.append(f"年龄：{age}岁")
+        if sex:
+            parts.append(f"性别：{sex}")
+        return "已设置宠物信息：" + "，".join(parts)
 
     @tool
     def run_bayesian_reasoning() -> str:
@@ -198,7 +205,21 @@ def create_pl5_tools(state, diagnose_fn, report_builder):
             return "信息不足：尚未设置宠物信息。"
         if len(state.observations) < 2:
             return f"信息不足：已记录 {len(state.observations)} 个症状（至少需要2个）。"
-        return state.get_summary()
+        parts = [
+            f"宠物信息：{state.subject.summary()}",
+            f"已收集症状（{len(state.observations)} 条）：",
+        ]
+        for i, obs in enumerate(state.observations, 1):
+            line = f"  {i}. {obs.name}"
+            if obs.severity:
+                line += f"（{obs.severity}）"
+            parts.append(line)
+        parts.append("")
+        if state.is_ready_for_reasoning():
+            parts.append("✅ 信息已足够，可以运行推理。")
+        else:
+            parts.append("⚠️ 信息不足，建议继续收集信息。")
+        return "\n".join(parts)
 
     return [
         lookup_symptom_bayesian,

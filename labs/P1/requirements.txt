@@ -1,3 +1,4 @@
 owlready2==0.37
 rdflib
 pandas
+pytest>=8.0.0

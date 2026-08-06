@@ -1,98 +1,77 @@
 #!/usr/bin/env python3
 """
-PL4 启动脚本 —— 宠物疾病诊断 Agent（模糊逻辑推理 + LLM）
+PL1 启动脚本 —— 宠物疾病诊断 Agent（OWL DL + LLM）
 
 启动方式：
-    cd ontologyops/examples
-    python pl4/run.py
+    cd labs
+    python -m PL1.run
 
 功能：
-  1. 创建 OntologyAgent，加载 PL4 工具集
+  1. 创建 OntologyAgent，加载 PL1 工具集
   2. 进入交互式对话循环
-  3. 用户输入症状描述，Agent 调用 Mamdani 模糊推理引擎进行推理
+  3. 用户输入症状描述，Agent 调用 OWL 本体工具进行推理
   4. 输入「退出」或「exit」结束会话
-
-PL4 特有：
-  - Agent 会主动询问症状的严重度详情（体温、频率等）
-  - 严重度详情直接影响推理结果
-  - 输出连续置信度（0-1）而非二元结果
 """
 
 import os
 import sys
 import logging
 
-# 确保 agent_core 和 P4 可被导入
-EXAMPLES_DIR = os.path.dirname(os.path.abspath(__file__))
-if EXAMPLES_DIR not in sys.path:
-    sys.path.insert(0, EXAMPLES_DIR)
+# labs/ 加入 sys.path，使 agent_core 与同级 PL* 包可被导入
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from agent_core import OntologyAgent
-from pl4.tools import create_pl4_tools
-from pl4.diagnose import pl4_diagnose
-from pl4.report import build_pl4_report
+from PL1.tools import create_pl1_tools
+from PL1.diagnose import pl1_diagnose
+from PL1.report import build_pl1_report
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
-logger = logging.getLogger("pl4")
+logger = logging.getLogger("pl1")
 
 # ============================================================
-# 系统提示词
+# 系统提示词 —— 定义 Agent 的领域角色
 # ============================================================
 
 SYSTEM_PROMPT = """\
-你是一个专业的宠物疾病诊断助手，基于 Mamdani 模糊推理引擎提供诊断建议。
+你是一个专业的宠物疾病诊断助手，基于 OWL 本体推理引擎（HermiT）提供诊断建议。
 
 ## 你的能力
 1. 理解用户用自然语言描述的宠物症状
-2. 在模糊知识库中查找症状、疾病的相关信息
-3. 收集症状的严重度详情（体温值、呕吐频率、腹泻类型等）
-4. 运行 Mamdani 模糊推理，输出连续置信度（0-1）
-5. 解释模糊推理链（覆盖率/强度/排除度 + 规则触发）
+2. 在本体知识库中查找症状、疾病的相关信息
+3. 收集足够的信息（宠物物种、症状）后运行 OWL DL 推理
+4. 解释推理结果和置信度
 
 ## 工具使用指南
-- `set_pet_info`: 首先确认宠物物种（猫/犬）
-- `lookup_symptom_fuzzy`: 当用户提到症状时，查找确认
-- `add_observation`: 记录症状，PL4 中可以附带严重度详情
-- `get_symptom_severity`: 查询某症状当前的模糊化严重度
-- `get_case_summary`: 推理前检查信息是否足够
-- `run_fuzzy_reasoning`: 信息足够后运行模糊推理
-- `explain_fuzzy_reasoning`: 解释某疾病的推理依据
+- `set_pet_info`: 首先确认宠物物种（猫/犬），这是推理的前提
+- `lookup_symptom_owl`: 当用户提到症状时，先在本体中查找确认
+- `add_observation`: 将用户描述的症状记录到病例中
+- `get_case_summary`: 在推理前检查信息是否足够
+- `run_dl_reasoning`: 信息足够后立即运行推理
+- `explain_subsumption`: 用户对某个诊断有疑问时，解释推理依据
 
 ## 对话流程
 1. 问候用户，询问宠物物种和症状
-2. **关键步骤**：对每个症状追问严重度详情：
-   - 发热 → 追问体温值（°C）
-   - 呕吐 → 追问频率（偶尔/多次/频繁）
-   - 腹泻 → 追问类型（成型/软便/水样）和颜色（正常/暗红/血）
-3. 信息收集完毕后，调用 `run_fuzzy_reasoning` 输出诊断报告
-4. 对诊断结果做通俗解释，提醒"仅供参考，不能替代执业兽医"
-5. 如用户有疑问，用 `explain_fuzzy_reasoning` 解释推理依据
-
-## 模糊推理 vs 确定性推理
-- P1-P3/PL1-PL3：症状有/无（二元）→ 疾病是/否（二元）
-- P4/PL4：症状严重度（连续 0-1）→ 疾病置信度（连续 0-1）
-- 排除症状不完全排除疾病，而是降低置信度
-- 症状严重度直接影响推理结果（39.5°C高烧 > 38.8°C低烧）
+2. 逐条确认症状（严重程度、持续时间等）
+3. 信息收集完毕后，调用 `run_dl_reasoning` 输出诊断报告
+4. 对诊断结果做通俗解释，并提醒用户"仅供参考，不能替代执业兽医的诊断"
 
 ## 重要提醒
 - 你不是执业兽医，诊断结果仅供参考
 - 如果症状严重（呼吸困难、持续呕吐、大出血等），立即建议就医
-- 不要编造知识库中不存在的症状或疾病
-- 严重度详情直接影响推理质量，请尽量收集\
+- 不要编造本体中不存在的症状或疾病\
 """
 
 
 def main():
     print("=" * 60)
-    print("  PL4 - 宠物疾病诊断 Agent（模糊逻辑推理 + LLM）")
+    print("  PL1 - 宠物疾病诊断 Agent（OWL DL + LLM）")
     print("=" * 60)
     print()
     print("正在初始化 Agent...")
-    print("  - 加载模糊知识库...")
-    print("  - 构建 Mamdani 控制器...")
+    print("  - 加载 OWL 本体...")
     print("  - 初始化 LLM...")
     print()
 
@@ -108,9 +87,9 @@ def main():
 
     try:
         agent = OntologyAgent(
-            tools_factory=create_pl4_tools,
-            diagnose_fn=pl4_diagnose,
-            report_builder=build_pl4_report,
+            tools_factory=create_pl1_tools,
+            diagnose_fn=pl1_diagnose,
+            report_builder=build_pl1_report,
             system_prompt=SYSTEM_PROMPT,
             api_key=api_key,
             model=os.environ.get("OPENAI_MODEL", "gpt-4o"),

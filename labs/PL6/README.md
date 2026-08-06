@@ -40,6 +40,6 @@ P6 (分层仲裁 P1-P5)     → PL6 (Agent + Arbiter)  ← 本项目
 
 ```bash
 export OPENAI_API_KEY=your-key
-cd examples
-python -m pl6.run
+cd labs
+python -m PL6.run
 ```

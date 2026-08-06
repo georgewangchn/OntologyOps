@@ -140,7 +140,7 @@ _SPECIES_MAP = {
 ## 项目结构
 
 ```
-pl1/
+PL1/
 ├── README.md           # 本文档
 ├── __init__.py         # 模块入口
 ├── run.py              # 启动脚本（交互式对话循环 + 系统提示词）
@@ -160,7 +160,7 @@ pl1/
     └── data/pet_ontology.owl  # 本体文件 (35.7KB)
 
 测试：
-└── tests/test_pl1.py   # 6 组单元测试
+└── test_pl1.py   # 6 组单元测试
 ```
 
 ---
@@ -170,7 +170,7 @@ pl1/
 ### 1. 安装依赖
 
 ```bash
-cd ontologyops/examples
+cd labs
 pip install -r agent_core/requirements.txt
 # agent_core 依赖：langgraph, langchain, langchain-openai, langchain-core, pytest
 ```
@@ -201,8 +201,8 @@ export OPENAI_BASE_URL=https://api.openai.com/v1
 ### 交互式对话
 
 ```bash
-cd ontologyops/examples
-python pl1/run.py
+cd labs
+python PL1/run.py
 ```
 
 启动后进入交互式对话：
@@ -245,8 +245,8 @@ python pl1/run.py
 ### 运行测试
 
 ```bash
-cd ontologyops/examples
-python -m pytest tests/test_pl1.py -v
+cd labs
+python -m pytest test_pl1.py -v
 ```
 
 测试覆盖（6 组）：

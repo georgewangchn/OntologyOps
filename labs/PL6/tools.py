@@ -123,10 +123,17 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
         return f"已记录症状：{symptom_name}（{severity}）。当前已记录 {len(state.observations)} 个症状。"
 
     @tool
-    def set_pet_info(species: str, breed: str = "", age: str = "", sex: str = "") -> str:
+    def set_pet_info(species: str, breed: str = "", age: int = None, sex: str = "") -> str:
         """设置宠物基本信息。"""
         state.set_subject(species=species, breed=breed, age=age, sex=sex)
-        return f"已设置宠物信息：{species}，{breed}，{age}岁，{sex}。"
+        parts = [f"物种：{species}"]
+        if breed:
+            parts.append(f"品种：{breed}")
+        if age is not None:
+            parts.append(f"年龄：{age}岁")
+        if sex:
+            parts.append(f"性别：{sex}")
+        return "已设置宠物信息：" + "，".join(parts)
 
     @tool
     def run_multi_engine_reasoning() -> str:
@@ -202,7 +209,7 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
    且最大 LR / 最小 LR > 5.0，标记冲突。
 
 为什么比旧版分层仲裁更好：
-   - 旧版权重 0.6/0.4 无理论依据，贝叶斯后验和模糊匹配度语义不同不能加权
+   - 旧版固定权重无理论依据：贝叶斯后验和模糊匹配度语义不同，不能直接加权平均
    - 新版似然比有概率论保证（贝叶斯定理链式法则）
    - 各引擎增量信息被显式利用：规则知识->LR_struct, 严重度->LR_fuzzy, 先验+CPT->LR_bayesian
    - P1-P3 不再冗余运行，消除假一致性"""
@@ -214,7 +221,21 @@ def create_pl6_tools(state, diagnose_fn, report_builder):
             return "信息不足：尚未设置宠物信息。"
         if len(state.observations) < 2:
             return f"信息不足：已记录 {len(state.observations)} 个症状（至少需要2个）。"
-        return state.get_summary()
+        parts = [
+            f"宠物信息：{state.subject.summary()}",
+            f"已收集症状（{len(state.observations)} 条）：",
+        ]
+        for i, obs in enumerate(state.observations, 1):
+            line = f"  {i}. {obs.name}"
+            if obs.severity:
+                line += f"（{obs.severity}）"
+            parts.append(line)
+        parts.append("")
+        if state.is_ready_for_reasoning():
+            parts.append("✅ 信息已足够，可以运行推理。")
+        else:
+            parts.append("⚠️ 信息不足，建议继续收集信息。")
+        return "\n".join(parts)
 
     return [
         lookup_symptom_multi,

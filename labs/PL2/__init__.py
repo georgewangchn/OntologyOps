@@ -9,6 +9,6 @@ PL2 —— P2 (Prolog 逻辑推理) + LLM Agent
     + system_prompt             ← 宠物疾病诊断角色定义
 
 运行：
-  cd ontologyops/examples
-  python pl2/run.py
+  cd labs
+  python -m PL2.run
 """

@@ -112,7 +112,7 @@ OntologyOps 是**方法论**（六支柱）；六支柱之一的 **Ontology Repo
 git clone git@github.com:georgewangchn/OntologyOps.git
 cd OntologyOps
 
-# 多范式推理实战营：P1–P6（符号 → 数值）与 pl1–pl6（LLM Agent 版）
+# 多范式推理实战营：P1–P6（符号 → 数值）与 PL1–PL6（LLM Agent 版）
 cd labs/P1                    # P1 = OWL / HermiT 本体推理
 pip install -r requirements.txt
 # 按该目录 README 运行：构建本体 → HermiT 推理 → 诊断
@@ -129,7 +129,7 @@ pip install -r requirements.txt
 | 产品 | 目录 | 说明 | 许可 |
 |------|------|------|------|
 | **OntologyOps** | `ontologyops/` | 方法论 + 协议规范 | CC BY 4.0 |
-| **推理实战营** | `labs/` | P1–P6 + pl1–pl6 可运行代码 | MIT |
+| **推理实战营** | `labs/` | P1–P6 + PL1–PL6 可运行代码 | MIT |
 
 <br>
 
@@ -143,7 +143,7 @@ OntologyOps/
 │   ├── conformance.yaml        # 符合性条款
 │   ├── README.md               # 协议导读（canonical 源说明）
 │   └── LICENSE                 # CC BY 4.0
-└── labs/                        # 推理实战营 P1–P6 + pl1–pl6（LLM Agent 版）
+└── labs/                        # 推理实战营 P1–P6 + PL1–PL6（LLM Agent 版）
     ├── agent_core/              #   共享 Agent 框架
     └── shared_data/             #   共享数据集
 ```

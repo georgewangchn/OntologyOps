@@ -40,6 +40,6 @@
 export OPENAI_API_KEY=your-key
 export LLM_MODEL=glm-4.7-flash
 
-cd examples
-python -m pl5.run
+cd labs
+python -m PL5.run
 ```

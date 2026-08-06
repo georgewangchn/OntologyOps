@@ -18,9 +18,9 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from agent_core import OntologyAgent, ConversationState
-from pl4.tools import create_pl4_tools
-from pl4.diagnose import pl4_diagnose, _convert_case_dict, _SPECIES_MAP
-from pl4.report import build_pl4_report
+from PL4.tools import create_pl4_tools
+from PL4.diagnose import pl4_diagnose, _convert_case_dict, _SPECIES_MAP
+from PL4.report import build_pl4_report
 
 
 # ============================================================

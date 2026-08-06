@@ -97,7 +97,7 @@ PL2 提供 8 个 LangChain `@tool` 工具，比 PL1 多一个传播链查询：
 ## 项目结构
 
 ```
-pl2/
+PL2/
 ├── README.md           # 本文档
 ├── __init__.py         # 模块入口
 ├── run.py              # 启动脚本（交互式对话循环 + 系统提示词）
@@ -111,7 +111,7 @@ pl2/
 │   ├── src/reasoner.py # pyswip 推理引擎
 │   ├── src/rules.pl    # Prolog 规则（6 条）
 │   └── data/pet_kb.pl  # 知识库文件
-└── tests/test_pl2.py   # 单元测试
+└── test_pl2.py   # 单元测试
 ```
 
 ---
@@ -121,7 +121,7 @@ pl2/
 ### 1. 安装依赖
 
 ```bash
-cd ontologyops/examples
+cd labs
 pip install -r agent_core/requirements.txt
 # agent_core 依赖：langgraph, langchain, langchain-openai, langchain-core, pytest
 ```
@@ -159,15 +159,15 @@ export OPENAI_BASE_URL=https://api.openai.com/v1
 ### 交互式对话
 
 ```bash
-cd ontologyops/examples
-python pl2/run.py
+cd labs
+python PL2/run.py
 ```
 
 ### 运行测试
 
 ```bash
-cd ontologyops/examples
-python -m pytest tests/test_pl2.py -v
+cd labs
+python -m pytest test_pl2.py -v
 ```
 
 测试覆盖（7 组）：
@@ -218,7 +218,7 @@ PL2（CWA）：\+ has(case, '腹泻') 成功（因为没有这个事实）
 ## 参考资料
 
 1. [P2 · Prolog 逻辑推理](../P2/README.md) — PL2 的推理引擎基础
-2. [PL1 · LLM Agent / OWL 推理](../pl1/README.md) — 对比项目
+2. [PL1 · LLM Agent / OWL 推理](../PL1/README.md) — 对比项目
 3. SWI-Prolog 文档：https://www.swi-prolog.org/
 4. pyswip 文档：https://github.com/yuce/pyswip
 5. [PL2 博客文章](https://senlinpubu.top/blog/pl2-prolog-agent/) — 完整技术讲解

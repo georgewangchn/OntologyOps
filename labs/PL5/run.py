@@ -14,9 +14,9 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from agent_core import OntologyAgent
-from pl5.tools import create_pl5_tools
-from pl5.diagnose import pl5_diagnose
-from pl5.report import build_pl5_report
+from PL5.tools import create_pl5_tools
+from PL5.diagnose import pl5_diagnose
+from PL5.report import build_pl5_report
 
 
 SYSTEM_PROMPT = """你是一个宠物疾病诊断助手，基于贝叶斯概率推理引擎（朴素贝叶斯网络）。

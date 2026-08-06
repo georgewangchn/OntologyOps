@@ -10,9 +10,9 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from agent_core import OntologyAgent
-from pl6.tools import create_pl6_tools
-from pl6.diagnose import pl6_diagnose
-from pl6.report import build_pl6_report
+from PL6.tools import create_pl6_tools
+from PL6.diagnose import pl6_diagnose
+from PL6.report import build_pl6_report
 
 
 SYSTEM_PROMPT = """你是一个宠物疾病诊断助手，基于贝叶斯元推理引擎（多范式证据融合）。

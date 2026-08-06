@@ -145,3 +145,5 @@ xiaohongshu_notes/
 *.md.bak
 __pycache__
 .DS_Store
+.omo
+AGENTS.md
