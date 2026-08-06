@@ -23,7 +23,7 @@ PL2 工具集 —— 包装 P2 的 Prolog 逻辑推理能力，供 OntologyAgent
 依赖：
   - pyswip（Python ↔ SWI-Prolog 桥接）
   - P2 的 reasoner / kb_builder 模块
-  - 知识库文件：ontologyops/labs/P2/data/pet_kb.pl
+  - 知识库文件：labs/P2/data/pet_kb.pl
 """
 
 import os

@@ -21,7 +21,7 @@ PL1 工具集 —— 包装 P1 的 OWL 本体推理能力，供 OntologyAgent �
 依赖：
   - owlready2-Chinese（fork 版本，支持中文 IRI）
   - P1 的 onto_builder / reasoner / diagnosis 模块
-  - 本体文件：ontologyops/labs/P1/data/pet_ontology.owl
+  - 本体文件：labs/P1/data/pet_ontology.owl
 """
 
 import os

@@ -23,7 +23,7 @@ PL3 工具集 —— 包装 P3 的 Jena/SPARQL 三元组推理能力，供 Ontol
 依赖：
   - rdflib（本地推理降级）或 SPARQLWrapper（连接 Jena Fuseki）
   - P3 的 reasoner / local_reasoner / kb_builder 模块
-  - 知识库文件：ontologyops/labs/P3/data/pet.ttl
+  - 知识库文件：labs/P3/data/pet.ttl
 """
 
 import os

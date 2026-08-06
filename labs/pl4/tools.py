@@ -23,7 +23,7 @@ PL4 工具集 —— 包装 P4 的模糊逻辑推理能力，供 OntologyAgent �
 依赖：
   - scikit-fuzzy（Mamdani 模糊推理）
   - P4 的 reasoner / kb_builder / utils 模块
-  - 知识库文件：ontologyops/labs/P4/data/fuzzy_kb.json
+  - 知识库文件：labs/P4/data/fuzzy_kb.json
 """
 
 import os
