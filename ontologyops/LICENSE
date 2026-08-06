@@ -2,7 +2,7 @@
 
 ## Creative Commons 署名 4.0 国际 (CC BY 4.0)
 
-OntologyOps "Ontology Repo" 支柱协议（`protocol/ontology-repo/` 目录下的
+OntologyOps "Ontology Repo" 支柱协议（`ontologyops/` 目录下的
 PROTOCOL.md、ontology.schema.json、conformance.yaml 及 README.md）
 均采用 CC BY 4.0 许可协议。
 

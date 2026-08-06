@@ -60,7 +60,7 @@
 
 > **非符合性目标**：教学范式演示（如 OntologyOps 博客的 P1–P6 / PL1–PL6）**不以符合本协议为目标**——协议是为生产级、会持续演化的本体仓库准备的工程纪律，教学件的目的是讲清各推理范式。
 
-## 5. 与本系列 / OntologyOps 博客的关系
+## 5. 与 OntologyOps 博客系列的关系
 
 - 本文件与 `ontology.schema.json`、`conformance.yaml` 三者构成可回填 OntologyOps 博客仓库的**协议 canonical 源**。
-- 文稿第 8 章六支柱之"Ontology Repo"、第 9 章"六支柱→GovernanceOps 组件映射表"的对应行，以本协议 + 本参考实现为事实依据。
+- 博客系列第 8 篇六支柱之"Ontology Repo"、第 9 篇"六支柱→GovernanceOps 组件映射表"的对应内容，以本协议 + 本参考实现为事实依据。

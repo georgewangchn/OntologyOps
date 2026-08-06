@@ -5,9 +5,9 @@
 对比 P4 的 utils.py：P4 新增症状严重度计算（模糊化），P5 不需要（贝叶斯用二元症状）
 """
 
+import csv
 import json
 import os
-import pandas as pd
 
 SHARED_DATA_DIR = os.path.join(os.path.dirname(__file__), "../../shared_data")
 
@@ -28,8 +28,9 @@ def load_symptom_baselines(symptoms_csv=None):
     """从 symptoms.csv 加载症状基线严重度"""
     if symptoms_csv is None:
         symptoms_csv = os.path.join(SHARED_DATA_DIR, "symptoms.csv")
-    df = pd.read_csv(symptoms_csv, encoding="utf-8-sig")
-    return dict(zip(df["症状名称"], df["严重度"].astype(float)))
+    with open(symptoms_csv, encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
+    return {row["症状名称"]: float(row["严重度"]) for row in rows}
 
 
 def format_results(results, top_n=5):

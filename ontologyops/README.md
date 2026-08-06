@@ -43,5 +43,5 @@ OntologyOps 定位为**领域中立**的方法论（其自身材料横跨设备/
 本目录下的协议规范文件（PROTOCOL.md、ontology.schema.json、conformance.yaml、README.md）
 采用 **[CC BY 4.0](./LICENSE)** 许可协议——允许商业实现，仅要求署名。
 
-这与仓库其余部分不同：代码用 MIT，专栏内容用 CC BY-NC-SA 4.0。详见仓库根目录的
+这与仓库其余部分不同：代码（`labs/`）用 MIT。详见仓库根目录的
 [分层许可说明](../../README.md#-license)。

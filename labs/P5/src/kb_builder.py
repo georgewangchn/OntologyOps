@@ -24,9 +24,9 @@
     P5 回答："给定这些症状，疾病的概率是多少？"
 """
 
+import csv
 import json
 import os
-import pandas as pd
 
 SHARED_DATA_DIR = os.path.join(os.path.dirname(__file__), "../../shared_data")
 LOCAL_DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
@@ -154,22 +154,23 @@ def build_kb(diseases_csv=None, symptoms_csv=None, output_path=None):
     if output_path is None:
         output_path = OUTPUT_JSON
 
-    df = pd.read_csv(diseases_csv, encoding="utf-8-sig")
+    with open(diseases_csv, encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
 
     diseases = []
-    for _, row in df.iterrows():
+    for row in rows:
         did = row["疾病ID"]
         name = row["疾病名称"]
-        species = str(row.get("物种", "pet")).lower()
+        species = str(row.get("物种", "pet") or "pet").lower()
 
         necessary = []
-        nec_str = row.get("必要症状", "")
-        if pd.notna(nec_str) and nec_str.strip():
+        nec_str = row.get("必要症状", "") or ""
+        if nec_str.strip():
             necessary = [s.strip() for s in nec_str.split(";") if s.strip()]
 
         exclusion = []
-        nos_str = row.get("排除症状", "")
-        if pd.notna(nos_str) and nos_str.strip():
+        nos_str = row.get("排除症状", "") or ""
+        if nos_str.strip():
             exclusion = [s.strip() for s in nos_str.split(";") if s.strip()]
 
         diseases.append({
@@ -182,11 +183,9 @@ def build_kb(diseases_csv=None, symptoms_csv=None, output_path=None):
             "cpt": SYMPTOM_CPT.get(did, {}),
         })
 
-    df_sym = pd.read_csv(symptoms_csv, encoding="utf-8-sig")
-    symptom_baselines = dict(zip(
-        df_sym["症状名称"],
-        df_sym["严重度"].astype(float)
-    ))
+    with open(symptoms_csv, encoding="utf-8-sig") as f:
+        sym_rows = list(csv.DictReader(f))
+    symptom_baselines = {row["症状名称"]: float(row["严重度"]) for row in sym_rows}
 
     kb = {
         "paradigm": "概率推理（贝叶斯网络）",

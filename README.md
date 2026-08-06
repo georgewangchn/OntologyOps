@@ -140,7 +140,9 @@ OntologyOps/
 ├── ontologyops/      # OntologyOps 协议规范（CC BY 4.0）
 │   ├── PROTOCOL.md             # 抽象协议契约（R1–R6）
 │   ├── ontology.schema.json    # 参考编码：本体 DSL 的 JSON Schema
-│   └── conformance.yaml        # 符合性条款
+│   ├── conformance.yaml        # 符合性条款
+│   ├── README.md               # 协议导读（canonical 源说明）
+│   └── LICENSE                 # CC BY 4.0
 └── labs/                        # 推理实战营 P1–P6 + pl1–pl6（LLM Agent 版）
     ├── agent_core/              #   共享 Agent 框架
     └── shared_data/             #   共享数据集
