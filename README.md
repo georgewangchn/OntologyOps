@@ -165,7 +165,7 @@ OntologyOps/
 
 ## 👤 作者
 
-**森林瀑布** — 本体推理 × 企业决策 × AI 实战
+**森林瀑布** — 本体推理 × 企业决策 × AI 实战 · 博客：[senlinpubu.top](https://senlinpubu.top)
 
 <br>
 
