@@ -9,11 +9,8 @@
 <br>
 
 [![Code License](https://img.shields.io/badge/Code-MIT-22c55e?style=for-the-badge)](LICENSE)
-[![Series License](https://img.shields.io/badge/Series-CC_BY--NC--SA_4.0-f59e0b?style=for-the-badge)](LICENSE-BOOK)
 [![Protocol License](https://img.shields.io/badge/Protocol-CC_BY_4.0-3b82f6?style=for-the-badge)](ontologyops/LICENSE)
 [![Reference Impl](https://img.shields.io/badge/参考实现-GovernanceOps-6366f1?style=for-the-badge)](https://github.com/georgewangchn/GovernanceOps)
-
-📖 **[在线阅读全系列 →](https://senlinpubu.top)**
 
 </div>
 
@@ -109,7 +106,7 @@ OntologyOps 是**方法论**（六支柱）；六支柱之一的 **Ontology Repo
 
 ## 🚀 快速开始
 
-本仓库是**方法论 + 专栏系列 + 推理实战营**的集合。想直接看可运行代码：
+本仓库是**方法论 + 推理实战营**的集合。想直接看可运行代码：
 
 ```bash
 git clone git@github.com:georgewangchn/OntologyOps.git
@@ -127,13 +124,12 @@ pip install -r requirements.txt
 
 ## 📦 项目组成
 
-本仓库包含三个独立"产品"，各有清晰边界：
+本仓库包含两个独立"产品"，各有清晰边界：
 
 | 产品 | 目录 | 说明 | 许可 |
 |------|------|------|------|
 | **OntologyOps** | `ontologyops/` | 方法论 + 协议规范 | CC BY 4.0 |
 | **推理实战营** | `labs/` | P1–P6 + pl1–pl6 可运行代码 | MIT |
-| **博客站点** | `astro/` | [senlinpubu.top](https://senlinpubu.top) 在线博客 | MIT |
 
 <br>
 
@@ -142,18 +138,19 @@ pip install -r requirements.txt
 ```
 OntologyOps/
 ├── ontologyops/      # OntologyOps 协议规范（CC BY 4.0）
-├── labs/                        # 推理实战营 P1–P6 + pl1–pl6（LLM Agent 版）
-│   ├── agent_core/              #   共享 Agent 框架
-│   └── shared_data/             #   共享数据集
-├── astro/                       # 博客站点（部署至 senlinpubu.top）
-└── _archived_copub/             # 归档
+│   ├── PROTOCOL.md             # 抽象协议契约（R1–R6）
+│   ├── ontology.schema.json    # 参考编码：本体 DSL 的 JSON Schema
+│   └── conformance.yaml        # 符合性条款
+└── labs/                        # 推理实战营 P1–P6 + pl1–pl6（LLM Agent 版）
+    ├── agent_core/              #   共享 Agent 框架
+    └── shared_data/             #   共享数据集
 ```
 
 <br>
 
 ## 📚 与「当LLM不够用了」系列的关系
 
-「当LLM不够用了」是作者维护的**博客专栏系列**，系统讲解本体推理在企业决策中的实践。本仓库的 P1–PL6 多范式推理示例是该系列的配套代码，博客文章在 [senlinpubu.top](https://senlinpubu.top) 在线阅读。
+「当LLM不够用了」是作者维护的**博客专栏系列**，系统讲解本体推理在企业决策中的实践，文章在 [senlinpubu.top](https://senlinpubu.top) 在线阅读。本仓库的 P1–PL6 多范式推理示例是该系列的配套代码。
 
 | 专栏系列 | 本仓库 |
 |----------|--------|
@@ -161,10 +158,6 @@ OntologyOps/
 | **Why & What** | **How** |
 
 > 全系列论证「为什么 LLM 不够用」；OntologyOps 回答「行业放弃本体后，如何让本体重新可用」。
-
-### 📖 出版书
-
-「当LLM不够用了」系列已精编调整为正式出版书 **《从 Palantir 到本体智能：企业决策系统落地实战》**（暂定名）。出版书的 P1–PL6 案例代码在本仓库 `labs/` 目录下，读者可在此查看和运行。OntologyOps 的完整可运行实现另见 **[GovernanceOps](https://github.com/georgewangchn/GovernanceOps)** 开源项目。
 
 <br>
 
@@ -180,14 +173,12 @@ OntologyOps/
 
 | 资产类型 | 许可协议 | 覆盖范围 | 说明 |
 |---------|---------|---------|------|
-| **代码** | [MIT](LICENSE) | labs/, astro/ | 自由使用、修改、商用 |
-| **专栏内容** | [CC BY-NC-SA 4.0](LICENSE-BOOK) | blog mdx | 署名 + 非商业 + 相同方式共享 |
+| **代码** | [MIT](LICENSE) | labs/ | 自由使用、修改、商用 |
 | **协议规范** | [CC BY 4.0](ontologyops/LICENSE) | ontologyops/ | 署名 + 允许商业实现 |
-| **出版书** | All Rights Reserved | 《从 Palantir 到本体智能》 | 独立版权作品，详见 [LICENSE-BOOK](LICENSE-BOOK) |
 
-**贡献者**：提交 PR 即表示同意 [CLA](CLA.md) · 项目名称使用指引见 [TRADEMARK.md](TRADEMARK.md)
+**贡献者**：提交 PR 即表示同意 [贡献指南](CONTRIBUTING.md) · 项目名称使用指引见 [TRADEMARK.md](TRADEMARK.md)
 
 <div align="center">
 <br>
-<sub>让本体重新可用 · Code: MIT · 专栏: CC BY-NC-SA 4.0 · 协议: CC BY 4.0</sub>
+<sub>让本体重新可用 · Code: MIT · 协议: CC BY 4.0</sub>
 </div>
