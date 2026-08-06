@@ -145,3 +145,4 @@ xiaohongshu_notes/
 *.md.bak
 __pycache__
 .DS_Store
+_archived_copub/

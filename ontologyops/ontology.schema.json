@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ontologyops.org/schemas/ontology-repo/1.0/ontology.schema.json",
+  "title": "OntologyOps Ontology Repo — Reference DSL v1",
+  "description": "OntologyOps 'Ontology Repo' 支柱的参考序列化 (reference encoding, NON-EXCLUSIVE). 本 schema 定义 GovernanceOps 采用的一种合规编码；OntologyOps 协议本身的规范契约是语义级的 (见 ontology/PROTOCOL.md + ontology/schema/conformance.yaml)，不强制任何单一文件格式。任何满足符合性条款的编码都合规。",
+  "type": "object",
+  "required": ["ontology", "concepts", "properties", "defined_classes"],
+  "additionalProperties": true,
+  "properties": {
+    "protocol": {"type": "string"},
+    "protocol_version": {"type": "string"},
+    "ontology": {
+      "type": "object",
+      "required": ["iri"],
+      "properties": {
+        "iri": {"type": "string"},
+        "version": {"type": "string"},
+        "label": {"type": "string"}
+      }
+    },
+    "datatypes": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
+    "concepts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/concept"}
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "data": {"type": "array", "items": {"$ref": "#/$defs/property"}},
+        "object": {"type": "array", "items": {"$ref": "#/$defs/property"}}
+      },
+      "additionalProperties": false
+    },
+    "defined_classes": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/definedClass"}
+    },
+    "abox_binding": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/binding"}
+    },
+    "rules": {"type": "array"}
+  },
+  "$defs": {
+    "ident": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$"},
+    "datatypeName": {"enum": ["string", "float", "integer", "boolean"]},
+    "concept": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {"$ref": "#/$defs/ident"},
+        "parent": {"type": "string"},
+        "comment": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "property": {
+      "type": "object",
+      "required": ["name", "range"],
+      "properties": {
+        "name": {"$ref": "#/$defs/ident"},
+        "domain": {"type": "string"},
+        "range": {"type": "string"},
+        "functional": {"type": "boolean"},
+        "comment": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "definedClass": {
+      "type": "object",
+      "required": ["name", "equivalent_to"],
+      "properties": {
+        "name": {"$ref": "#/$defs/ident"},
+        "parent": {"type": "string"},
+        "result_key": {"type": "string"},
+        "comment": {"type": "string"},
+        "equivalent_to": {"$ref": "#/$defs/expr"}
+      },
+      "additionalProperties": false
+    },
+    "filler": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["class"],
+          "properties": {"class": {"type": "string"}},
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["datatype"],
+          "properties": {"datatype": {"$ref": "#/$defs/datatypeName"}},
+          "additionalProperties": false
+        }
+      ]
+    },
+    "expr": {
+      "type": "object",
+      "required": ["type"],
+      "oneOf": [
+        {
+          "properties": {
+            "type": {"const": "class"},
+            "name": {"type": "string"}
+          },
+          "required": ["type", "name"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {"const": "and"},
+            "operands": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/expr"}}
+          },
+          "required": ["type", "operands"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {"const": "or"},
+            "operands": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/expr"}}
+          },
+          "required": ["type", "operands"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {"const": "not"},
+            "operand": {"$ref": "#/$defs/expr"}
+          },
+          "required": ["type", "operand"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {"const": "some"},
+            "property": {"type": "string"},
+            "filler": {"$ref": "#/$defs/filler"}
+          },
+          "required": ["type", "property", "filler"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {"const": "value"},
+            "property": {"type": "string"},
+            "value": {}
+          },
+          "required": ["type", "property", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "binding": {
+      "type": "object",
+      "properties": {
+        "field": {"type": "string"},
+        "transform": {"type": "string"},
+        "computed": {"type": "string"},
+        "relation": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

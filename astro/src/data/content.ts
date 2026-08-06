@@ -13,7 +13,7 @@ export const nav: Nav = {
 	avatar:'/assets/author.png',
     items: [
         { label: '首页', href: '/', target: '_self' },
-        { label: '著作', href: '/book/index.html', target: '_self' },
+        { label: '专栏', href: '/book/index.html', target: '_self' },
         { label: '项目', href: '/project/', target: '_self' },
         { label: '博客', href: '/blog/', target: '_self' },
         { label: '关于', href: '/about/', target: '_self' },
@@ -28,7 +28,7 @@ interface SeoTdk { title?: string; description?: string; keywords?: string }
 
 export const homeTdk: SeoTdk = {
 	title: '森林瀑布的博客 — 本体推理、知识工程与 AI 探索',
-	description: '《当LLM不够用了——本体推理的企业决策实践》作者。专注知识图谱、本体推理、LLM 与企业决策系统的融合落地。',
+	description: '「当LLM不够用了」系列作者。专注知识图谱、本体推理、LLM 与企业决策系统的融合落地。',
 	keywords: '森林瀑布,本体推理,知识图谱,LLM,OWL,SWRL,Prolog,Jena,模糊推理,Agent,企业决策',
 }
 
@@ -40,14 +40,14 @@ export const blogTdk: SeoTdk = {
 
 export const aboutTdk: SeoTdk = {
 	title: '关于 — 森林瀑布',
-	description: '《当LLM不够用了——本体推理的企业决策实践》作者，知识图谱与本体推理领域实践者。',
+	description: '「当LLM不够用了」系列作者，知识图谱与本体推理领域实践者。',
 	keywords: '森林瀑布,本体推理,知识图谱,作者',
 }
 
 export const seriesTdk: SeoTdk = {
-	title: '《当LLM不够用了》— 森林瀑布',
+	title: '「当LLM不够用了」系列 — 森林瀑布',
 	description: '从 OWL 公理到企业落地 — 完整 12 章在线阅读。本体推理的企业决策实践。',
-	keywords: '本体推理,OWL,企业决策,知识工程,书籍,森林瀑布',
+	keywords: '本体推理,OWL,企业决策,知识工程,专栏,森林瀑布',
 }
 
 export const projectTdk: SeoTdk = {
@@ -96,7 +96,7 @@ export const pageTag: PageTag = {
 
 interface PageDescription { index?: string; project?: string; blog?: string; about?: string }
 export const pageDescription: PageDescription = {
-	index: '《当LLM不够用了——本体推理的企业决策实践》作者。专注知识图谱、本体推理、LLM 与企业决策系统的融合落地。',
+	index: '「当LLM不够用了」系列作者。专注知识图谱、本体推理、LLM 与企业决策系统的融合落地。',
 	project: '两个基于本体推理的开源项目 — GovernanceOps · OntologyOps',
 	about: '知识图谱与本体推理领域实践者',
 	blog: '记录我在本体推理、知识工程与 AI 探索过程中的思考和笔记。',

@@ -1,0 +1,51 @@
+# OntologyOps "Ontology Repo" 符合性条款（语义级，格式无关）。
+# 判定一个本体/实现是否符合协议 (见 PROTOCOL.md)。
+# 由 governanceops/ontorepo/conformance.py 执行；`govops onto conformance` 呈现。
+#
+# 每条标注 profile：
+#   core       —— 领域中立的核心机制层（§1，任何领域都须满足）
+#   governance —— Governance Profile（§2.1，GovernanceOps 满足）
+# 一个实现的符合性 = 通过全部 core 条款 + 其目标 profile 的条款。
+protocol: ontologyops
+version: "1.0"
+clauses:
+  # ── 核心机制层（领域中立） ──
+  - id: core-encodable
+    profile: core
+    desc: "本体必须能被某种编码的 schema 校验通过 (R1)"
+    check: schema_valid
+
+  - id: core-result-keys
+    profile: core
+    desc: "必须以 result_key 暴露可被推理机判定的语义分类 (R3 机制)"
+    check: declares_result_keys
+
+  - id: core-interop-turtle
+    profile: core
+    desc: "必须能导出可被解析的标准 W3C Turtle (R5)"
+    check: ttl_parses
+
+  # ── Governance Profile（企业决策治理领域） ──
+  - id: gov-core-concept
+    profile: governance
+    desc: "必须定义核心概念 Decision (G1)"
+    check: has_concepts
+    args: {required: [Decision]}
+
+  - id: gov-governed-semantics
+    profile: governance
+    desc: "必须存在等价于 owner∧deadline∧update 的 governed 定义类 (G2)"
+    check: has_defined_class_equiv
+    args: {result_key: governed, properties: [hasOwner, hasDeadline, hasUpdate]}
+
+  - id: gov-priority-value-class
+    profile: governance
+    desc: "必须存在由优先级值约束驱动的关键类 (P0/P1) (G3)"
+    check: has_value_restriction
+    args: {property: hasPriority, values: [P0, P1]}
+
+  - id: gov-reasoner-keys
+    profile: governance
+    desc: "推理必须产出治理语义 result_key (G2/G3)"
+    check: reasoner_result_keys
+    args: {keys: [governed, has_owner, has_deadline, critical, high_priority]}

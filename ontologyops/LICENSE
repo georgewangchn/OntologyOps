@@ -1,0 +1,38 @@
+# 协议规范许可
+
+## Creative Commons 署名 4.0 国际 (CC BY 4.0)
+
+OntologyOps "Ontology Repo" 支柱协议（`protocol/ontology-repo/` 目录下的
+PROTOCOL.md、ontology.schema.json、conformance.yaml 及 README.md）
+均采用 CC BY 4.0 许可协议。
+
+### 你可以：
+
+- **共享** — 在任何媒介以任何形式复制、发行本协议
+- **演绎** — 修改、转换或以本协议为基础进行创作
+- **商业使用** — 将本协议用于商业目的，包括商业产品实现
+
+### 但必须遵守以下条件：
+
+- **署名** — 必须给出适当的署名（来源：OntologyOps 协议，作者：森林瀑布），
+  提供指向本许可协议的链接，同时标明是否对原始内容作了修改。
+- **没有附加限制** — 不得适用法律术语或者技术措施从而限制其他人做许可协议允许的事情。
+
+### 完整协议文本
+
+https://creativecommons.org/licenses/by/4.0/legalcode.zh-Hans
+
+---
+
+## 为什么用 CC BY 4.0 而不是 CC BY-NC-SA 4.0？
+
+OntologyOps 协议的目标是成为**行业标准**。行业标准需要被商业厂商自由实现，
+因此协议规范不能包含"非商业使用"(NC) 限制。CC BY 4.0 仅要求署名，
+允许任何人在任何领域（包括商业产品）中实现本协议。
+
+这与 W3C、OMG 等标准组织的做法一致——规范文档采用宽松许可，
+鼓励最大范围的采用。
+
+---
+
+Copyright © 2026 森林瀑布. Licensed under CC BY 4.0.
